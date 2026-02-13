@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StockFlow Marketplace</title>
+    <title>StockFlow | Premium Footage</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .modal-hidden { display: none; }
@@ -16,10 +16,14 @@
         <h1 class="text-xl font-bold tracking-tight uppercase italic text-blue-600">StockFlow</h1>
     </nav>
 
+    <header class="py-16 px-6 text-center bg-white border-b border-gray-50">
+        <h2 class="text-4xl font-extrabold mb-6">Footage Collection</h2>
+        <p class="text-gray-500">Syncing with Google Sheets...</p>
+    </header>
+
     <main class="max-w-7xl mx-auto p-6 min-h-screen">
         <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
-            <p id="status" class="col-span-full py-20 text-gray-400 font-medium">Syncing with Google Database...</p>
-        </div>
+            </div>
     </main>
 
     <script>
@@ -28,18 +32,17 @@
 
         async function init() {
             const grid = document.getElementById('video-grid');
-            const status = document.getElementById('status');
-
             try {
                 const res = await fetch(SHEET_URL);
                 const text = await res.text();
+                // Strip the Google Visualization API wrapper
                 const json = JSON.parse(text.substring(47).slice(0, -2));
                 const rows = json.table.rows;
                 
                 grid.innerHTML = ''; 
 
                 rows.forEach((row, index) => {
-                    if (index === 0) return; // Skip Header
+                    if (index === 0) return; // Skip Header row
 
                     const video = {
                         title: row.c[1] ? row.c[1].v : "Untitled",
@@ -47,20 +50,18 @@
                         preview: row.c[5] ? row.c[5].v : ""
                     };
 
-                    const card = document.createElement('div');
-                    card.className = "bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100";
-                    card.innerHTML = `
-                        <div class="aspect-video bg-gray-100">
-                            <img src="${video.thumb}" class="w-full h-full object-cover" 
-                                 onerror="this.src='https://via.placeholder.com/400x225?text=Image+Locked'">
-                        </div>
-                        <div class="p-5 text-left"><h4 class="font-bold">${video.title}</h4></div>
-                    `;
-                    grid.appendChild(card);
+                    const card = `
+                        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-4">
+                            <img src="${video.thumb}" class="w-full aspect-video object-cover rounded-xl mb-4" 
+                                 onerror="this.src='https://via.placeholder.com/400x225?text=Check+GCP+Link'">
+                            <h4 class="font-bold text-gray-800">${video.title}</h4>
+                        </div>`;
+                    grid.innerHTML += card;
                 });
 
             } catch (err) {
-                status.innerHTML = `<div class="p-10 bg-red-50 text-red-600 rounded-3xl">Database Error: Check Sheet Sharing</div>`;
+                console.error("Fetch Error:", err);
+                grid.innerHTML = `<p class="col-span-full text-red-500">Connection Error. Check Sheet Sharing.</p>`;
             }
         }
         init();
