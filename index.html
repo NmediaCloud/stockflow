@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .video-card:hover img { transform: scale(1.05); }
+        .modal-hidden { display: none; }
+        .modal-visible { display: flex; }
     </style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-900">
@@ -25,8 +27,27 @@
             </div>
     </main>
 
+    <div id="previewModal" class="modal-hidden fixed inset-0 bg-black/90 z-[60] items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl overflow-hidden max-w-4xl w-full shadow-2xl relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 z-50 bg-black/50 text-white rounded-full p-2 hover:bg-black transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <video id="modalVideo" controls class="w-full aspect-video bg-black" src=""></video>
+            
+            <div class="p-6 flex flex-col sm:flex-row justify-between items-center bg-white gap-4">
+                <div>
+                    <h3 id="modalTitle" class="text-2xl font-bold tracking-tighter text-gray-900 uppercase">Video Title</h3>
+                    <p id="modalCategory" class="text-blue-600 font-black text-xs uppercase tracking-widest mt-1">Category</p>
+                </div>
+                <button class="w-full sm:w-auto bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200">
+                    License Footage
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Your Specific Sheet ID
         const SHEET_ID = '12eyXAI9-hT0TFSx2HhVDUWHXo4X9QVT-vSPmGQBx6c8';
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
@@ -37,7 +58,6 @@
             try {
                 const res = await fetch(SHEET_URL);
                 const text = await res.text();
-                // Clean Google's security wrapper
                 const json = JSON.parse(text.substring(47).slice(0, -2));
                 const rows = json.table.rows;
 
@@ -46,22 +66,27 @@
                 grid.innerHTML = ''; 
 
                 rows.forEach((row, index) => {
-                    if (index === 0) return; // Skip Header
+                    if (index === 0) return; 
 
                     const video = {
                         title: row.c[1] ? row.c[1].v : "Untitled",
                         category: row.c[2] ? row.c[2].v : "General",
-                        // Cache-buster (?cb=) ensures the browser looks for the image fresh
                         thumb: row.c[4] ? row.c[4].v + '?cb=' + Date.now() : "",
+                        preview: row.c[5] ? row.c[5].v : "",
                         price: row.c[6] ? row.c[6].v : "10"
                     };
 
                     const card = document.createElement('div');
-                    card.className = "video-card bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 p-4 transition-all hover:shadow-xl cursor-pointer";
+                    card.className = "video-card bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 p-4 transition-all hover:shadow-xl cursor-pointer group";
                     card.innerHTML = `
                         <div class="relative aspect-video bg-gray-100 rounded-2xl overflow-hidden mb-4">
                             <img src="${video.thumb}" class="w-full h-full object-cover transition-transform duration-500" 
                                  onerror="this.src='https://via.placeholder.com/600x400?text=Check+GCP+Permissions'">
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div class="bg-white/90 p-3 rounded-full shadow-xl">
+                                    <svg class="w-6 h-6 text-blue-600 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path></svg>
+                                </div>
+                            </div>
                         </div>
                         <div class="px-2">
                             <h4 class="font-bold text-gray-800 text-lg">${video.title}</h4>
@@ -71,6 +96,8 @@
                             </div>
                         </div>
                     `;
+
+                    card.onclick = () => openModal(video);
                     grid.appendChild(card);
                 });
 
@@ -79,6 +106,33 @@
                 status.innerText = "Connection Failed. Check Sheet Sharing.";
             }
         }
+
+        function openModal(video) {
+            const modal = document.getElementById('previewModal');
+            const videoPlayer = document.getElementById('modalVideo');
+            
+            document.getElementById('modalTitle').innerText = video.title;
+            document.getElementById('modalCategory').innerText = video.category;
+            
+            videoPlayer.src = video.preview;
+            modal.classList.remove('modal-hidden');
+            modal.classList.add('modal-visible');
+            videoPlayer.play();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('previewModal');
+            const videoPlayer = document.getElementById('modalVideo');
+            videoPlayer.pause();
+            videoPlayer.src = ""; // Clear source to stop loading
+            modal.classList.remove('modal-visible');
+            modal.classList.add('modal-hidden');
+        }
+
+        // Close modal on escape key
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
 
         init();
     </script>
