@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StockFlow | Premium Footage</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .modal-hidden { display: none; }
-        .modal-visible { display: flex; }
-    </style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-900">
 
@@ -17,8 +13,8 @@
     </nav>
 
     <header class="py-16 px-6 text-center bg-white border-b border-gray-50">
-        <h2 class="text-4xl font-extrabold mb-6">Footage Collection</h2>
-        <p class="text-gray-500">Syncing with Google Sheets...</p>
+        <h2 class="text-4xl font-extrabold mb-4">Footage Collection</h2>
+        <p id="status-text" class="text-gray-400 animate-pulse">Syncing with Google Database...</p>
     </header>
 
     <main class="max-w-7xl mx-auto p-6 min-h-screen">
@@ -32,17 +28,28 @@
 
         async function init() {
             const grid = document.getElementById('video-grid');
+            const statusText = document.getElementById('status-text');
+
             try {
                 const res = await fetch(SHEET_URL);
+                if (!res.ok) throw new Error("Google blocked the connection");
+                
                 const text = await res.text();
-                // Strip the Google Visualization API wrapper
                 const json = JSON.parse(text.substring(47).slice(0, -2));
                 const rows = json.table.rows;
                 
+                if (!rows || rows.length <= 1) {
+                    statusText.innerText = "Connected, but no data found in Sheet.";
+                    return;
+                }
+
+                statusText.innerText = "Collection Sync Complete";
+                statusText.classList.remove('animate-pulse', 'text-gray-400');
+                statusText.classList.add('text-green-600', 'font-bold');
                 grid.innerHTML = ''; 
 
                 rows.forEach((row, index) => {
-                    if (index === 0) return; // Skip Header row
+                    if (index === 0) return; // Skip Header
 
                     const video = {
                         title: row.c[1] ? row.c[1].v : "Untitled",
@@ -51,17 +58,17 @@
                     };
 
                     const card = `
-                        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-4">
+                        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-4 transition hover:shadow-lg">
                             <img src="${video.thumb}" class="w-full aspect-video object-cover rounded-xl mb-4" 
                                  onerror="this.src='https://via.placeholder.com/400x225?text=Check+GCP+Link'">
-                            <h4 class="font-bold text-gray-800">${video.title}</h4>
+                            <h4 class="font-bold text-gray-800 text-left">${video.title}</h4>
                         </div>`;
                     grid.innerHTML += card;
                 });
 
             } catch (err) {
-                console.error("Fetch Error:", err);
-                grid.innerHTML = `<p class="col-span-full text-red-500">Connection Error. Check Sheet Sharing.</p>`;
+                statusText.innerHTML = `<span class="text-red-600 font-bold underline">Database Error: Click 'Share' in your Sheet and set to 'Anyone with link'</span>`;
+                console.error(err);
             }
         }
         init();
