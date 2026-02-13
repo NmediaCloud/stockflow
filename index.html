@@ -3,31 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StockFlow | Local Test</title>
+    <title>StockFlow Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .modal-hidden { display: none; }
         .modal-visible { display: flex; }
     </style>
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="bg-gray-50 font-sans text-gray-900">
 
-    <nav class="p-5 flex justify-between items-center bg-white border-b sticky top-0 z-50">
-        <h1 class="text-xl font-black italic">STOCK<span class="text-blue-600">FLOW</span></h1>
+    <nav class="p-5 flex justify-between items-center bg-white border-b border-gray-100 sticky top-0 z-50">
+        <h1 class="text-xl font-bold tracking-tight uppercase italic text-blue-600">StockFlow</h1>
     </nav>
 
-    <main class="max-w-7xl mx-auto p-6">
-        <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            <p id="status" class="col-span-full text-center py-20 text-gray-400 font-bold animate-pulse">
-                Attempting Local Handshake...
-            </p>
+    <main class="max-w-7xl mx-auto p-6 min-h-screen">
+        <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
+            <p id="status" class="col-span-full py-20 text-gray-400 font-medium">Syncing with Google Database...</p>
         </div>
     </main>
 
     <script>
-        // Your Verified Sheet ID
         const SHEET_ID = '12eyXAI9-hT0TFSx2HhVDUWHXo4X9QVT-vSPmGQBx6c8';
-        // Simplified URL that bypasses tab-name requirements
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
         async function init() {
@@ -37,7 +33,6 @@
             try {
                 const res = await fetch(SHEET_URL);
                 const text = await res.text();
-                // Clean Google's data wrapper
                 const json = JSON.parse(text.substring(47).slice(0, -2));
                 const rows = json.table.rows;
                 
@@ -53,23 +48,19 @@
                     };
 
                     const card = document.createElement('div');
-                    card.className = "bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-4";
+                    card.className = "bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100";
                     card.innerHTML = `
-                        <img src="${video.thumb}" class="w-full aspect-video object-cover rounded-xl mb-4" 
-                             onerror="this.src='https://via.placeholder.com/400x225?text=Image+Locked'">
-                        <h4 class="font-bold text-gray-800">${video.title}</h4>
+                        <div class="aspect-video bg-gray-100">
+                            <img src="${video.thumb}" class="w-full h-full object-cover" 
+                                 onerror="this.src='https://via.placeholder.com/400x225?text=Image+Locked'">
+                        </div>
+                        <div class="p-5 text-left"><h4 class="font-bold">${video.title}</h4></div>
                     `;
                     grid.appendChild(card);
                 });
 
             } catch (err) {
-                status.innerHTML = `
-                    <div class="p-10 bg-blue-50 text-blue-800 rounded-3xl border border-blue-100">
-                        <b class="text-lg">Local Security Blocked</b><br>
-                        <p class="text-sm mt-2 leading-relaxed">
-                            Google is blocking your local file. To fix this, you <b>must</b> upload this to GitHub.
-                        </p>
-                    </div>`;
+                status.innerHTML = `<div class="p-10 bg-red-50 text-red-600 rounded-3xl">Database Error: Check Sheet Sharing</div>`;
             }
         }
         init();
