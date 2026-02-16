@@ -51,10 +51,21 @@
             }
         }
         
-        /* ✨ Dynamic aspect ratios for thumbnails based on video format */
-        .aspect-16-9 { aspect-ratio: 16 / 9; }
-        .aspect-1-1 { aspect-ratio: 1 / 1; }
-        .aspect-9-16 { aspect-ratio: 9 / 16; }
+        /* ✨ Dynamic aspect ratios with unified height */
+        .thumbnail-container {
+            height: 200px; /* Fixed height for all thumbnails */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f3f4f6;
+            overflow: hidden;
+        }
+        
+        .thumbnail-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Show full image without cropping */
+        }
     </style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-900">
@@ -457,18 +468,10 @@
                     console.log('📹 Preview URL:', video.preview);
                 }
                 
-                // ✨ Determine aspect ratio class based on format
-                let aspectClass = 'aspect-16-9'; // Default: Horizontal 16:9
-                if (video.format === '1:1') {
-                    aspectClass = 'aspect-1-1'; // Square
-                } else if (video.format === '9:16') {
-                    aspectClass = 'aspect-9-16'; // Vertical
-                }
-                
                 card.innerHTML = `
-                    <div class="relative ${aspectClass} bg-gray-100 overflow-hidden">
+                    <div class="relative thumbnail-container">
                         <img src="${video.thumb}" 
-                             class="w-full h-full object-cover transition-transform duration-500" 
+                             class="transition-transform duration-500" 
                              alt="${video.title}"
                              loading="lazy"
                              onerror="handleImageError(this, '${video.title}', '${video.thumb}')">
