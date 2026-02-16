@@ -624,7 +624,6 @@
             currentVideo = video;
             const modal = document.getElementById('previewModal');
             const videoPlayer = document.getElementById('modalVideo');
-            const videoContainer = videoPlayer.parentElement;
             
             document.getElementById('modalTitle').innerText = video.title;
             document.getElementById('modalCategory').innerText = video.category;
@@ -654,41 +653,13 @@
                 const existingIframe = document.getElementById('modalIframe');
                 if (existingIframe) existingIframe.remove();
                 
-                // Show video player with direct download URL
+                // Show video player with GCS URL (instant loading!)
                 videoPlayer.style.display = 'block';
                 videoPlayer.src = video.preview;
                 
-                // Add loading state
-                videoPlayer.addEventListener('loadstart', function() {
-                    console.log('📥 Video loading started...');
-                });
-                
-                videoPlayer.addEventListener('canplay', function() {
-                    console.log('✅ Video ready to play');
-                });
-                
-                videoPlayer.addEventListener('error', function(e) {
-                    console.error('❌ Video error:', e);
-                    videoPlayer.style.display = 'none';
-                    
-                    const errorDiv = document.createElement('div');
-                    errorDiv.className = 'flex flex-col items-center justify-center aspect-video bg-gray-900 text-white';
-                    errorDiv.innerHTML = `
-                        <svg class="w-16 h-16 text-red-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <p class="text-lg mb-2">Unable to load preview</p>
-                        <p class="text-sm text-gray-400 mb-4">Google Drive may still be processing this video</p>
-                        <a href="${video.preview}" download target="_blank" class="bg-teal-500 px-6 py-2 rounded-lg hover:bg-teal-600">
-                            Download to View
-                        </a>
-                    `;
-                    videoContainer.appendChild(errorDiv);
-                });
-                
-                // Try to play
+                // Try to play (autoplay may be blocked by browser, which is normal)
                 videoPlayer.play().catch(err => {
-                    console.warn('⚠️ Autoplay prevented (normal browser behavior)');
+                    console.log('ℹ️ Autoplay blocked (normal browser behavior) - user will click play');
                 });
                 
                 modal.classList.remove('modal-hidden');
@@ -702,18 +673,12 @@
             const modal = document.getElementById('previewModal');
             const videoPlayer = document.getElementById('modalVideo');
             const iframe = document.getElementById('modalIframe');
-            const loadingDiv = document.getElementById('videoLoading');
             
             videoPlayer.pause();
             videoPlayer.src = "";
             
             if (iframe) {
-                iframe.src = "";
                 iframe.remove();
-            }
-            
-            if (loadingDiv) {
-                loadingDiv.style.display = 'none';
             }
             
             modal.classList.remove('modal-visible');
