@@ -1,4 +1,24 @@
 <!DOCTYPE html>
+<script>
+// StockFlow Wallet Configuration
+const WALLET_CONFIG = {
+    // Replace with YOUR Apps Script Web App URL
+    API_URL: 'https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec',
+    
+    // LocalStorage keys
+    STORAGE_KEY: 'stockflow_user_email',
+    
+    // Wallet top-up amounts
+    TOPUP_AMOUNTS: [10, 20, 30]
+};
+
+// Current user session
+let currentUser = {
+    email: null,
+    wallet: 0,
+    isLoggedIn: false
+};
+</script>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -818,6 +838,7 @@
     </script>
 </body>
 </html>
+
 
 
 
