@@ -9,13 +9,46 @@
         .video-card:hover img { transform: scale(1.05); }
         .modal-hidden { display: none; }
         .modal-visible { display: flex; }
+        .category-btn {
+            position: relative;
+            transition: all 0.3s ease;
+        }
         .category-btn.active { 
-            background: #14B8A6; /* Teal-500 */
-            color: white; 
+            background: #14B8A6;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(20, 184, 166, 0.3);
+        }
+        .category-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #14B8A6;
+            border-radius: 2px;
+        }
+        .subcategory-btn.active {
+            background: #0D9488;
+            color: white;
+            box-shadow: 0 2px 4px rgba(13, 148, 136, 0.3);
         }
         .format-btn.active {
-            background: #14B8A6; /* Teal-500 */
+            background: #14B8A6;
             color: white;
+        }
+        .subcategory-slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -25,12 +58,10 @@
     <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <!-- LOGO: Google Drive hosted logo -->
-                <!-- Make sure this file is shared as "Anyone with the link" in Google Drive -->
-                <img src="assets/logo.png"
+                <img src="./assets/logo.png" 
                      alt="Nmediaservices Logo" 
                      class="h-10 w-auto max-w-[150px]"
-                     onerror="console.error('Logo failed to load. Check if file is public in Google Drive')">
+                     onerror="this.style.display='none'">
                 <h1 class="text-xl font-bold tracking-tight text-gray-900">Nmediaservices<span class="text-teal-500">Stockflow</span></h1>
             </div>
             <div class="flex items-center gap-4">
@@ -52,7 +83,7 @@
                 <input 
                     type="text" 
                     id="searchInput"
-                    placeholder="Search for microscopic, food, beverage footage..."
+                    placeholder="Search footage by title, description, or tags..."
                     class="w-full px-6 py-4 pr-32 rounded-full text-gray-900 text-lg focus:outline-none focus:ring-4 focus:ring-teal-300 shadow-xl"
                     oninput="filterVideos()">
                 <button class="absolute right-2 top-2 bg-teal-600 text-white px-8 py-2 rounded-full font-semibold hover:bg-teal-700 transition">
@@ -65,49 +96,54 @@
     <!-- Filters Section -->
     <div class="bg-white border-b border-gray-200 sticky top-[73px] z-40 shadow-sm">
         <div class="max-w-7xl mx-auto px-6 py-4">
-            <!-- Category Filters -->
+            <!-- Main Categories -->
             <div class="mb-4">
-                <p class="text-sm font-semibold text-gray-600 mb-2">Categories</p>
-                <div class="flex flex-wrap gap-2">
-                    <button class="category-btn active px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition" 
-                            data-category="all" onclick="filterByCategory('all')">
-                        All
-                    </button>
-                    <button class="category-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition" 
-                            data-category="microscopic" onclick="filterByCategory('microscopic')">
-                        Microscopic
-                    </button>
-                    <button class="category-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition" 
-                            data-category="food" onclick="filterByCategory('food')">
-                        Food
-                    </button>
-                    <button class="category-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition" 
-                            data-category="beverage" onclick="filterByCategory('beverage')">
-                        Beverage
-                    </button>
+                <div class="flex items-center justify-between mb-3">
+                    <p class="text-sm font-bold text-gray-700 uppercase tracking-wide">Browse Categories</p>
+                    <p class="text-xs text-gray-500" id="resultCount">Loading...</p>
+                </div>
+                <div class="flex flex-wrap gap-2" id="categoryButtons">
+                    <!-- Categories will be auto-generated from sheet data -->
                 </div>
             </div>
 
-            <!-- Format Filters -->
-            <div class="flex items-center gap-4">
-                <p class="text-sm font-semibold text-gray-600">Format</p>
-                <div class="flex gap-2">
-                    <button class="format-btn active px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition flex items-center gap-1" 
-                            data-format="all" onclick="filterByFormat('all')">
-                        All
-                    </button>
-                    <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition flex items-center gap-1" 
-                            data-format="9:16" onclick="filterByFormat('9:16')">
-                        <span class="text-[10px]">📱</span> 9:16
-                    </button>
-                    <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition flex items-center gap-1" 
-                            data-format="16:9" onclick="filterByFormat('16:9')">
-                        <span class="text-[10px]">🖥️</span> 16:9
-                    </button>
-                    <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition flex items-center gap-1" 
-                            data-format="1:1" onclick="filterByFormat('1:1')">
-                        <span class="text-[10px]">⬜</span> 1:1
-                    </button>
+            <!-- Subcategories Section (appears when category selected) -->
+            <div id="subcategorySection" class="mb-4 hidden">
+                <div class="bg-teal-50 border border-teal-200 rounded-xl p-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        <svg class="w-4 h-4 text-teal-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <p class="text-sm font-semibold text-teal-800" id="subcategoryTitle">Subcategories</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2" id="subcategoryButtons">
+                        <!-- Subcategories will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Format & Sort Filters -->
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div class="flex items-center gap-3">
+                    <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Format</p>
+                    <div class="flex gap-2">
+                        <button class="format-btn active px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition" 
+                                data-format="all" onclick="filterByFormat('all')">
+                            All
+                        </button>
+                        <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition" 
+                                data-format="9:16" onclick="filterByFormat('9:16')">
+                            📱 9:16
+                        </button>
+                        <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition" 
+                                data-format="16:9" onclick="filterByFormat('16:9')">
+                            🖥️ 16:9
+                        </button>
+                        <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition" 
+                                data-format="1:1" onclick="filterByFormat('1:1')">
+                            ⬜ 1:1
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -125,6 +161,13 @@
     <main class="max-w-7xl mx-auto px-6 pb-16">
         <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         </div>
+        
+        <!-- Load More Button -->
+        <div id="loadMoreSection" class="text-center mt-8 hidden">
+            <button onclick="loadMore()" class="bg-teal-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-teal-600 transition">
+                Load More
+            </button>
+        </div>
     </main>
 
     <!-- Preview Modal -->
@@ -140,10 +183,11 @@
             
             <div class="p-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-                    <div>
-                        <h3 id="modalTitle" class="text-2xl font-bold text-gray-900 mb-1">Video Title</h3>
-                        <div class="flex items-center gap-3 text-sm flex-wrap">
-                            <span id="modalCategory" class="px-2 py-1 bg-teal-100 text-teal-700 rounded-md font-medium">Category</span>
+                    <div class="flex-1">
+                        <h3 id="modalTitle" class="text-2xl font-bold text-gray-900 mb-2">Video Title</h3>
+                        <div class="flex items-center gap-2 text-sm flex-wrap mb-2">
+                            <span id="modalCategory" class="px-3 py-1 bg-teal-100 text-teal-700 rounded-lg font-medium">Category</span>
+                            <span id="modalSubcategory" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg font-medium">Subcategory</span>
                             <span id="modalFormat" class="text-gray-600">16:9</span>
                             <span id="modalResolution" class="text-gray-600">4K</span>
                         </div>
@@ -172,9 +216,17 @@
 
         let allVideos = [];
         let filteredVideos = [];
+        let displayedVideos = [];
         let currentCategory = 'all';
+        let currentSubcategory = 'all';
         let currentFormat = 'all';
         let currentVideo = null;
+        let displayCount = 0;
+        const ITEMS_PER_LOAD = 100;
+
+        // Track unique categories and subcategories
+        let categories = new Set();
+        let subcategories = {};
 
         // CSV Parser
         function parseCSV(text) {
@@ -212,6 +264,7 @@
             const status = document.getElementById('status-text');
 
             try {
+                console.log('🔄 Fetching from:', SHEET_CSV_URL);
                 const response = await fetch(SHEET_CSV_URL);
                 
                 if (!response.ok) {
@@ -221,9 +274,9 @@
                 const csvText = await response.text();
                 const rows = parseCSV(csvText);
 
-                console.log('✅ Loaded', rows.length - 1, 'videos');
+                console.log('✅ Received', rows.length - 1, 'rows');
 
-                // Parse data - CSV structure with Tags column
+                // Parse data - NEW STRUCTURE
                 allVideos = [];
                 for (let i = 1; i < rows.length; i++) {
                     const row = rows[i];
@@ -233,22 +286,41 @@
                     const video = {
                         id: row[0] || i.toString(),
                         title: row[1] || "Untitled",
-                        category: row[2] || "General",
-                        description: row[3] || "",
-                        thumb: row[4] || "",
-                        preview: row[5] || "",
-                        highres: row[6] || "",
+                        category: row[2] || "Uncategorized",
+                        subcategory: row[3] || "",
+                        description: row[4] || "",
+                        thumb: row[5] || "",
+                        preview: row[6] || "",
                         price: row[7] || "10",
                         format: row[8] || "16:9",
                         resolution: row[9] || "4K",
-                        tags: row[10] || ""  // NEW: Tags column
+                        tags: row[10] || ""
                     };
+
+                    // Track categories
+                    if (video.category) {
+                        categories.add(video.category);
+                        
+                        if (video.subcategory) {
+                            if (!subcategories[video.category]) {
+                                subcategories[video.category] = new Set();
+                            }
+                            subcategories[video.category].add(video.subcategory);
+                        }
+                    }
 
                     allVideos.push(video);
                 }
 
+                // Reverse order for "New Arrivals" (latest first)
+                allVideos.reverse();
+
+                // Generate category buttons
+                generateCategoryButtons();
+
                 filteredVideos = [...allVideos];
-                renderVideos();
+                displayCount = 0;
+                renderVideos(true);
 
                 status.innerHTML = `<span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>${allVideos.length} videos loaded`;
 
@@ -259,15 +331,62 @@
                 grid.innerHTML = `
                     <div class="col-span-full bg-red-50 border border-red-200 rounded-xl p-8 text-center">
                         <h3 class="text-red-800 font-bold text-lg mb-2">Connection Error</h3>
-                        <p class="text-red-600 text-sm">Unable to load videos from Google Sheets. Please check your connection.</p>
+                        <p class="text-red-600 text-sm mb-4">Unable to load videos from Google Sheets.</p>
+                        <p class="text-red-600 text-xs font-mono">${error.message}</p>
                     </div>
                 `;
             }
         }
 
-        function renderVideos() {
+        function generateCategoryButtons() {
+            const container = document.getElementById('categoryButtons');
+            container.innerHTML = '';
+
+            // Add "New Arrivals" button first
+            const newArrivalsBtn = document.createElement('button');
+            newArrivalsBtn.className = 'category-btn active px-5 py-2.5 rounded-full text-sm font-semibold bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition shadow-sm';
+            newArrivalsBtn.setAttribute('data-category', 'all');
+            newArrivalsBtn.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                        <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>New Arrivals</span>
+                </div>
+            `;
+            newArrivalsBtn.onclick = () => filterByCategory('all');
+            container.appendChild(newArrivalsBtn);
+
+            // Add category buttons from data
+            const sortedCategories = Array.from(categories).sort();
+            sortedCategories.forEach(cat => {
+                const btn = document.createElement('button');
+                const subcatCount = subcategories[cat] ? subcategories[cat].size : 0;
+                
+                btn.className = 'category-btn px-5 py-2.5 rounded-full text-sm font-semibold bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition shadow-sm';
+                btn.setAttribute('data-category', cat);
+                btn.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span>${cat}</span>
+                        ${subcatCount > 0 ? `<span class="text-xs opacity-60">(${subcatCount})</span>` : ''}
+                    </div>
+                `;
+                btn.onclick = () => filterByCategory(cat);
+                container.appendChild(btn);
+            });
+
+            console.log('✅ Generated', categories.size, 'category buttons');
+        }
+
+        function renderVideos(reset = false) {
             const grid = document.getElementById('video-grid');
-            grid.innerHTML = '';
+            const loadMoreSection = document.getElementById('loadMoreSection');
+            
+            if (reset) {
+                grid.innerHTML = '';
+                displayCount = 0;
+            }
 
             if (filteredVideos.length === 0) {
                 grid.innerHTML = `
@@ -275,10 +394,14 @@
                         <p class="text-gray-400 text-lg">No videos match your filters</p>
                     </div>
                 `;
+                loadMoreSection.classList.add('hidden');
                 return;
             }
 
-            filteredVideos.forEach(video => {
+            const endIndex = Math.min(displayCount + ITEMS_PER_LOAD, filteredVideos.length);
+            const videosToShow = filteredVideos.slice(displayCount, endIndex);
+
+            videosToShow.forEach(video => {
                 const card = document.createElement('div');
                 card.className = "video-card bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer group";
                 
@@ -302,7 +425,10 @@
                     <div class="p-4">
                         <h4 class="font-bold text-gray-800 text-base mb-2 line-clamp-1">${video.title}</h4>
                         <div class="flex justify-between items-center">
-                            <span class="text-xs text-teal-600 font-semibold uppercase tracking-wide">${video.category}</span>
+                            <div class="flex flex-col">
+                                <span class="text-xs text-teal-600 font-semibold uppercase tracking-wide">${video.category}</span>
+                                ${video.subcategory ? `<span class="text-[10px] text-gray-500">${video.subcategory}</span>` : ''}
+                            </div>
                             <span class="font-bold text-gray-900 text-lg">$${video.price}</span>
                         </div>
                     </div>
@@ -311,12 +437,79 @@
                 card.onclick = () => openModal(video);
                 grid.appendChild(card);
             });
+
+            displayCount = endIndex;
+
+            // Show/hide load more button
+            if (displayCount < filteredVideos.length) {
+                loadMoreSection.classList.remove('hidden');
+            } else {
+                loadMoreSection.classList.add('hidden');
+            }
+        }
+
+        function loadMore() {
+            renderVideos(false);
         }
 
         function filterByCategory(category) {
             currentCategory = category;
+            currentSubcategory = 'all';
             
+            // Update category button states
             document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Handle subcategories display
+            const subcatSection = document.getElementById('subcategorySection');
+            const subcatButtons = document.getElementById('subcategoryButtons');
+            const subcatTitle = document.getElementById('subcategoryTitle');
+            
+            if (category !== 'all' && subcategories[category] && subcategories[category].size > 0) {
+                // Show subcategories with animation
+                subcatSection.classList.remove('hidden');
+                subcatSection.classList.add('subcategory-slide-in');
+                subcatTitle.textContent = `${category} Subcategories`;
+                subcatButtons.innerHTML = '';
+                
+                // Add "All" button for subcategories
+                const allBtn = document.createElement('button');
+                allBtn.className = 'subcategory-btn active px-4 py-2 rounded-lg text-xs font-semibold bg-white text-gray-700 hover:bg-teal-600 hover:text-white transition border border-teal-300';
+                allBtn.innerHTML = `
+                    <div class="flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>All ${category}</span>
+                    </div>
+                `;
+                allBtn.onclick = () => filterBySubcategory('all');
+                subcatButtons.appendChild(allBtn);
+                
+                // Add subcategory buttons
+                const sortedSubcats = Array.from(subcategories[category]).sort();
+                sortedSubcats.forEach(subcat => {
+                    const btn = document.createElement('button');
+                    btn.className = 'subcategory-btn px-4 py-2 rounded-lg text-xs font-semibold bg-white text-gray-700 hover:bg-teal-600 hover:text-white transition border border-teal-200';
+                    btn.textContent = subcat;
+                    btn.onclick = () => filterBySubcategory(subcat);
+                    subcatButtons.appendChild(btn);
+                });
+            } else {
+                // Hide subcategories section
+                subcatSection.classList.add('hidden');
+                subcatSection.classList.remove('subcategory-slide-in');
+            }
+            
+            applyFilters();
+        }
+
+        function filterBySubcategory(subcategory) {
+            currentSubcategory = subcategory;
+            
+            document.querySelectorAll('.subcategory-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             event.target.classList.add('active');
@@ -344,7 +537,10 @@
             
             filteredVideos = allVideos.filter(video => {
                 const matchesCategory = currentCategory === 'all' || 
-                    video.category.toLowerCase() === currentCategory.toLowerCase();
+                    video.category === currentCategory;
+                
+                const matchesSubcategory = currentSubcategory === 'all' || 
+                    video.subcategory === currentSubcategory;
                 
                 const matchesFormat = currentFormat === 'all' || 
                     video.format === currentFormat;
@@ -352,13 +548,20 @@
                 const matchesSearch = !searchTerm || 
                     video.title.toLowerCase().includes(searchTerm) ||
                     video.category.toLowerCase().includes(searchTerm) ||
+                    video.subcategory.toLowerCase().includes(searchTerm) ||
                     video.description.toLowerCase().includes(searchTerm) ||
-                    video.tags.toLowerCase().includes(searchTerm);  // Search includes tags
+                    video.tags.toLowerCase().includes(searchTerm);
                 
-                return matchesCategory && matchesFormat && matchesSearch;
+                return matchesCategory && matchesSubcategory && matchesFormat && matchesSearch;
             });
             
-            renderVideos();
+            // Update result count
+            const resultCount = document.getElementById('resultCount');
+            if (resultCount) {
+                resultCount.textContent = `${filteredVideos.length} video${filteredVideos.length !== 1 ? 's' : ''} found`;
+            }
+            
+            renderVideos(true);
         }
 
         function openModal(video) {
@@ -368,6 +571,7 @@
             
             document.getElementById('modalTitle').innerText = video.title;
             document.getElementById('modalCategory').innerText = video.category;
+            document.getElementById('modalSubcategory').innerText = video.subcategory || 'N/A';
             document.getElementById('modalFormat').innerText = video.format;
             document.getElementById('modalResolution').innerText = video.resolution;
             document.getElementById('modalPrice').innerText = video.price;
@@ -406,7 +610,7 @@
         }
 
         function handlePurchase() {
-            alert(`Payment integration coming soon!\n\nYou selected: ${currentVideo.title}\nPrice: $${currentVideo.price}\nHigh-res file: ${currentVideo.highres}`);
+            alert(`Payment integration coming soon!\n\nYou selected: ${currentVideo.title}\nPrice: $${currentVideo.price}`);
         }
 
         // Close modal on escape
@@ -419,6 +623,3 @@
     </script>
 </body>
 </html>
-
-
-
