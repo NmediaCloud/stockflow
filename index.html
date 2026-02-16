@@ -624,6 +624,7 @@
             currentVideo = video;
             const modal = document.getElementById('previewModal');
             const videoPlayer = document.getElementById('modalVideo');
+            const videoContainer = videoPlayer.parentElement;
             
             document.getElementById('modalTitle').innerText = video.title;
             document.getElementById('modalCategory').innerText = video.category;
@@ -647,67 +648,51 @@
             }
             
             if (video.preview) {
-                // Check if it's a Google Drive preview URL
-                if (video.preview.includes('drive.google.com') && video.preview.includes('/preview')) {
-                    // Use iframe for Google Drive preview
-                    const videoContainer = videoPlayer.parentElement;
+                console.log('🎬 Loading video:', video.preview);
+                
+                // Remove any existing iframe
+                const existingIframe = document.getElementById('modalIframe');
+                if (existingIframe) existingIframe.remove();
+                
+                // Show video player with direct download URL
+                videoPlayer.style.display = 'block';
+                videoPlayer.src = video.preview;
+                
+                // Add loading state
+                videoPlayer.addEventListener('loadstart', function() {
+                    console.log('📥 Video loading started...');
+                });
+                
+                videoPlayer.addEventListener('canplay', function() {
+                    console.log('✅ Video ready to play');
+                });
+                
+                videoPlayer.addEventListener('error', function(e) {
+                    console.error('❌ Video error:', e);
                     videoPlayer.style.display = 'none';
                     
-                    let iframe = document.getElementById('modalIframe');
-                    if (!iframe) {
-                        iframe = document.createElement('iframe');
-                        iframe.id = 'modalIframe';
-                        iframe.className = 'w-full aspect-video bg-black';
-                        iframe.setAttribute('allowfullscreen', '');
-                        videoContainer.appendChild(iframe);
-                    }
-                    
-                    iframe.style.display = 'block';
-                    iframe.src = video.preview;
-                } else {
-                    // Use video player for direct video files
-                    const iframe = document.getElementById('modalIframe');
-                    if (iframe) iframe.style.display = 'none';
-                    
-                    videoPlayer.style.display = 'block';
-                    videoPlayer.src = video.preview;
-                    videoPlayer.play().catch(err => console.warn('Autoplay prevented:', err));
-                }
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'flex flex-col items-center justify-center aspect-video bg-gray-900 text-white';
+                    errorDiv.innerHTML = `
+                        <svg class="w-16 h-16 text-red-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p class="text-lg mb-2">Unable to load preview</p>
+                        <p class="text-sm text-gray-400 mb-4">Google Drive may still be processing this video</p>
+                        <a href="${video.preview}" download target="_blank" class="bg-teal-500 px-6 py-2 rounded-lg hover:bg-teal-600">
+                            Download to View
+                        </a>
+                    `;
+                    videoContainer.appendChild(errorDiv);
+                });
+                
+                // Try to play
+                videoPlayer.play().catch(err => {
+                    console.warn('⚠️ Autoplay prevented (normal browser behavior)');
+                });
                 
                 modal.classList.remove('modal-hidden');
                 modal.classList.add('modal-visible');
             } else {
                 alert('Preview not available for this footage.');
-            }
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('previewModal');
-            const videoPlayer = document.getElementById('modalVideo');
-            const iframe = document.getElementById('modalIframe');
-            
-            videoPlayer.pause();
-            videoPlayer.src = "";
-            
-            if (iframe) {
-                iframe.src = "";
-            }
-            
-            modal.classList.remove('modal-visible');
-            modal.classList.add('modal-hidden');
-        }
-
-        function handlePurchase() {
-            alert(`Payment integration coming soon!\n\nYou selected: ${currentVideo.title}\nPrice: $${currentVideo.price}`);
-        }
-
-        // Close modal on escape
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
-        });
-
-        // Initialize
-        init();
-    </script>
-</body>
-</html>
+     
