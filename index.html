@@ -836,8 +836,85 @@ let currentUser = {
         // Initialize
         init();
     </script>
+     
+
+
+
+<!-- Login/Signup Modal -->
+<div id="loginModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeLoginModal()">&times;</span>
+        
+        <h2>Sign In to StockFlow</h2>
+        <p style="color: #666; margin-bottom: 20px;">
+            Enter your email to continue
+        </p>
+        
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <input 
+                type="email" 
+                id="userEmail" 
+                placeholder="your@email.com" 
+                required
+                style="width: 100%; padding: 12px; border: 2px solid #14B8A6; border-radius: 8px; font-size: 16px; margin-bottom: 15px;"
+            />
+            
+            <label style="display: flex; align-items: center; margin-bottom: 15px; cursor: pointer;">
+                <input type="checkbox" id="newsletterCheckbox" style="margin-right: 8px;">
+                <span style="font-size: 14px;">Subscribe to newsletter for updates</span>
+            </label>
+            
+            <button 
+                type="submit" 
+                style="width: 100%; background: #14B8A6; color: white; padding: 12px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;"
+            >
+                Continue
+            </button>
+        </form>
+        
+        <p style="font-size: 12px; color: #999; margin-top: 15px; text-align: center;">
+            No password needed. We'll remember you on this device.
+        </p>
+    </div>
+</div>
+
+<style>
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: #000;
+}
+</style>    
 </body>
 </html>
+
 
 
 
