@@ -909,10 +909,101 @@ let currentUser = {
 .close-modal:hover {
     color: #000;
 }
-</style>    
+</style>
+<script>
+// ============================================
+// LOGIN/SIGNUP FUNCTIONS
+// ============================================
+
+// Show login modal
+function showLoginModal() {
+    document.getElementById('loginModal').style.display = 'block';
+}
+
+// Close login modal
+function closeLoginModal() {
+    document.getElementById('loginModal').style.display = 'none';
+}
+
+// Handle login form submission
+async function handleLogin(event) {
+    event.preventDefault();
+    
+    const email = document.getElementById('userEmail').value;
+    const newsletter = document.getElementById('newsletterCheckbox').checked;
+    
+    // Save email to localStorage
+    localStorage.setItem(WALLET_CONFIG.STORAGE_KEY, email);
+    
+    // Get user data from Apps Script
+    await loadUserData(email);
+    
+    // Close modal
+    closeLoginModal();
+    
+    // Show success message
+    showNotification('Welcome! Your wallet: $' + currentUser.wallet.toFixed(2));
+    
+    // Update UI
+    updateWalletDisplay();
+}
+
+// Load user data from Apps Script
+async function loadUserData(email) {
+    try {
+        const url = `${WALLET_CONFIG.API_URL}?action=getUser&email=${encodeURIComponent(email)}`;
+        const response = await fetch(url);
+        const user = await response.json();
+        
+        if (user && user.email) {
+            currentUser = {
+                email: user.email,
+                wallet: user.wallet || 0,
+                isLoggedIn: true
+            };
+        } else {
+            // User doesn't exist yet - will be created on first topup
+            currentUser = {
+                email: email,
+                wallet: 0,
+                isLoggedIn: true
+            };
+        }
+    } catch (error) {
+        console.error('Error loading user data:', error);
+        showNotification('Error loading user data', 'error');
+    }
+}
+
+// Check if user is already logged in (on page load)
+async function checkLoginStatus() {
+    const savedEmail = localStorage.getItem(WALLET_CONFIG.STORAGE_KEY);
+    
+    if (savedEmail) {
+        await loadUserData(savedEmail);
+        updateWalletDisplay();
+    }
+}
+
+// Logout function
+function logout() {
+    localStorage.removeItem(WALLET_CONFIG.STORAGE_KEY);
+    currentUser = {
+        email: null,
+        wallet: 0,
+        isLoggedIn: false
+    };
+    updateWalletDisplay();
+    showNotification('Logged out successfully');
+}
+
+// Call on page load
+window.addEventListener('DOMContentLoaded', checkLoginStatus);
+</script>    
 
 </body>
 </html>
+
 
 
 
