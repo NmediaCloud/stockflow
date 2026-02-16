@@ -695,4 +695,42 @@
                 modal.classList.add('modal-visible');
             } else {
                 alert('Preview not available for this footage.');
-     
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('previewModal');
+            const videoPlayer = document.getElementById('modalVideo');
+            const iframe = document.getElementById('modalIframe');
+            const loadingDiv = document.getElementById('videoLoading');
+            
+            videoPlayer.pause();
+            videoPlayer.src = "";
+            
+            if (iframe) {
+                iframe.src = "";
+                iframe.remove();
+            }
+            
+            if (loadingDiv) {
+                loadingDiv.style.display = 'none';
+            }
+            
+            modal.classList.remove('modal-visible');
+            modal.classList.add('modal-hidden');
+        }
+
+        function handlePurchase() {
+            alert(`Payment integration coming soon!\n\nYou selected: ${currentVideo.title}\nPrice: $${currentVideo.price}`);
+        }
+
+        // Close modal on escape
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>
