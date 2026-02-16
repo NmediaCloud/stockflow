@@ -50,6 +50,11 @@
                 transform: translateY(0);
             }
         }
+        
+        /* ✨ Dynamic aspect ratios for thumbnails based on video format */
+        .aspect-16-9 { aspect-ratio: 16 / 9; }
+        .aspect-1-1 { aspect-ratio: 1 / 1; }
+        .aspect-9-16 { aspect-ratio: 9 / 16; }
     </style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-900">
@@ -188,6 +193,7 @@
                         <div class="flex items-center gap-2 text-sm flex-wrap mb-2">
                             <span id="modalCategory" class="px-3 py-1 bg-teal-100 text-teal-700 rounded-lg font-medium">Category</span>
                             <span id="modalSubcategory" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg font-medium">Subcategory</span>
+                            <span id="modalSub" class="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg font-medium">Type</span>
                             <span id="modalFormat" class="text-gray-600">16:9</span>
                             <span id="modalResolution" class="text-gray-600">4K</span>
                         </div>
@@ -276,7 +282,7 @@
 
                 console.log('✅ Received', rows.length - 1, 'rows');
 
-                // Parse data - FIXED COLUMN MAPPING
+                // Parse data - UPDATED WITH "SUB" COLUMN
                 allVideos = [];
                 for (let i = 1; i < rows.length; i++) {
                     const row = rows[i];
@@ -288,13 +294,14 @@
                         title: row[1] || "Untitled",             // B: Title
                         category: row[2] || "Uncategorized",     // C: Category
                         subcategory: row[3] || "",               // D: Catagory_Sub
-                        description: row[4] || "",               // E: Description
-                        thumb: row[5] || "",                     // F: Thumbnail_URL
-                        preview: row[6] || "",                   // G: Preview_URL
-                        price: row[7] || "25",                   // H: Price
-                        format: row[8] || "16:9",                // I: Format
-                        resolution: row[9] || "4K",              // J: Resolution
-                        tags: row[10] || ""                      // K: Tags
+                        sub: row[4] || "",                       // E: Sub (NEW!)
+                        description: row[5] || "",               // F: Description
+                        thumb: row[6] || "",                     // G: Thumbnail_URL
+                        preview: row[7] || "",                   // H: Preview_URL
+                        price: row[8] || "25",                   // I: Price
+                        format: row[9] || "16:9",                // J: Format
+                        resolution: row[10] || "4K",             // K: Resolution
+                        tags: row[11] || ""                      // L: Tags
                     };
                     
                     // Debug: Log first video to console
@@ -302,6 +309,7 @@
                         console.log('📹 First video data:', video);
                         console.log('🖼️ Thumbnail URL:', video.thumb);
                         console.log('🎬 Preview URL:', video.preview);
+                        console.log('📂 Sub-category:', video.sub);
                     }
 
                     // Track categories
@@ -423,8 +431,16 @@
                     console.log('📹 Preview URL:', video.preview);
                 }
                 
+                // ✨ Determine aspect ratio class based on format
+                let aspectClass = 'aspect-16-9'; // Default: Horizontal 16:9
+                if (video.format === '1:1') {
+                    aspectClass = 'aspect-1-1'; // Square
+                } else if (video.format === '9:16') {
+                    aspectClass = 'aspect-9-16'; // Vertical
+                }
+                
                 card.innerHTML = `
-                    <div class="relative aspect-video bg-gray-100 overflow-hidden">
+                    <div class="relative ${aspectClass} bg-gray-100 overflow-hidden">
                         <img src="${video.thumb}" 
                              class="w-full h-full object-cover transition-transform duration-500" 
                              alt="${video.title}"
@@ -605,6 +621,7 @@
                     video.title.toLowerCase().includes(searchTerm) ||
                     video.category.toLowerCase().includes(searchTerm) ||
                     video.subcategory.toLowerCase().includes(searchTerm) ||
+                    video.sub.toLowerCase().includes(searchTerm) ||
                     video.description.toLowerCase().includes(searchTerm) ||
                     video.tags.toLowerCase().includes(searchTerm);
                 
@@ -628,6 +645,7 @@
             document.getElementById('modalTitle').innerText = video.title;
             document.getElementById('modalCategory').innerText = video.category;
             document.getElementById('modalSubcategory').innerText = video.subcategory || 'N/A';
+            document.getElementById('modalSub').innerText = video.sub || 'N/A';
             document.getElementById('modalFormat').innerText = video.format;
             document.getElementById('modalResolution').innerText = video.resolution;
             document.getElementById('modalPrice').innerText = video.price;
