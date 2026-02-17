@@ -925,73 +925,73 @@
         }
 
         // ============================================
-// UPDATED handlePurchase FUNCTION - REPLACE IN YOUR HTML
-// ============================================
+        // UPDATED handlePurchase FUNCTION - REPLACE IN YOUR HTML
+        // ============================================
 
-async function purchaseVideo(videoId, videoTitle, price) {
-    // Check if logged in
-    if (!currentUser.isLoggedIn) {
-        closeModal();
-        showLoginModal();
-        showNotification('Please sign in to purchase');
-        return;
-    }
+        async function purchaseVideo(videoId, videoTitle, price) {
+            // Check if logged in
+            if (!currentUser.isLoggedIn) {
+                closeModal();
+                showLoginModal();
+                showNotification('Please sign in to purchase');
+                return;
+            }
     
-    // Check wallet balance
-    if (currentUser.wallet < price) {
-        const shortage = price - currentUser.wallet;
-        showNotification(`Insufficient funds! You need $${shortage.toFixed(2)} more.`, 'error');
-        closeModal();
-        showTopUpModal();
-        return;
-    }
+            // Check wallet balance
+            if (currentUser.wallet < price) {
+                const shortage = price - currentUser.wallet;
+                showNotification(`Insufficient funds! You need $${shortage.toFixed(2)} more.`, 'error');
+                closeModal();
+                showTopUpModal();
+                return;
+            }
     
-    // Confirm purchase
-    if (!confirm(`Purchase "${videoTitle}" for $${price.toFixed(2)}?`)) {
-        return;
-    }
+            // Confirm purchase
+            if (!confirm(`Purchase "${videoTitle}" for $${price.toFixed(2)}?`)) {
+                return;
+            }
     
-    try {
-        showNotification('Processing purchase...');
+            try {
+                showNotification('Processing purchase...');
         
-        // Call Apps Script to deduct from wallet and get download link
-        const url = `${WALLET_CONFIG.API_URL}?action=purchase&email=${encodeURIComponent(currentUser.email)}&videoId=${encodeURIComponent(videoId)}&videoTitle=${encodeURIComponent(videoTitle)}&amount=${price}`;
+                // Call Apps Script to deduct from wallet and get download link
+                const url = `${WALLET_CONFIG.API_URL}?action=purchase&email=${encodeURIComponent(currentUser.email)}&videoId=${encodeURIComponent(videoId)}&videoTitle=${encodeURIComponent(videoTitle)}&amount=${price}`;
         
-        const response = await fetch(url);
-        const result = await response.json();
+                const response = await fetch(url);
+                const result = await response.json();
         
-        if (result.success) {
-            // Update local wallet balance
-            currentUser.wallet = result.newBalance;
-            updateWalletDisplay();
+                if (result.success) {
+                    // Update local wallet balance
+                    currentUser.wallet = result.newBalance;
+                    updateWalletDisplay();
             
-            // Close preview modal
-            closeModal();
+                    // Close preview modal
+                    closeModal();
             
-            // Show success and download link
-            showNotification('✅ Purchase successful!', 'success');
+                    // Show success and download link
+                    showNotification('✅ Purchase successful!', 'success');
             
-            // Show download modal
-            showDownloadModal(videoTitle, result.downloadLink);
+                    // Show download modal
+                    showDownloadModal(videoTitle, result.downloadLink);
             
-        } else {
-            showNotification('Error: ' + (result.message || 'Purchase failed'), 'error');
+                } else {
+                    showNotification('Error: ' + (result.message || 'Purchase failed'), 'error');
+                }
+        
+            } catch (error) {
+                console.error('Purchase error:', error);
+                showNotification('Error processing purchase', 'error');
+            }
         }
-        
-    } catch (error) {
-        console.error('Purchase error:', error);
-        showNotification('Error processing purchase', 'error');
-    }
-}
 
-function handlePurchase() {
-    if (!currentVideo) {
-        showNotification('Error: No video selected', 'error');
-        return;
-    }
+        function handlePurchase() {
+            if (!currentVideo) {
+                showNotification('Error: No video selected', 'error');
+                return;
+            }
     
-    purchaseVideo(currentVideo.id, currentVideo.title, parseFloat(currentVideo.price));
-}
+            purchaseVideo(currentVideo.id, currentVideo.title, parseFloat(currentVideo.price));
+        }
 
 // ============================================
 // DOWNLOAD MODAL FUNCTIONS - ADD THESE TOO
@@ -1309,6 +1309,7 @@ function closeDownloadModal() {
     
 </body>
 </html>
+
 
 
 
