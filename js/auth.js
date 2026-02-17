@@ -10,7 +10,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup,
 
 const firebaseConfig = {
   
-  apiKey:AIzaSyD8XdS12Yxmnt4smaC5B33Zfs_46X4R0NA,
+  apiKey: "AIzaSyD8XdS12Yxmnt4smaC5B33Zfs_46X4R0NA",
   authDomain: "nmedia-stockfootage.firebaseapp.com",
   projectId: "nmedia-stockfootage",
   storageBucket: "nmedia-stockfootage.firebasestorage.app",
