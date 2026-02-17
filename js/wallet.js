@@ -191,6 +191,19 @@ window.addEventListener('DOMContentLoaded', function () {
         window.history.replaceState({}, document.title, window.location.pathname);
     }
 });
-
+// ============================================
+// EXPOSE FUNCTIONS TO WINDOW (for HTML onclick)
+// ============================================
+window.showLoginModal = showLoginModal;
+window.closeLoginModal = closeLoginModal;
+window.showTopUpModal = showTopUpModal;
+window.closeTopUpModal = closeTopUpModal;
+window.addFunds = addFunds;
+window.handlePurchase = handlePurchase;
+window.toggleUserMenu = toggleUserMenu;
+window.closeDownloadModal = closeDownloadModal;
+window.loadUserData = loadUserData;
+window.updateWalletDisplay = updateWalletDisplay;
+window.logout = logout;
 // ---- INIT ----
 
