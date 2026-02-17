@@ -420,13 +420,30 @@
 
             try {
                 console.log('🔄 Fetching from:', SHEET_CSV_URL);
-                const response = await fetch(SHEET_CSV_URL);
+                const response = await fetch(SHEET_CSV_URL, {
+                    method: 'GET',
+                    cache: 'no-cache',
+                    headers: { 'Accept': 'text/csv,text/plain,*/*' }
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response type:', response.type);
                 
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    throw new Error(`HTTP ${response.status}: ${response.statusText} - Sheet may not be published. Go to File → Share → Publish to web → CSV`);
                 }
 
                 const csvText = await response.text();
+                
+                if (!csvText || csvText.trim().length === 0) {
+                    throw new Error('Sheet returned empty data. Make sure your sheet is published and has data.');
+                }
+                
+                if (csvText.trim().startsWith('<')) {
+                    throw new Error('Sheet returned HTML instead of CSV. Please re-publish: File → Share → Publish to web → select your sheet tab → CSV → Publish');
+                }
+                
+                console.log('CSV first 300 chars:', csvText.substring(0, 300));
                 const rows = parseCSV(csvText);
 
                 console.log('✅ Received', rows.length - 1, 'rows');
@@ -502,10 +519,21 @@
                 status.innerHTML = `<span class="inline-block w-2 h-2 bg-red-500 rounded-full mr-2"></span>Failed to load footage`;
                 
                 grid.innerHTML = `
-                    <div class="col-span-full bg-red-50 border border-red-200 rounded-xl p-8 text-center">
-                        <h3 class="text-red-800 font-bold text-lg mb-2">Connection Error</h3>
-                        <p class="text-red-600 text-sm mb-4">Unable to load videos from Google Sheets.</p>
-                        <p class="text-red-600 text-xs font-mono">${error.message}</p>
+                    <div class="col-span-full bg-red-50 border border-red-200 rounded-xl p-8 text-center" style="max-width:700px;margin:0 auto;">
+                        <div style="font-size:48px;margin-bottom:16px;">⚠️</div>
+                        <h3 class="text-red-800 font-bold text-xl mb-3">Videos Cannot Load</h3>
+                        <p class="text-red-700 text-sm mb-4" style="background:#fff;padding:12px;border-radius:8px;font-family:monospace;word-break:break-word;">${error.message}</p>
+                        <div style="background:#fffbeb;border:1px solid #f59e0b;border-radius:8px;padding:16px;text-align:left;margin-top:12px;">
+                            <p style="color:#92400e;font-weight:bold;margin-bottom:8px;">🔧 Fix: Re-publish your Google Sheet</p>
+                            <ol style="color:#78350f;font-size:13px;padding-left:20px;line-height:1.8;">
+                                <li>Open your <strong>video data Google Sheet</strong></li>
+                                <li>Click <strong>File → Share → Publish to web</strong></li>
+                                <li>First dropdown: select your <strong>video tab</strong> (not "Entire Document")</li>
+                                <li>Second dropdown: select <strong>"Comma-separated values (.csv)"</strong></li>
+                                <li>Click <strong>Publish</strong> → OK</li>
+                                <li>Copy the URL and update <strong>PUBLISHED_SHEET_ID</strong> in the code</li>
+                            </ol>
+                        </div>
                     </div>
                 `;
             }
