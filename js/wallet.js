@@ -37,15 +37,6 @@ function closeLoginModal() {
     document.getElementById('loginModal').style.display = 'none';
 }
 
-async function handleLogin(event) {
-    event.preventDefault();
-    const email = document.getElementById('userEmail').value;
-    localStorage.setItem(CONFIG.STORAGE_KEY, email);
-    await loadUserData(email);
-    closeLoginModal();
-    showNotification('Welcome! Your wallet: $' + currentUser.wallet.toFixed(2));
-    updateWalletDisplay();
-}
 
 async function loadUserData(email) {
     try {
@@ -66,12 +57,7 @@ async function loadUserData(email) {
     }
 }
 
-async function checkLoginStatus() {
-    const savedEmail = localStorage.getItem(CONFIG.STORAGE_KEY);
-    if (savedEmail) {
-        await loadUserData(savedEmail);
-        updateWalletDisplay();
-    }
+
 }
 
 function logout() {
@@ -208,4 +194,4 @@ window.addEventListener('DOMContentLoaded', function () {
 });
 
 // ---- INIT ----
-window.addEventListener('DOMContentLoaded', checkLoginStatus);
+
