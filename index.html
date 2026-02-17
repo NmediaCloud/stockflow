@@ -5,187 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nmediaservices Stockflow | Premium Footage Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .video-card:hover img { transform: scale(1.05); }
-        .modal-hidden { display: none; }
-        .modal-visible { display: flex; }
-        .category-btn {
-            position: relative;
-            transition: all 0.3s ease;
-        }
-        .category-btn.active { 
-            background: #14B8A6;
-            color: white;
-            box-shadow: 0 4px 6px -1px rgba(20, 184, 166, 0.3);
-        }
-        .category-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: #14B8A6;
-            border-radius: 2px;
-        }
-        .subcategory-btn.active {
-            background: #0D9488;
-            color: white;
-            box-shadow: 0 2px 4px rgba(13, 148, 136, 0.3);
-        }
-        .format-btn.active {
-            background: #14B8A6;
-            color: white;
-        }
-        .subcategory-slide-in {
-            animation: slideIn 0.3s ease-out;
-        }
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* ✨ Dynamic aspect ratios with unified height */
-        .thumbnail-container {
-            height: 200px; /* Fixed height for all thumbnails */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f3f4f6;
-            overflow: hidden;
-        }
-        
-        .thumbnail-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain; /* Show full image without cropping */
-        }
-        
-        /* Wallet Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 10% auto;
-            padding: 30px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-
-        .close-modal {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close-modal:hover {
-            color: #000;
-        }
-        
-        .topup-button {
-            background: white;
-            border: 2px solid #14B8A6;
-            padding: 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: all 0.3s;
-        }
-
-        .topup-button:hover {
-            background: #14B8A6;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .topup-button:hover span {
-            color: white !important;
-        }
-    </style>
-    
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="bg-gray-50 font-sans text-gray-900">
 
-    <!-- Navigation -->
+    <!-- ===================== NAVBAR ===================== -->
     <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <img src="./assets/logo.png" 
-                     alt="Nmediaservices Logo" 
-                     class="h-10 w-auto max-w-[150px]"
-                     onerror="this.style.display='none'">
-                <h1 class="text-xl font-bold tracking-tight text-gray-900">Nmediaservices<span class="text-teal-500">Stockflow</span></h1>
+                <img src="./assets/logo.png" alt="Nmediaservices Logo"
+                     class="h-10 w-auto max-w-[150px]" onerror="this.style.display='none'">
+                <h1 class="text-xl font-bold tracking-tight text-gray-900">
+                    Nmediaservices<span class="text-teal-500">Stockflow</span>
+                </h1>
             </div>
-            
+
             <!-- Wallet Widget -->
-            <div class="flex items-center gap-4">
-                <div id="walletWidget">
-                    <!-- Not logged in state -->
-                    <button 
-                        id="loginButton" 
-                        onclick="showLoginModal()" 
-                        style="background: #14B8A6; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;"
-                    >
-                        Sign In
-                    </button>
-                    
-                    <!-- Logged in state (hidden by default) -->
-                    <div id="walletDisplay" style="display: none;">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <!-- Wallet balance -->
-                            <div style="background: #E0F2FE; padding: 8px 15px; border-radius: 6px;">
-                                <span style="font-size: 14px; color: #0369A1;">Wallet:</span>
-                                <strong id="walletAmount" style="color: #14B8A6; font-size: 18px;">$0.00</strong>
-                            </div>
-                            
-                            <!-- Add funds button -->
-                            <button 
-                                onclick="showTopUpModal()" 
-                                style="background: #14B8A6; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;"
-                            >
-                                Add Funds
+            <div id="walletWidget">
+                <button id="loginButton" onclick="showLoginModal()"
+                    style="background:#14B8A6;color:white;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;">
+                    Sign In
+                </button>
+
+                <div id="walletDisplay" style="display:none;">
+                    <div style="display:flex;align-items:center;gap:15px;">
+                        <div style="background:#E0F2FE;padding:8px 15px;border-radius:6px;">
+                            <span style="font-size:14px;color:#0369A1;">Wallet:</span>
+                            <strong id="walletAmount" style="color:#14B8A6;font-size:18px;">$0.00</strong>
+                        </div>
+                        <button onclick="showTopUpModal()"
+                            style="background:#14B8A6;color:white;padding:8px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;">
+                            Add Funds
+                        </button>
+                        <div style="position:relative;">
+                            <button id="userMenuButton" onclick="toggleUserMenu()"
+                                style="background:#F3F4F6;padding:8px 12px;border:none;border-radius:6px;cursor:pointer;">
+                                <span id="userEmailDisplay"></span> ▼
                             </button>
-                            
-                            <!-- User menu -->
-                            <div style="position: relative;">
-                                <button 
-                                    id="userMenuButton"
-                                    onclick="toggleUserMenu()"
-                                    style="background: #F3F4F6; padding: 8px 12px; border: none; border-radius: 6px; cursor: pointer;"
-                                >
-                                    <span id="userEmailDisplay"></span> ▼
-                                </button>
-                                
-                                <!-- Dropdown menu -->
-                                <div 
-                                    id="userMenu" 
-                                    style="display: none; position: absolute; right: 0; top: 100%; margin-top: 5px; background: white; border: 1px solid #E5E7EB; border-radius: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); min-width: 200px; z-index: 100;"
-                                >
-                                    <a href="#" onclick="logout(); return false;" style="display: block; padding: 10px 15px; color: #EF4444; text-decoration: none;">
-                                        🚪 Logout
-                                    </a>
-                                </div>
+                            <div id="userMenu"
+                                style="display:none;position:absolute;right:0;top:100%;margin-top:5px;background:white;border:1px solid #E5E7EB;border-radius:6px;box-shadow:0 4px 6px rgba(0,0,0,0.1);min-width:200px;z-index:100;">
+                                <a href="#" onclick="logout();return false;"
+                                    style="display:block;padding:10px 15px;color:#EF4444;text-decoration:none;">
+                                    🚪 Logout
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -194,17 +56,13 @@
         </div>
     </nav>
 
-    <!-- Hero Section with Search -->
+    <!-- ===================== HERO ===================== -->
     <header class="bg-gradient-to-br from-teal-500 to-teal-700 text-white py-20 px-6">
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-5xl font-extrabold mb-4 tracking-tight">Premium Stock Footage</h2>
             <p class="text-xl text-teal-100 mb-8">Discover high-quality videos for your creative projects</p>
-            
-            <!-- Search Bar -->
             <div class="relative max-w-2xl mx-auto">
-                <input 
-                    type="text" 
-                    id="searchInput"
+                <input type="text" id="searchInput"
                     placeholder="Search footage by title, description, or tags..."
                     class="w-full px-6 py-4 pr-32 rounded-full text-gray-900 text-lg focus:outline-none focus:ring-4 focus:ring-teal-300 shadow-xl"
                     oninput="filterVideos()">
@@ -215,78 +73,51 @@
         </div>
     </header>
 
-    <!-- Filters Section -->
+    <!-- ===================== FILTERS ===================== -->
     <div class="bg-white border-b border-gray-200 sticky top-[73px] z-40 shadow-sm">
         <div class="max-w-7xl mx-auto px-6 py-4">
-            <!-- Main Categories -->
             <div class="mb-4">
                 <div class="flex items-center justify-between mb-3">
                     <p class="text-sm font-bold text-gray-700 uppercase tracking-wide">Browse Categories</p>
                     <p class="text-xs text-gray-500" id="resultCount">Loading...</p>
                 </div>
-                <div class="flex flex-wrap gap-2" id="categoryButtons">
-                    <!-- Categories will be auto-generated from sheet data -->
-                </div>
+                <div class="flex flex-wrap gap-2" id="categoryButtons"></div>
             </div>
 
-            <!-- Subcategories Section (appears when category selected) -->
+            <!-- Subcategories -->
             <div id="subcategorySection" class="mb-4 hidden">
                 <div class="bg-teal-50 border border-teal-200 rounded-xl p-4">
-                    <div class="flex items-center gap-2 mb-3">
-                        <svg class="w-4 h-4 text-teal-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                        </svg>
-                        <p class="text-sm font-semibold text-teal-800" id="subcategoryTitle">Subcategories</p>
-                    </div>
-                    <div class="flex flex-wrap gap-2" id="subcategoryButtons">
-                        <!-- Subcategories will be dynamically added here -->
-                    </div>
+                    <p class="text-sm font-semibold text-teal-800 mb-3" id="subcategoryTitle">Subcategories</p>
+                    <div class="flex flex-wrap gap-2" id="subcategoryButtons"></div>
                 </div>
             </div>
 
-            <!-- Sub Section (appears when subcategory selected) -->
+            <!-- Sub types -->
             <div id="subSection" class="mb-4 hidden">
                 <div class="bg-purple-50 border border-purple-200 rounded-xl p-4">
-                    <div class="flex items-center gap-2 mb-3">
-                        <svg class="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                        </svg>
-                        <p class="text-sm font-semibold text-purple-800" id="subTitle">Types</p>
-                    </div>
-                    <div class="flex flex-wrap gap-2" id="subButtons">
-                        <!-- Sub types will be dynamically added here -->
-                    </div>
+                    <p class="text-sm font-semibold text-purple-800 mb-3" id="subTitle">Types</p>
+                    <div class="flex flex-wrap gap-2" id="subButtons"></div>
                 </div>
             </div>
 
-            <!-- Format & Sort Filters -->
-            <div class="flex items-center justify-between flex-wrap gap-4">
-                <div class="flex items-center gap-3">
-                    <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Format</p>
-                    <div class="flex gap-2">
-                        <button class="format-btn active px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition" 
-                                data-format="all" onclick="filterByFormat('all')">
-                            All
-                        </button>
-                        <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition" 
-                                data-format="9:16" onclick="filterByFormat('9:16')">
-                            📱 9:16
-                        </button>
-                        <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition" 
-                                data-format="16:9" onclick="filterByFormat('16:9')">
-                            🖥️ 16:9
-                        </button>
-                        <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition" 
-                                data-format="1:1" onclick="filterByFormat('1:1')">
-                            ⬜ 1:1
-                        </button>
-                    </div>
+            <!-- Format buttons -->
+            <div class="flex items-center gap-3">
+                <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Format</p>
+                <div class="flex gap-2">
+                    <button class="format-btn active px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition"
+                            data-format="all" onclick="filterByFormat('all')">All</button>
+                    <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition"
+                            data-format="9:16" onclick="filterByFormat('9:16')">📱 9:16</button>
+                    <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition"
+                            data-format="16:9" onclick="filterByFormat('16:9')">🖥️ 16:9</button>
+                    <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition"
+                            data-format="1:1" onclick="filterByFormat('1:1')">⬜ 1:1</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Status Message -->
+    <!-- ===================== STATUS ===================== -->
     <div class="max-w-7xl mx-auto px-6 py-4">
         <p id="status-text" class="text-sm text-gray-500">
             <span class="inline-block w-2 h-2 bg-teal-500 rounded-full animate-pulse mr-2"></span>
@@ -294,12 +125,9 @@
         </p>
     </div>
 
-    <!-- Video Grid -->
+    <!-- ===================== VIDEO GRID ===================== -->
     <main class="max-w-7xl mx-auto px-6 pb-16">
-        <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        </div>
-        
-        <!-- Load More Button -->
+        <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
         <div id="loadMoreSection" class="text-center mt-8 hidden">
             <button onclick="loadMore()" class="bg-teal-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-teal-600 transition">
                 Load More
@@ -307,7 +135,7 @@
         </div>
     </main>
 
-    <!-- Preview Modal -->
+    <!-- ===================== PREVIEW MODAL ===================== -->
     <div id="previewModal" class="modal-hidden fixed inset-0 bg-black/95 z-[60] items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-2xl overflow-hidden max-w-5xl w-full shadow-2xl relative">
             <button onclick="closeModal()" class="absolute top-4 right-4 z-50 bg-black/70 text-white rounded-full p-2.5 hover:bg-black transition">
@@ -315,27 +143,24 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
-            
             <video id="modalVideo" controls class="w-full aspect-video bg-black" src=""></video>
-            
             <div class="p-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
                     <div class="flex-1">
-                        <h3 id="modalTitle" class="text-2xl font-bold text-gray-900 mb-2">Video Title</h3>
+                        <h3 id="modalTitle" class="text-2xl font-bold text-gray-900 mb-2"></h3>
                         <div class="flex items-center gap-2 text-sm flex-wrap mb-2">
-                            <span id="modalCategory" class="px-3 py-1 bg-teal-100 text-teal-700 rounded-lg font-medium">Category</span>
-                            <span id="modalSubcategory" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg font-medium">Subcategory</span>
-                            <span id="modalSub" class="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg font-medium">Type</span>
-                            <span id="modalFormat" class="text-gray-600">16:9</span>
-                            <span id="modalResolution" class="text-gray-600">4K</span>
+                            <span id="modalCategory" class="px-3 py-1 bg-teal-100 text-teal-700 rounded-lg font-medium"></span>
+                            <span id="modalSubcategory" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg font-medium"></span>
+                            <span id="modalSub" class="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg font-medium"></span>
+                            <span id="modalFormat" class="text-gray-600"></span>
+                            <span id="modalResolution" class="text-gray-600"></span>
                         </div>
-                        <!-- Tags display -->
                         <div id="modalTags" class="flex flex-wrap gap-1 mt-2"></div>
                     </div>
                     <div class="flex items-center gap-4">
                         <div class="text-right">
                             <p class="text-sm text-gray-500">License from</p>
-                            <p class="text-3xl font-bold text-gray-900">$<span id="modalPrice">10</span></p>
+                            <p class="text-3xl font-bold text-gray-900">$<span id="modalPrice"></span></p>
                         </div>
                         <button onclick="handlePurchase()" class="bg-teal-500 text-white px-8 py-3 rounded-xl font-bold hover:bg-teal-600 transition shadow-lg shadow-teal-200">
                             Buy Now
@@ -347,994 +172,78 @@
         </div>
     </div>
 
-    <script>
-        // ============================================
-        // WALLET CONFIGURATION
-        // ============================================
-        const WALLET_CONFIG = {
-            API_URL: 'https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec',
-            STORAGE_KEY: 'stockflow_user_email',
-            TOPUP_AMOUNTS: [10, 20, 30]
-        };
-
-        let currentUser = {
-            email: null,
-            wallet: 0,
-            isLoggedIn: false
-        };
-
-        // Configuration
-        const PUBLISHED_SHEET_ID = '2PACX-1vSP5OJpICPPpGYxgeuVcpJdx8nR7LKqLTpDAWBlhLKUgZDafXqZ_tTpa8_1fM1bVHdBYGlorZxfiW8_';
-        const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/e/${PUBLISHED_SHEET_ID}/pub?output=csv`;
-
-        let allVideos = [];
-        let filteredVideos = [];
-        let displayedVideos = [];
-        let currentCategory = 'all';
-        let currentSubcategory = 'all';
-        let currentSub = 'all';
-        let currentFormat = 'all';
-        let currentVideo = null;
-        let displayCount = 0;
-        const ITEMS_PER_LOAD = 80;
-
-        // Track unique categories, subcategories, and subs
-        let categories = new Set();
-        let subcategories = {};
-        let subs = {};
-
-        // CSV Parser
-        function parseCSV(text) {
-            const lines = text.split('\n');
-            const result = [];
-            
-            for (let line of lines) {
-                if (!line.trim()) continue;
-                
-                const values = [];
-                let current = '';
-                let inQuotes = false;
-                
-                for (let i = 0; i < line.length; i++) {
-                    const char = line[i];
-                    
-                    if (char === '"') {
-                        inQuotes = !inQuotes;
-                    } else if (char === ',' && !inQuotes) {
-                        values.push(current.trim());
-                        current = '';
-                    } else {
-                        current += char;
-                    }
-                }
-                values.push(current.trim());
-                result.push(values);
-            }
-            
-            return result;
-        }
-
-        async function init() {
-            const grid = document.getElementById('video-grid');
-            const status = document.getElementById('status-text');
-
-            try {
-                console.log('🔄 Fetching from:', SHEET_CSV_URL);
-                const response = await fetch(SHEET_CSV_URL, {
-                    method: 'GET',
-                    cache: 'no-cache',
-                    headers: { 'Accept': 'text/csv,text/plain,*/*' }
-                });
-                
-                console.log('Response status:', response.status);
-                console.log('Response type:', response.type);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText} - Sheet may not be published. Go to File → Share → Publish to web → CSV`);
-                }
-
-                const csvText = await response.text();
-                
-                if (!csvText || csvText.trim().length === 0) {
-                    throw new Error('Sheet returned empty data. Make sure your sheet is published and has data.');
-                }
-                
-                if (csvText.trim().startsWith('<')) {
-                    throw new Error('Sheet returned HTML instead of CSV. Please re-publish: File → Share → Publish to web → select your sheet tab → CSV → Publish');
-                }
-                
-                console.log('CSV first 300 chars:', csvText.substring(0, 300));
-                const rows = parseCSV(csvText);
-
-                console.log('✅ Received', rows.length - 1, 'rows');
-
-                // Parse data - UPDATED WITH "SUB" COLUMN
-                allVideos = [];
-                for (let i = 1; i < rows.length; i++) {
-                    const row = rows[i];
-                    
-                    if (!row || row.length < 2 || !row[1]) continue;
-
-                    const video = {
-                        id: row[0] || i.toString(),              // A: File_ID
-                        title: row[1] || "Untitled",             // B: Title
-                        category: row[2] || "Uncategorized",     // C: Category
-                        subcategory: row[3] || "",               // D: Catagory_Sub
-                        sub: row[4] || "",                       // E: Sub (NEW!)
-                        description: row[5] || "",               // F: Description
-                        thumb: row[6] || "",                     // G: Thumbnail_URL
-                        preview: row[7] || "",                   // H: Preview_URL
-                        price: row[8] || "25",                   // I: Price
-                        format: row[9] || "16:9",                // J: Format
-                        resolution: row[10] || "4K",             // K: Resolution
-                        tags: row[11] || ""                      // L: Tags
-                    };
-                    
-                    // Debug: Log first video to console
-                    if (i === 1) {
-                        console.log('📹 First video data:', video);
-                        console.log('🖼️ Thumbnail URL:', video.thumb);
-                        console.log('🎬 Preview URL:', video.preview);
-                        console.log('📂 Sub-category:', video.sub);
-                    }
-
-                    // Track categories, subcategories, and subs
-                    if (video.category) {
-                        categories.add(video.category);
-                        
-                        if (video.subcategory) {
-                            if (!subcategories[video.category]) {
-                                subcategories[video.category] = new Set();
-                            }
-                            subcategories[video.category].add(video.subcategory);
-                            
-                            // Track subs for each subcategory
-                            if (video.sub) {
-                                const subKey = `${video.category}::${video.subcategory}`;
-                                if (!subs[subKey]) {
-                                    subs[subKey] = new Set();
-                                }
-                                subs[subKey].add(video.sub);
-                            }
-                        }
-                    }
-
-                    allVideos.push(video);
-                }
-
-                // Reverse order for "New Arrivals" (latest first)
-                allVideos.reverse();
-
-                // Generate category buttons
-                generateCategoryButtons();
-
-                filteredVideos = [...allVideos];
-                displayCount = 0;
-                renderVideos(true);
-
-                status.innerHTML = `<span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>${allVideos.length} videos loaded`;
-
-            } catch (error) {
-                console.error("❌ Error:", error);
-                status.innerHTML = `<span class="inline-block w-2 h-2 bg-red-500 rounded-full mr-2"></span>Failed to load footage`;
-                
-                grid.innerHTML = `
-                    <div class="col-span-full bg-red-50 border border-red-200 rounded-xl p-8 text-center" style="max-width:700px;margin:0 auto;">
-                        <div style="font-size:48px;margin-bottom:16px;">⚠️</div>
-                        <h3 class="text-red-800 font-bold text-xl mb-3">Videos Cannot Load</h3>
-                        <p class="text-red-700 text-sm mb-4" style="background:#fff;padding:12px;border-radius:8px;font-family:monospace;word-break:break-word;">${error.message}</p>
-                        <div style="background:#fffbeb;border:1px solid #f59e0b;border-radius:8px;padding:16px;text-align:left;margin-top:12px;">
-                            <p style="color:#92400e;font-weight:bold;margin-bottom:8px;">🔧 Fix: Re-publish your Google Sheet</p>
-                            <ol style="color:#78350f;font-size:13px;padding-left:20px;line-height:1.8;">
-                                <li>Open your <strong>video data Google Sheet</strong></li>
-                                <li>Click <strong>File → Share → Publish to web</strong></li>
-                                <li>First dropdown: select your <strong>video tab</strong> (not "Entire Document")</li>
-                                <li>Second dropdown: select <strong>"Comma-separated values (.csv)"</strong></li>
-                                <li>Click <strong>Publish</strong> → OK</li>
-                                <li>Copy the URL and update <strong>PUBLISHED_SHEET_ID</strong> in the code</li>
-                            </ol>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        function generateCategoryButtons() {
-            const container = document.getElementById('categoryButtons');
-            container.innerHTML = '';
-
-            // Add "New Arrivals" button first
-            const newArrivalsBtn = document.createElement('button');
-            newArrivalsBtn.className = 'category-btn active px-5 py-2.5 rounded-full text-sm font-semibold bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition shadow-sm';
-            newArrivalsBtn.setAttribute('data-category', 'all');
-            newArrivalsBtn.innerHTML = `
-                <div class="flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
-                        <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span>New Arrivals</span>
-                </div>
-            `;
-            newArrivalsBtn.onclick = () => filterByCategory('all');
-            container.appendChild(newArrivalsBtn);
-
-            // Add category buttons from data
-            const sortedCategories = Array.from(categories).sort();
-            sortedCategories.forEach(cat => {
-                const btn = document.createElement('button');
-                const subcatCount = subcategories[cat] ? subcategories[cat].size : 0;
-                
-                btn.className = 'category-btn px-5 py-2.5 rounded-full text-sm font-semibold bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition shadow-sm';
-                btn.setAttribute('data-category', cat);
-                btn.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <span>${cat}</span>
-                        ${subcatCount > 0 ? `<span class="text-xs opacity-60">(${subcatCount})</span>` : ''}
-                    </div>
-                `;
-                btn.onclick = () => filterByCategory(cat);
-                container.appendChild(btn);
-            });
-
-            console.log('✅ Generated', categories.size, 'category buttons');
-        }
-
-        function renderVideos(reset = false) {
-            const grid = document.getElementById('video-grid');
-            const loadMoreSection = document.getElementById('loadMoreSection');
-            
-            if (reset) {
-                grid.innerHTML = '';
-                displayCount = 0;
-            }
-
-            if (filteredVideos.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full text-center py-16">
-                        <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path>
-                        </svg>
-                        <p class="text-gray-400 text-lg">No videos match your filters</p>
-                        <button onclick="resetFilters()" class="mt-4 text-teal-600 hover:text-teal-700 font-medium">Reset Filters</button>
-                    </div>
-                `;
-                loadMoreSection.classList.add('hidden');
-                return;
-            }
-
-            const endIndex = Math.min(displayCount + ITEMS_PER_LOAD, filteredVideos.length);
-            const videosToShow = filteredVideos.slice(displayCount, endIndex);
-
-            videosToShow.forEach((video, idx) => {
-                const card = document.createElement('div');
-                card.className = "video-card bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer group";
-                
-                // Debug logging for first video
-                if (displayCount === 0 && idx === 0) {
-                    console.log('🎬 Rendering first video:', video.title);
-                    console.log('🖼️ Thumbnail URL:', video.thumb);
-                    console.log('📹 Preview URL:', video.preview);
-                }
-                
-                card.innerHTML = `
-                    <div class="relative thumbnail-container">
-                        <img src="${video.thumb}" 
-                             class="transition-transform duration-500" 
-                             alt="${video.title}"
-                             loading="lazy"
-                             onerror="handleImageError(this, '${video.title}', '${video.thumb}')">
-                        <div class="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <div class="bg-white/95 p-4 rounded-full shadow-xl">
-                                <svg class="w-8 h-8 text-teal-500 ml-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="absolute top-2 right-2 px-2 py-1 bg-black/70 text-white text-xs font-semibold rounded">
-                            ${video.format}
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h4 class="font-bold text-gray-800 text-base mb-2 line-clamp-1">${video.title}</h4>
-                        <div class="flex justify-between items-center">
-                            <div class="flex flex-col">
-                                <span class="text-xs text-teal-600 font-semibold uppercase tracking-wide">${video.category}</span>
-                                ${video.subcategory ? `<span class="text-[10px] text-gray-500">${video.subcategory}</span>` : ''}
-                            </div>
-                            <span class="font-bold text-gray-900 text-lg">$${video.price}</span>
-                        </div>
-                    </div>
-                `;
-
-                card.onclick = () => openModal(video);
-                grid.appendChild(card);
-            });
-
-            displayCount = endIndex;
-
-            // Show/hide load more button
-            if (displayCount < filteredVideos.length) {
-                loadMoreSection.classList.remove('hidden');
-            } else {
-                loadMoreSection.classList.add('hidden');
-            }
-        }
-
-        function handleImageError(img, title, url) {
-            console.error('❌ Image failed to load:', {
-                title: title,
-                url: url,
-                error: 'Failed to load thumbnail'
-            });
-            
-            // Show placeholder with title
-            img.src = `https://placehold.co/600x400/14B8A6/FFFFFF?text=${encodeURIComponent(title)}`;
-            img.alt = `Placeholder for ${title}`;
-        }
-
-        function resetFilters() {
-            currentCategory = 'all';
-            currentSubcategory = 'all';
-            currentSub = 'all';
-            currentFormat = 'all';
-            document.getElementById('searchInput').value = '';
-            
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.getAttribute('data-category') === 'all') {
-                    btn.classList.add('active');
-                }
-            });
-            
-            document.querySelectorAll('.format-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.getAttribute('data-format') === 'all') {
-                    btn.classList.add('active');
-                }
-            });
-            
-            document.getElementById('subcategorySection').classList.add('hidden');
-            document.getElementById('subSection').classList.add('hidden');
-            
-            applyFilters();
-        }
-
-        function loadMore() {
-            renderVideos(false);
-        }
-
-        function filterByCategory(category) {
-            currentCategory = category;
-            currentSubcategory = 'all';
-            currentSub = 'all'; // Reset sub when category changes
-            
-            // Update category button states
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            // Handle subcategories display
-            const subcatSection = document.getElementById('subcategorySection');
-            const subcatButtons = document.getElementById('subcategoryButtons');
-            const subcatTitle = document.getElementById('subcategoryTitle');
-            
-            // Hide sub section when category changes
-            const subSection = document.getElementById('subSection');
-            subSection.classList.add('hidden');
-            subSection.classList.remove('subcategory-slide-in');
-            
-            if (category !== 'all' && subcategories[category] && subcategories[category].size > 0) {
-                // Show subcategories with animation
-                subcatSection.classList.remove('hidden');
-                subcatSection.classList.add('subcategory-slide-in');
-                subcatTitle.textContent = `${category} Subcategories`;
-                subcatButtons.innerHTML = '';
-                
-                // Add "All" button for subcategories
-                const allBtn = document.createElement('button');
-                allBtn.className = 'subcategory-btn active px-4 py-2 rounded-lg text-xs font-semibold bg-white text-gray-700 hover:bg-teal-600 hover:text-white transition border border-teal-300';
-                allBtn.innerHTML = `
-                    <div class="flex items-center gap-1">
-                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
-                        </svg>
-                        <span>All ${category}</span>
-                    </div>
-                `;
-                allBtn.onclick = () => filterBySubcategory('all');
-                subcatButtons.appendChild(allBtn);
-                
-                // Add subcategory buttons
-                const sortedSubcats = Array.from(subcategories[category]).sort();
-                sortedSubcats.forEach(subcat => {
-                    const btn = document.createElement('button');
-                    btn.className = 'subcategory-btn px-4 py-2 rounded-lg text-xs font-semibold bg-white text-gray-700 hover:bg-teal-600 hover:text-white transition border border-teal-200';
-                    btn.textContent = subcat;
-                    btn.onclick = () => filterBySubcategory(subcat);
-                    subcatButtons.appendChild(btn);
-                });
-            } else {
-                // Hide subcategories section
-                subcatSection.classList.add('hidden');
-                subcatSection.classList.remove('subcategory-slide-in');
-            }
-            
-            applyFilters();
-        }
-
-        function filterBySubcategory(subcategory) {
-            currentSubcategory = subcategory;
-            currentSub = 'all'; // Reset sub when subcategory changes
-            
-            document.querySelectorAll('.subcategory-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            // Handle subs display
-            const subSection = document.getElementById('subSection');
-            const subButtons = document.getElementById('subButtons');
-            const subTitle = document.getElementById('subTitle');
-            
-            if (subcategory !== 'all' && currentCategory !== 'all') {
-                const subKey = `${currentCategory}::${subcategory}`;
-                
-                if (subs[subKey] && subs[subKey].size > 0) {
-                    // Show subs with animation
-                    subSection.classList.remove('hidden');
-                    subSection.classList.add('subcategory-slide-in');
-                    subTitle.textContent = `${subcategory} Types`;
-                    subButtons.innerHTML = '';
-                    
-                    // Add "All" button for subs
-                    const allBtn = document.createElement('button');
-                    allBtn.className = 'sub-btn active px-4 py-2 rounded-lg text-xs font-semibold bg-white text-gray-700 hover:bg-purple-600 hover:text-white transition border border-purple-300';
-                    allBtn.innerHTML = `
-                        <div class="flex items-center gap-1">
-                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
-                            </svg>
-                            <span>All Types</span>
-                        </div>
-                    `;
-                    allBtn.onclick = () => filterBySub('all');
-                    subButtons.appendChild(allBtn);
-                    
-                    // Add sub buttons
-                    const sortedSubs = Array.from(subs[subKey]).sort();
-                    sortedSubs.forEach(sub => {
-                        const btn = document.createElement('button');
-                        btn.className = 'sub-btn px-4 py-2 rounded-lg text-xs font-semibold bg-white text-gray-700 hover:bg-purple-600 hover:text-white transition border border-purple-200';
-                        btn.textContent = sub;
-                        btn.onclick = () => filterBySub(sub);
-                        subButtons.appendChild(btn);
-                    });
-                } else {
-                    // Hide subs section
-                    subSection.classList.add('hidden');
-                    subSection.classList.remove('subcategory-slide-in');
-                }
-            } else {
-                // Hide subs section
-                subSection.classList.add('hidden');
-                subSection.classList.remove('subcategory-slide-in');
-            }
-            
-            applyFilters();
-        }
-
-        function filterBySub(sub) {
-            currentSub = sub;
-            
-            document.querySelectorAll('.sub-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            applyFilters();
-        }
-
-        function filterByFormat(format) {
-            currentFormat = format;
-            
-            document.querySelectorAll('.format-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            applyFilters();
-        }
-
-        function filterVideos() {
-            applyFilters();
-        }
-
-        function applyFilters() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            
-            filteredVideos = allVideos.filter(video => {
-                const matchesCategory = currentCategory === 'all' || 
-                    video.category === currentCategory;
-                
-                const matchesSubcategory = currentSubcategory === 'all' || 
-                    video.subcategory === currentSubcategory;
-                
-                const matchesSub = currentSub === 'all' || 
-                    video.sub === currentSub;
-                
-                const matchesFormat = currentFormat === 'all' || 
-                    video.format === currentFormat;
-                
-                const matchesSearch = !searchTerm || 
-                    video.title.toLowerCase().includes(searchTerm) ||
-                    video.category.toLowerCase().includes(searchTerm) ||
-                    video.subcategory.toLowerCase().includes(searchTerm) ||
-                    video.sub.toLowerCase().includes(searchTerm) ||
-                    video.description.toLowerCase().includes(searchTerm) ||
-                    video.tags.toLowerCase().includes(searchTerm);
-                
-                return matchesCategory && matchesSubcategory && matchesSub && matchesFormat && matchesSearch;
-            });
-            
-            // Update result count
-            const resultCount = document.getElementById('resultCount');
-            if (resultCount) {
-                resultCount.textContent = `${filteredVideos.length} video${filteredVideos.length !== 1 ? 's' : ''} found`;
-            }
-            
-            renderVideos(true);
-        }
-
-        function openModal(video) {
-            currentVideo = video;
-            const modal = document.getElementById('previewModal');
-            const videoPlayer = document.getElementById('modalVideo');
-            
-            document.getElementById('modalTitle').innerText = video.title;
-            document.getElementById('modalCategory').innerText = video.category;
-            document.getElementById('modalSubcategory').innerText = video.subcategory || 'N/A';
-            document.getElementById('modalSub').innerText = video.sub || 'N/A';
-            document.getElementById('modalFormat').innerText = video.format;
-            document.getElementById('modalResolution').innerText = video.resolution;
-            document.getElementById('modalPrice').innerText = video.price;
-            document.getElementById('modalDescription').innerText = video.description;
-            
-            // Display tags
-            const tagsContainer = document.getElementById('modalTags');
-            tagsContainer.innerHTML = '';
-            if (video.tags) {
-                const tagArray = video.tags.split(',').map(t => t.trim()).filter(t => t);
-                tagArray.forEach(tag => {
-                    const tagEl = document.createElement('span');
-                    tagEl.className = 'px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs';
-                    tagEl.innerText = tag;
-                    tagsContainer.appendChild(tagEl);
-                });
-            }
-            
-            if (video.preview) {
-                console.log('🎬 Loading video:', video.preview);
-                
-                // Remove any existing iframe
-                const existingIframe = document.getElementById('modalIframe');
-                if (existingIframe) existingIframe.remove();
-                
-                // Show video player with GCS URL (instant loading!)
-                videoPlayer.style.display = 'block';
-                videoPlayer.src = video.preview;
-                
-                // Try to play (autoplay may be blocked by browser, which is normal)
-                videoPlayer.play().catch(err => {
-                    console.log('ℹ️ Autoplay blocked (normal browser behavior) - user will click play');
-                });
-                
-                modal.classList.remove('modal-hidden');
-                modal.classList.add('modal-visible');
-            } else {
-                alert('Preview not available for this footage.');
-            }
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('previewModal');
-            const videoPlayer = document.getElementById('modalVideo');
-            const iframe = document.getElementById('modalIframe');
-            
-            videoPlayer.pause();
-            videoPlayer.src = "";
-            
-            if (iframe) {
-                iframe.remove();
-            }
-            
-            modal.classList.remove('modal-visible');
-            modal.classList.add('modal-hidden');
-        }
-
-        // ============================================
-        // UPDATED handlePurchase FUNCTION - REPLACE IN YOUR HTML
-        // ============================================
-
-        async function purchaseVideo(videoId, videoTitle, price) {
-            // Check if logged in
-            if (!currentUser.isLoggedIn) {
-                closeModal();
-                showLoginModal();
-                showNotification('Please sign in to purchase');
-                return;
-            }
-    
-            // Check wallet balance
-            if (currentUser.wallet < price) {
-                const shortage = price - currentUser.wallet;
-                showNotification(`Insufficient funds! You need $${shortage.toFixed(2)} more.`, 'error');
-                closeModal();
-                showTopUpModal();
-                return;
-            }
-    
-            // Confirm purchase
-            if (!confirm(`Purchase "${videoTitle}" for $${price.toFixed(2)}?`)) {
-                return;
-            }
-    
-            try {
-                showNotification('Processing purchase...');
-        
-                // Call Apps Script to deduct from wallet and get download link
-                const url = `${WALLET_CONFIG.API_URL}?action=purchase&email=${encodeURIComponent(currentUser.email)}&videoId=${encodeURIComponent(videoId)}&videoTitle=${encodeURIComponent(videoTitle)}&amount=${price}`;
-        
-                const response = await fetch(url);
-                const result = await response.json();
-        
-                if (result.success) {
-                    // Update local wallet balance
-                    currentUser.wallet = result.newBalance;
-                    updateWalletDisplay();
-            
-                    // Close preview modal
-                    closeModal();
-            
-                    // Show success and download link
-                    showNotification('✅ Purchase successful!', 'success');
-            
-                    // Show download modal
-                    showDownloadModal(videoTitle, result.downloadLink);
-            
-                } else {
-                    showNotification('Error: ' + (result.message || 'Purchase failed'), 'error');
-                }
-        
-            } catch (error) {
-                console.error('Purchase error:', error);
-                showNotification('Error processing purchase', 'error');
-            }
-        }
-
-        function handlePurchase() {
-            if (!currentVideo) {
-                showNotification('Error: No video selected', 'error');
-                return;
-            }
-    
-            purchaseVideo(currentVideo.id, currentVideo.title, parseFloat(currentVideo.price));
-        }
-
-        // ============================================
-        // DOWNLOAD MODAL FUNCTIONS - ADD THESE TOO
-        // ============================================
-
-        function showDownloadModal(videoTitle, downloadUrl) {
-            const modal = document.getElementById('downloadModal');
-            if (!modal) {
-                // Create download modal if it doesn't exist
-                const modalHTML = `
-                    <div id="downloadModal" class="modal">
-                        <div class="modal-content">
-                            <span class="close-modal" onclick="closeDownloadModal()">&times;</span>
-                    
-                            <div style="text-align: center;">
-                                <div style="font-size: 60px; margin-bottom: 20px;">✅</div>
-                                <h2>Purchase Successful!</h2>
-                                <p id="downloadVideoTitle" style="color: #666; margin-bottom: 20px;"></p>
-                        
-                                <a id="downloadLink" href="#" target="_blank"
-                                    style="display: inline-block; background: #14B8A6; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0;">
-                                    📥 Download High-Res File
-                                </a>
-                        
-                                <p style="font-size: 14px; color: #999;">
-                                    A download link has also been sent to your email.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                document.body.insertAdjacentHTML('beforeend', modalHTML);
-            }
-    
-            document.getElementById('downloadVideoTitle').textContent = videoTitle;
-            document.getElementById('downloadLink').href = downloadUrl;
-            document.getElementById('downloadModal').style.display = 'block';
-        }
-
-        function closeDownloadModal() {
-            const modal = document.getElementById('downloadModal');
-            if (modal) {
-                modal.style.display = 'none';
-            }
-        }
-            
-            const price = parseFloat(currentVideo.price);
-            
-            if (currentUser.wallet < price) {
-                const shortage = price - currentUser.wallet;
-                showNotification(`Insufficient funds! You need $${shortage.toFixed(2)} more.`, 'error');
-                closeModal();
-                showTopUpModal();
-                return;
-            }
-            
-            if (confirm(`Purchase "${currentVideo.title}" for $${price.toFixed(2)}?`)) {
-                showNotification('Purchase feature coming soon!');
-            }
-        }
-
-        // Close modal on escape
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
-        });
-
-        // ============================================
-        // WALLET FUNCTIONS
-        // ============================================
-
-        function updateWalletDisplay() {
-            const loginButton = document.getElementById('loginButton');
-            const walletDisplay = document.getElementById('walletDisplay');
-            const walletAmount = document.getElementById('walletAmount');
-            const userEmailDisplay = document.getElementById('userEmailDisplay');
-            
-            if (currentUser.isLoggedIn) {
-                loginButton.style.display = 'none';
-                walletDisplay.style.display = 'block';
-                walletAmount.textContent = '$' + currentUser.wallet.toFixed(2);
-                userEmailDisplay.textContent = currentUser.email;
-            } else {
-                loginButton.style.display = 'block';
-                walletDisplay.style.display = 'none';
-            }
-        }
-
-        function toggleUserMenu() {
-            const menu = document.getElementById('userMenu');
-            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-        }
-
-        document.addEventListener('click', function(event) {
-            const menuButton = document.getElementById('userMenuButton');
-            const menu = document.getElementById('userMenu');
-            
-            if (menu && menuButton && !menuButton.contains(event.target) && !menu.contains(event.target)) {
-                menu.style.display = 'none';
-            }
-        });
-
-        function showLoginModal() {
-            document.getElementById('loginModal').style.display = 'block';
-        }
-
-        function closeLoginModal() {
-            document.getElementById('loginModal').style.display = 'none';
-        }
-
-        async function handleLogin(event) {
-            event.preventDefault();
-            const email = document.getElementById('userEmail').value;
-            localStorage.setItem(WALLET_CONFIG.STORAGE_KEY, email);
-            await loadUserData(email);
-            closeLoginModal();
-            showNotification('Welcome! Your wallet: $' + currentUser.wallet.toFixed(2));
-            updateWalletDisplay();
-        }
-
-        async function loadUserData(email) {
-            try {
-                const url = `${WALLET_CONFIG.API_URL}?action=getUser&email=${encodeURIComponent(email)}`;
-                const response = await fetch(url);
-                const user = await response.json();
-                
-                if (user && user.email) {
-                    currentUser = {
-                        email: user.email,
-                        wallet: user.wallet || 0,
-                        isLoggedIn: true
-                    };
-                } else {
-                    currentUser = {
-                        email: email,
-                        wallet: 0,
-                        isLoggedIn: true
-                    };
-                }
-            } catch (error) {
-                console.error('Error loading user data:', error);
-                showNotification('Error loading user data', 'error');
-            }
-        }
-
-        async function checkLoginStatus() {
-            const savedEmail = localStorage.getItem(WALLET_CONFIG.STORAGE_KEY);
-            
-            if (savedEmail) {
-                await loadUserData(savedEmail);
-                updateWalletDisplay();
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem(WALLET_CONFIG.STORAGE_KEY);
-            currentUser = {
-                email: null,
-                wallet: 0,
-                isLoggedIn: false
-            };
-            updateWalletDisplay();
-            showNotification('Logged out successfully');
-        }
-
-        function showTopUpModal() {
-            if (!currentUser.isLoggedIn) {
-                showLoginModal();
-                return;
-            }
-            
-            document.getElementById('topUpModal').style.display = 'block';
-        }
-
-        function closeTopUpModal() {
-            document.getElementById('topUpModal').style.display = 'none';
-        }
-
-        async function addFunds(amount) {
-            if (!currentUser.isLoggedIn) {
-                showLoginModal();
-                return;
-            }
-            
-            try {
-                showNotification('Creating checkout session...');
-                const url = `${WALLET_CONFIG.API_URL}?action=createCheckout&email=${encodeURIComponent(currentUser.email)}&amount=${amount}`;
-                const response = await fetch(url);
-                const result = await response.json();
-                
-                if (result.success && result.url) {
-                    window.location.href = result.url;
-                } else {
-                    showNotification('Error: ' + (result.error || 'Failed to create checkout'), 'error');
-                }
-            } catch (error) {
-                console.error('Error creating checkout:', error);
-                showNotification('Error creating checkout session', 'error');
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            
-            if (urlParams.get('success') === 'true') {
-                setTimeout(async () => {
-                    if (currentUser.email) {
-                        await loadUserData(currentUser.email);
-                        updateWalletDisplay();
-                        showNotification('✅ Payment successful! Your wallet has been updated.', 'success');
-                    }
-                }, 1000);
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-            
-            if (urlParams.get('canceled') === 'true') {
-                showNotification('Payment canceled', 'error');
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-        });
-
-        function showNotification(message, type = 'info') {
-            const notification = document.getElementById('notification');
-            const messageEl = document.getElementById('notificationMessage');
-            
-            messageEl.textContent = message;
-            
-            if (type === 'error') {
-                notification.style.background = '#EF4444';
-            } else if (type === 'success') {
-                notification.style.background = '#10B981';
-            } else {
-                notification.style.background = '#14B8A6';
-            }
-            
-            notification.style.display = 'block';
-            setTimeout(() => { notification.style.display = 'none'; }, 3000);
-        }
-
-        window.addEventListener('DOMContentLoaded', checkLoginStatus);
-
-        // Initialize
-        init();
-    </script>
-    
-    <!-- Login/Signup Modal -->
+    <!-- ===================== LOGIN MODAL ===================== -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeLoginModal()">&times;</span>
-            
             <h2>Sign In to StockFlow</h2>
-            <p style="color: #666; margin-bottom: 20px;">
-                Enter your email to continue
-            </p>
-            
+            <p style="color:#666;margin-bottom:20px;">Enter your email to continue</p>
             <form id="loginForm" onsubmit="handleLogin(event)">
-                <input 
-                    type="email" 
-                    id="userEmail" 
-                    placeholder="your@email.com" 
-                    required
-                    style="width: 100%; padding: 12px; border: 2px solid #14B8A6; border-radius: 8px; font-size: 16px; margin-bottom: 15px;"
-                />
-                
-                <button 
-                    type="submit" 
-                    style="width: 100%; background: #14B8A6; color: white; padding: 12px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;"
-                >
+                <input type="email" id="userEmail" placeholder="your@email.com" required
+                    style="width:100%;padding:12px;border:2px solid #14B8A6;border-radius:8px;font-size:16px;margin-bottom:15px;box-sizing:border-box;"/>
+                <button type="submit"
+                    style="width:100%;background:#14B8A6;color:white;padding:12px;border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;">
                     Continue
                 </button>
             </form>
-            
-            <p style="font-size: 12px; color: #999; margin-top: 15px; text-align: center;">
-                No password needed. We'll remember you on this device.
-            </p>
+            <p style="font-size:12px;color:#999;margin-top:15px;text-align:center;">No password needed. We'll remember you on this device.</p>
         </div>
     </div>
 
-    <!-- Top-Up Modal -->
+    <!-- ===================== TOP-UP MODAL ===================== -->
     <div id="topUpModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeTopUpModal()">&times;</span>
-            
             <h2>Add Funds to Wallet</h2>
-            <p style="color: #666; margin-bottom: 20px;">
-                Choose an amount to add to your wallet
-            </p>
-            
-            <div style="display: grid; gap: 15px;">
+            <p style="color:#666;margin-bottom:20px;">Choose an amount to add to your wallet</p>
+            <div style="display:grid;gap:15px;">
                 <button onclick="addFunds(10)" class="topup-button">
-                    <span style="font-size: 24px; font-weight: bold;">$10</span>
-                    <span style="font-size: 14px; color: #666;">Quick top-up</span>
+                    <span style="font-size:24px;font-weight:bold;">$10</span>
+                    <span style="font-size:14px;color:#666;">Quick top-up</span>
                 </button>
-                
                 <button onclick="addFunds(20)" class="topup-button">
-                    <span style="font-size: 24px; font-weight: bold;">$20</span>
-                    <span style="font-size: 14px; color: #666;">Most popular</span>
+                    <span style="font-size:24px;font-weight:bold;">$20</span>
+                    <span style="font-size:14px;color:#666;">Most popular</span>
                 </button>
-                
                 <button onclick="addFunds(30)" class="topup-button">
-                    <span style="font-size: 24px; font-weight: bold;">$30</span>
-                    <span style="font-size: 14px; color: #666;">Best value</span>
+                    <span style="font-size:24px;font-weight:bold;">$30</span>
+                    <span style="font-size:14px;color:#666;">Best value</span>
                 </button>
             </div>
-            
-            <p style="font-size: 12px; color: #999; margin-top: 15px; text-align: center;">
-                Secure payment powered by Stripe
-            </p>
+            <p style="font-size:12px;color:#999;margin-top:15px;text-align:center;">Secure payment powered by Stripe</p>
         </div>
     </div>
 
-    <!-- Notification Toast -->
-    <div id="notification" style="display: none; position: fixed; top: 20px; right: 20px; background: #14B8A6; color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1001; max-width: 300px;">
-        <p id="notificationMessage" style="margin: 0;"></p>
+    <!-- ===================== DOWNLOAD MODAL ===================== -->
+    <div id="downloadModal" class="modal">
+        <div class="modal-content" style="text-align:center;">
+            <span class="close-modal" onclick="closeDownloadModal()">&times;</span>
+            <div style="font-size:60px;margin-bottom:20px;">✅</div>
+            <h2>Purchase Successful!</h2>
+            <p id="downloadVideoTitle" style="color:#666;margin-bottom:20px;"></p>
+            <a id="downloadLink" href="#" target="_blank"
+                style="display:inline-block;background:#14B8A6;color:white;padding:15px 40px;text-decoration:none;border-radius:8px;font-weight:bold;margin:20px 0;">
+                📥 Download High-Res File
+            </a>
+            <p style="font-size:14px;color:#999;">A download link has also been sent to your email.</p>
+        </div>
     </div>
-    
+
+    <!-- ===================== NOTIFICATION TOAST ===================== -->
+    <div id="notification"
+        style="display:none;position:fixed;top:20px;right:20px;background:#14B8A6;color:white;padding:15px 20px;border-radius:8px;box-shadow:0 4px 6px rgba(0,0,0,0.1);z-index:1001;max-width:300px;">
+        <p id="notificationMessage" style="margin:0;"></p>
+    </div>
+
+    <!-- ===================== SCRIPTS (ORDER MATTERS!) ===================== -->
+    <script src="js/config.js"></script>
+    <script src="js/modals.js"></script>
+    <script src="js/videos.js"></script>
+    <script src="js/wallet.js"></script>
+    <script>
+        // Start the app
+        init();
+    </script>
+
 </body>
 </html>
