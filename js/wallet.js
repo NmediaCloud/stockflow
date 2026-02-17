@@ -37,7 +37,6 @@ function closeLoginModal() {
     document.getElementById('loginModal').style.display = 'none';
 }
 
-
 async function loadUserData(email) {
     try {
         const url = `${CONFIG.API_URL}?action=getUser&email=${encodeURIComponent(email)}`;
@@ -56,8 +55,6 @@ async function loadUserData(email) {
         showNotification('Signed in (offline mode)', 'info');
     }
 }
-
-
 
 function logout() {
     localStorage.removeItem(CONFIG.STORAGE_KEY);
@@ -191,6 +188,7 @@ window.addEventListener('DOMContentLoaded', function () {
         window.history.replaceState({}, document.title, window.location.pathname);
     }
 });
+
 // ============================================
 // EXPOSE FUNCTIONS TO WINDOW (for HTML onclick)
 // ============================================
@@ -205,5 +203,3 @@ window.closeDownloadModal = closeDownloadModal;
 window.loadUserData = loadUserData;
 window.updateWalletDisplay = updateWalletDisplay;
 window.logout = logout;
-// ---- INIT ----
-
