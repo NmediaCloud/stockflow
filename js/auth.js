@@ -9,12 +9,12 @@ import { getAuth, GoogleAuthProvider, signInWithPopup,
   from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
 const firebaseConfig = {
-  apiKey:            'YOUR_API_KEY',
-  authDomain:        'YOUR_PROJECT.firebaseapp.com',
-  projectId:         'YOUR_PROJECT_ID',
-  storageBucket:     'YOUR_PROJECT.appspot.com',
-  messagingSenderId: 'YOUR_SENDER_ID',
-  appId:             'YOUR_APP_ID'
+  apiKey:            'AIzaSyD8XdS12Yxmnt4smaC5B33Zfs_46X4R0NA',
+  authDomain:        'nmedia-stockfootage.firebaseapp.com',
+  projectId:         'nmedia-stockfootage',
+  storageBucket:     'nmedia-stockfootage.firebasestorage.app',
+  messagingSenderId: '932305719254',
+  appId:             '1:932305719254:web:845cc2ac393757fe685e77'
 };
 
 const app      = initializeApp(firebaseConfig);
