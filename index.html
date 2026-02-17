@@ -124,20 +124,6 @@
         }
     </style>
     
-    <script>
-    // StockFlow Wallet Configuration
-    const WALLET_CONFIG = {
-        API_URL: 'https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec',
-        STORAGE_KEY: 'stockflow_user_email',
-        TOPUP_AMOUNTS: [10, 20, 30]
-    };
-
-    let currentUser = {
-        email: null,
-        wallet: 0,
-        isLoggedIn: false
-    };
-    </script>
 </head>
 <body class="bg-gray-50 font-sans text-gray-900">
 
@@ -362,6 +348,21 @@
     </div>
 
     <script>
+        // ============================================
+        // WALLET CONFIGURATION
+        // ============================================
+        const WALLET_CONFIG = {
+            API_URL: 'https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec',
+            STORAGE_KEY: 'stockflow_user_email',
+            TOPUP_AMOUNTS: [10, 20, 30]
+        };
+
+        let currentUser = {
+            email: null,
+            wallet: 0,
+            isLoggedIn: false
+        };
+
         // Configuration
         const PUBLISHED_SHEET_ID = '2PACX-1vSP5OJpICPPpGYxgeuVcpJdx8nR7LKqLTpDAWBlhLKUgZDafXqZ_tTpa8_1fM1bVHdBYGlorZxfiW8_';
         const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/e/${PUBLISHED_SHEET_ID}/pub?output=csv`;
@@ -1309,9 +1310,3 @@
     
 </body>
 </html>
-
-
-
-
-
-
