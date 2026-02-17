@@ -924,13 +924,119 @@
             modal.classList.add('modal-hidden');
         }
 
-        function handlePurchase() {
-            if (!currentUser.isLoggedIn) {
-                closeModal();
-                showLoginModal();
-                showNotification('Please sign in to purchase');
-                return;
-            }
+        // ============================================
+// UPDATED handlePurchase FUNCTION - REPLACE IN YOUR HTML
+// ============================================
+
+async function purchaseVideo(videoId, videoTitle, price) {
+    // Check if logged in
+    if (!currentUser.isLoggedIn) {
+        closeModal();
+        showLoginModal();
+        showNotification('Please sign in to purchase');
+        return;
+    }
+    
+    // Check wallet balance
+    if (currentUser.wallet < price) {
+        const shortage = price - currentUser.wallet;
+        showNotification(`Insufficient funds! You need $${shortage.toFixed(2)} more.`, 'error');
+        closeModal();
+        showTopUpModal();
+        return;
+    }
+    
+    // Confirm purchase
+    if (!confirm(`Purchase "${videoTitle}" for $${price.toFixed(2)}?`)) {
+        return;
+    }
+    
+    try {
+        showNotification('Processing purchase...');
+        
+        // Call Apps Script to deduct from wallet and get download link
+        const url = `${WALLET_CONFIG.API_URL}?action=purchase&email=${encodeURIComponent(currentUser.email)}&videoId=${encodeURIComponent(videoId)}&videoTitle=${encodeURIComponent(videoTitle)}&amount=${price}`;
+        
+        const response = await fetch(url);
+        const result = await response.json();
+        
+        if (result.success) {
+            // Update local wallet balance
+            currentUser.wallet = result.newBalance;
+            updateWalletDisplay();
+            
+            // Close preview modal
+            closeModal();
+            
+            // Show success and download link
+            showNotification('✅ Purchase successful!', 'success');
+            
+            // Show download modal
+            showDownloadModal(videoTitle, result.downloadLink);
+            
+        } else {
+            showNotification('Error: ' + (result.message || 'Purchase failed'), 'error');
+        }
+        
+    } catch (error) {
+        console.error('Purchase error:', error);
+        showNotification('Error processing purchase', 'error');
+    }
+}
+
+function handlePurchase() {
+    if (!currentVideo) {
+        showNotification('Error: No video selected', 'error');
+        return;
+    }
+    
+    purchaseVideo(currentVideo.id, currentVideo.title, parseFloat(currentVideo.price));
+}
+
+// ============================================
+// DOWNLOAD MODAL FUNCTIONS - ADD THESE TOO
+// ============================================
+
+function showDownloadModal(videoTitle, downloadUrl) {
+    const modal = document.getElementById('downloadModal');
+    if (!modal) {
+        // Create download modal if it doesn't exist
+        const modalHTML = `
+            <div id="downloadModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-modal" onclick="closeDownloadModal()">&times;</span>
+                    
+                    <div style="text-align: center;">
+                        <div style="font-size: 60px; margin-bottom: 20px;">✅</div>
+                        <h2>Purchase Successful!</h2>
+                        <p id="downloadVideoTitle" style="color: #666; margin-bottom: 20px;"></p>
+                        
+                        <a id="downloadLink" href="#" target="_blank"
+                            style="display: inline-block; background: #14B8A6; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0;">
+                            📥 Download High-Res File
+                        </a>
+                        
+                        <p style="font-size: 14px; color: #999;">
+                            A download link has also been sent to your email.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+    
+    document.getElementById('downloadVideoTitle').textContent = videoTitle;
+    document.getElementById('downloadLink').href = downloadUrl;
+    document.getElementById('downloadModal').style.display = 'block';
+}
+
+function closeDownloadModal() {
+    const modal = document.getElementById('downloadModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
             
             const price = parseFloat(currentVideo.price);
             
@@ -1203,6 +1309,7 @@
     
 </body>
 </html>
+
 
 
 
