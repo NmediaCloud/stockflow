@@ -174,20 +174,29 @@
 
     <!-- ===================== LOGIN MODAL ===================== -->
     <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeLoginModal()">&times;</span>
-            <h2>Sign In to StockFlow</h2>
-            <p style="color:#666;margin-bottom:20px;">Enter your email to continue</p>
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <input type="email" id="userEmail" placeholder="your@email.com" required
-                    style="width:100%;padding:12px;border:2px solid #14B8A6;border-radius:8px;font-size:16px;margin-bottom:15px;box-sizing:border-box;"/>
-                <button type="submit"
-                    style="width:100%;background:#14B8A6;color:white;padding:12px;border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;">
-                    Continue
-                </button>
-            </form>
-            <p style="font-size:12px;color:#999;margin-top:15px;text-align:center;">No password needed. We'll remember you on this device.</p>
-        </div>
+      <div class="modal-content">
+        <span class="close-modal" onclick="closeLoginModal()">&times;</span>
+        <h2>Sign In to StockFlow</h2>
+        <button onclick="signInWithGoogle()" style="width:100%;padding:12px;
+          background:#4285F4;color:white;border:none;border-radius:8px;
+          font-size:16px;font-weight:bold;cursor:pointer;margin-bottom:15px;">
+          Sign in with Google
+        </button>
+        <p style="text-align:center;color:#999;margin:10px 0;">— or —</p>
+        <input type="email" id="authEmail" placeholder="your@email.com"
+          style="width:100%;padding:12px;border:2px solid #14B8A6;
+          border-radius:8px;font-size:16px;margin-bottom:10px;box-sizing:border-box;"/>
+        <input type="password" id="authPassword" placeholder="Password"
+          style="width:100%;padding:12px;border:2px solid #14B8A6;
+          border-radius:8px;font-size:16px;margin-bottom:15px;box-sizing:border-box;"/>
+        <button onclick="signInWithEmail(
+          document.getElementById('authEmail').value,
+          document.getElementById('authPassword').value)
+          " style="width:100%;background:#14B8A6;color:white;padding:12px;
+          border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;">
+          Sign In / Create Account
+        </button>
+      </div>
     </div>
 
     <!-- ===================== TOP-UP MODAL ===================== -->
