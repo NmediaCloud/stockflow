@@ -993,50 +993,50 @@
             purchaseVideo(currentVideo.id, currentVideo.title, parseFloat(currentVideo.price));
         }
 
-// ============================================
-// DOWNLOAD MODAL FUNCTIONS - ADD THESE TOO
-// ============================================
+        // ============================================
+        // DOWNLOAD MODAL FUNCTIONS - ADD THESE TOO
+        // ============================================
 
-function showDownloadModal(videoTitle, downloadUrl) {
-    const modal = document.getElementById('downloadModal');
-    if (!modal) {
-        // Create download modal if it doesn't exist
-        const modalHTML = `
-            <div id="downloadModal" class="modal">
-                <div class="modal-content">
-                    <span class="close-modal" onclick="closeDownloadModal()">&times;</span>
+        function showDownloadModal(videoTitle, downloadUrl) {
+            const modal = document.getElementById('downloadModal');
+            if (!modal) {
+                // Create download modal if it doesn't exist
+                const modalHTML = `
+                    <div id="downloadModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close-modal" onclick="closeDownloadModal()">&times;</span>
                     
-                    <div style="text-align: center;">
-                        <div style="font-size: 60px; margin-bottom: 20px;">✅</div>
-                        <h2>Purchase Successful!</h2>
-                        <p id="downloadVideoTitle" style="color: #666; margin-bottom: 20px;"></p>
+                            <div style="text-align: center;">
+                                <div style="font-size: 60px; margin-bottom: 20px;">✅</div>
+                                <h2>Purchase Successful!</h2>
+                                <p id="downloadVideoTitle" style="color: #666; margin-bottom: 20px;"></p>
                         
-                        <a id="downloadLink" href="#" target="_blank"
-                            style="display: inline-block; background: #14B8A6; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0;">
-                            📥 Download High-Res File
-                        </a>
+                                <a id="downloadLink" href="#" target="_blank"
+                                    style="display: inline-block; background: #14B8A6; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0;">
+                                    📥 Download High-Res File
+                                </a>
                         
-                        <p style="font-size: 14px; color: #999;">
-                            A download link has also been sent to your email.
-                        </p>
+                                <p style="font-size: 14px; color: #999;">
+                                    A download link has also been sent to your email.
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        `;
-        document.body.insertAdjacentHTML('beforeend', modalHTML);
-    }
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+            }
     
-    document.getElementById('downloadVideoTitle').textContent = videoTitle;
-    document.getElementById('downloadLink').href = downloadUrl;
-    document.getElementById('downloadModal').style.display = 'block';
-}
+            document.getElementById('downloadVideoTitle').textContent = videoTitle;
+            document.getElementById('downloadLink').href = downloadUrl;
+            document.getElementById('downloadModal').style.display = 'block';
+        }
 
-function closeDownloadModal() {
-    const modal = document.getElementById('downloadModal');
-    if (modal) {
-        modal.style.display = 'none';
-    }
-}
+        function closeDownloadModal() {
+            const modal = document.getElementById('downloadModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
             
             const price = parseFloat(currentVideo.price);
             
@@ -1309,6 +1309,7 @@ function closeDownloadModal() {
     
 </body>
 </html>
+
 
 
 
