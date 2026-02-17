@@ -58,7 +58,6 @@ async function loadUserData(email) {
 }
 
 
-}
 
 function logout() {
     localStorage.removeItem(CONFIG.STORAGE_KEY);
