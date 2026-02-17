@@ -151,6 +151,14 @@ async function purchaseVideo(videoId, videoTitle, price) {
 }
 
 function handlePurchase() {
+    // ADD THESE DEBUG LINES
+    console.log('=== PURCHASE DEBUG ===');
+    console.log('currentVideo:', currentVideo);
+    console.log('currentVideo.id:', currentVideo ? currentVideo.id : 'null');
+    console.log('currentVideo.title:', currentVideo ? currentVideo.title : 'null');
+    console.log('currentVideo.price:', currentVideo ? currentVideo.price : 'null');
+    console.log('======================'); 
+ 
     if (!currentVideo) return;
     purchaseVideo(currentVideo.id, currentVideo.title, parseFloat(currentVideo.price));
 }
