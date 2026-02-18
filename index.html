@@ -12,100 +12,116 @@
         html, body {
             overflow-x: hidden;
             max-width: 100%;
+            margin: 0;
+            padding: 0;
         }
 
-        /* Prevent anything from exceeding viewport */
+        /* Global Box Sizing */
         * {
             box-sizing: border-box;
         }
 
-        /* Fix containers */
-        .max-w-7xl,
-        .max-w-4xl,
-        .max-w-5xl,
-        .max-w-2xl {
+        /* Fix containers to never exceed screen width */
+        .max-w-7xl, .max-w-4xl, .max-w-5xl, .max-w-2xl {
             width: 100% !important;
+            max-width: 100% !important;
         }
 
-        /* Navigation Responsive Fix */
+        /* === Navigation & Header Mobile Fix === */
         @media (max-width: 768px) {
             nav > div {
-                flex-wrap: wrap;
-                justify-content: center !important;
-                gap: 10px;
+                flex-direction: column !important; /* Stack logo over buttons */
+                align-items: center !important;
+                gap: 12px !important;
                 padding: 10px !important;
             }
-            
+
+            /* Make the logo and title smaller so they don't push the screen out */
             nav h1 {
-                font-size: 1rem !important;
+                font-size: 14px !important;
+                text-align: center;
+            }
+            
+            nav img {
+                height: 30px !important; /* Smaller logo */
             }
 
-            #walletWidget > div {
-                flex-wrap: wrap;
+            /* Force the wallet/button section to center and wrap */
+            #walletWidget {
+                width: 100%;
+            }
+
+            #walletWidget > div, 
+            #walletDisplay > div {
+                flex-wrap: wrap !important;
                 justify-content: center !important;
-                gap: 8px !important;
+                gap: 6px !important;
             }
 
-            #walletWidget button, #walletWidget div {
-                font-size: 12px !important;
+            /* Adjust button sizes for mobile fingers but smaller text */
+            #walletWidget button, 
+            #walletWidget #walletAmount,
+            #userMenuButton {
+                font-size: 11px !important;
                 padding: 6px 10px !important;
+                white-space: nowrap; /* Prevent text from breaking inside buttons */
             }
-        }
 
-        /* Reduce large hero text on mobile */
-        @media (max-width: 640px) {
+            /* Hero Section Adjustments */
+            header {
+                padding: 30px 15px !important;
+            }
 
             header h2 {
-                font-size: 28px !important;
+                font-size: 24px !important;
                 line-height: 1.2 !important;
             }
 
             header p {
-                font-size: 14px !important;
+                font-size: 13px !important;
             }
 
-            /* Reduce padding everywhere */
-            .px-6 {
-                padding-left: 16px !important;
-                padding-right: 16px !important;
+            /* Search Bar Fix */
+            .relative.max-w-2xl {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
             }
 
-            .py-20 {
-                padding-top: 40px !important;
-                padding-bottom: 40px !important;
-            }
-
-            /* Fix search button overflow */
             #searchInput {
-                padding-right: 20px !important;
+                padding: 12px 20px !important;
                 font-size: 14px !important;
+                border-radius: 8px !important;
             }
 
-            header button {
-                position: relative !important;
-                right: auto !important;
-                top: auto !important;
-                margin-top: 10px;
+            header button.absolute {
+                position: static !important; /* Move button below search input */
                 width: 100%;
+                border-radius: 8px !important;
+                padding: 10px !important;
             }
+        }
 
-            /* Fix modal overflow */
+        /* Fix Modal Content for small screens */
+        @media (max-width: 640px) {
             .modal-content {
                 width: 95% !important;
-                max-width: 95% !important;
-                padding: 20px !important;
+                margin: 10px auto !important;
+                padding: 15px !important;
             }
 
-            /* Fix preview modal */
-            #previewModal > div {
-                width: 95% !important;
-                max-width: 95% !important;
+            /* Category scroll fix - allows horizontal swiping if buttons are too many */
+            #categoryButtons, #subcategoryButtons, #subButtons {
+                display: flex;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 5px;
+                gap: 8px;
             }
-
-            /* Fix grid spacing */
-            #video-grid {
-                gap: 16px !important;
-            }
+            
+            /* Hide scrollbar for category area */
+            #categoryButtons::-webkit-scrollbar { display: none; }
         }
     </style>
 </head>
@@ -347,10 +363,8 @@
     <div id="licenseModal" class="modal">
         <div class="modal-content" style="max-width:700px;max-height:80vh;overflow-y:auto;">
             <span class="close-modal" onclick="closeLicenseModal()">&times;</span>
-            
             <h2 style="color:#14B8A6;margin-bottom:10px;">📜 Nmediaservices Stockflow License Terms</h2>
             <p style="color:#666;font-size:14px;margin-bottom:25px;">Effective Date: February 2026</p>
-            
             <div style="background:#D1FAE5;border-left:4px solid #10B981;padding:15px;margin-bottom:20px;border-radius:4px;">
                 <h3 style="color:#065F46;margin-top:0;">✅ Permitted Uses</h3>
                 <ul style="margin:10px 0;padding-left:25px;color:#064E3B;line-height:1.8;">
@@ -362,72 +376,7 @@
                     <li><strong>Presentations:</strong> Corporate presentations, pitch decks, educational materials</li>
                     <li><strong>Broadcast:</strong> Television, streaming platforms, cinema</li>
                 </ul>
-                <p style="margin:10px 0 0 0;color:#065F46;font-size:13px;">
-                    💡 <strong>Value-Add Requirement:</strong> You must incorporate the footage into a larger creative work. 
-                    The footage should be a component of your final product, not the entire product itself.
-                </p>
             </div>
-            
-            <div style="background:#FEE2E2;border-left:4px solid #EF4444;padding:15px;margin-bottom:20px;border-radius:4px;">
-                <h3 style="color:#991B1B;margin-top:0;">❌ Prohibited Uses</h3>
-                <ul style="margin:10px 0;padding-left:25px;color:#7F1D1D;line-height:1.8;">
-                    <li><strong>Resale/Redistribution:</strong> You may NOT resell, redistribute, or sublicense the footage</li>
-                    <li><strong>Stock Libraries:</strong> You may NOT upload footage to other stock footage sites</li>
-                    <li><strong>Templates for Sale:</strong> You may NOT sell templates, presets, or projects containing our footage</li>
-                    <li><strong>NFTs/Crypto:</strong> You may NOT mint footage as NFTs or use in blockchain projects</li>
-                    <li><strong>Standalone Product:</strong> You may NOT sell the footage as-is without adding significant creative value</li>
-                    <li><strong>Defamatory Use:</strong> You may NOT use in a way that is defamatory, pornographic, or illegal</li>
-                    <li><strong>Trademark/Logo:</strong> You may NOT use footage to create competing trademarks or logos</li>
-                </ul>
-            </div>
-            
-            <div style="background:#FEF3C7;border-left:4px solid #F59E0B;padding:15px;margin-bottom:20px;border-radius:4px;">
-                <h3 style="color:#92400E;margin-top:0;">🔄 Multiple Project Use</h3>
-                <p style="margin:10px 0;color:#78350F;line-height:1.7;">
-                    Each purchase licenses the footage for <strong>one project/end-use</strong>. If you want to use 
-                    the same footage in multiple different projects, best practice is to purchase it separately for each project.
-                </p>
-                <p style="margin:10px 0;color:#78350F;line-height:1.7;font-size:14px;">
-                    <strong>Example:</strong> If you purchase footage for a client's Instagram ad, and later want to use 
-                    the same footage for a different client's YouTube video, you should purchase the footage again.
-                </p>
-            </div>
-            
-            <div style="background:#E0F2FE;border-left:4px solid #0369A1;padding:15px;margin-bottom:20px;border-radius:4px;">
-                <h3 style="color:#0C4A6E;margin-top:0;">ℹ️ Attribution</h3>
-                <p style="margin:10px 0;color:#075985;line-height:1.7;">
-                    <strong>Attribution is NOT required</strong> but always appreciated! If you'd like to credit us, use:
-                </p>
-                <p style="margin:10px 0;padding:10px;background:#BAE6FD;border-radius:4px;font-family:monospace;font-size:13px;color:#0C4A6E;">
-                    Footage by Nmediaservices Stockflow
-                </p>
-            </div>
-            
-            <div style="padding:15px;background:#F9FAFB;border-radius:4px;margin-bottom:15px;">
-                <h3 style="color:#374151;margin-top:0;font-size:16px;">📅 License Duration</h3>
-                <p style="margin:5px 0;color:#4B5563;line-height:1.7;">
-                    This is a <strong>perpetual license</strong> – you can use the footage in your project forever. 
-                    However, if your project changes significantly or you create a new project, a new license is required.
-                </p>
-            </div>
-            
-            <div style="padding:15px;background:#F9FAFB;border-radius:4px;margin-bottom:15px;">
-                <h3 style="color:#374151;margin-top:0;font-size:16px;">© Ownership</h3>
-                <p style="margin:5px 0;color:#4B5563;line-height:1.7;">
-                    Nmediaservices retains full copyright ownership of all footage. You are receiving a license to use 
-                    the footage, not ownership of the copyright itself.
-                </p>
-            </div>
-            
-            <div style="margin-top:25px;padding-top:20px;border-top:1px solid #E5E7EB;text-align:center;">
-                <p style="color:#9CA3AF;font-size:13px;margin:5px 0;">
-                    Questions about licensing? Contact us at support@nmediaservices.com
-                </p>
-                <p style="color:#9CA3AF;font-size:12px;margin:5px 0;">
-                    © 2026 Nmediaservices. All rights reserved.
-                </p>
-            </div>
-            
             <div style="text-align:center;margin-top:20px;">
                 <button onclick="closeLicenseModal()" 
                     style="background:#14B8A6;color:white;padding:12px 30px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">
@@ -437,8 +386,7 @@
         </div>
     </div>
 
-    <div id="notification"
-        style="display:none;position:fixed;top:20px;right:20px;background:#14B8A6;color:white;padding:15px 20px;border-radius:8px;box-shadow:0 4px 6px rgba(0,0,0,0.1);z-index:1001;max-width:300px;">
+    <div id="notification" style="display:none;position:fixed;top:20px;right:20px;background:#14B8A6;color:white;padding:15px 20px;border-radius:8px;box-shadow:0 4px 6px rgba(0,0,0,0.1);z-index:1001;max-width:300px;">
         <p id="notificationMessage" style="margin:0;"></p>
     </div>
 
@@ -458,10 +406,6 @@
     <script src="js/modals.js"></script>
     <script src="js/videos.js"></script>
     <script src="js/wallet.js"></script>
-    <script>
-        // Start the app
-        init();
-    </script>
-
+    <script>init();</script>
 </body>
 </html>
