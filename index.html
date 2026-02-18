@@ -9,7 +9,6 @@
 </head>
 <body class="bg-gray-50 font-sans text-gray-900">
 
-    <!-- ===================== NAVBAR ===================== -->
     <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -20,7 +19,6 @@
                 </h1>
             </div>
 
-            <!-- Wallet Widget -->
             <div id="walletWidget">
                 <button id="loginButton" onclick="showLoginModal()"
                     style="background:#14B8A6;color:white;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;">
@@ -33,10 +31,17 @@
                             <span style="font-size:14px;color:#0369A1;">Wallet:</span>
                             <strong id="walletAmount" style="color:#14B8A6;font-size:18px;">$0.00</strong>
                         </div>
+                        
+                        <button onclick="showPurchaseHistory()"
+                            style="background:#F3F4F6;color:#374151;padding:8px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;">
+                            📜 My Purchases
+                        </button>
+
                         <button onclick="showTopUpModal()"
                             style="background:#14B8A6;color:white;padding:8px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;">
                             Add Funds
                         </button>
+                        
                         <div style="position:relative;">
                             <button id="userMenuButton" onclick="toggleUserMenu()"
                                 style="background:#F3F4F6;padding:8px 12px;border:none;border-radius:6px;cursor:pointer;">
@@ -56,7 +61,6 @@
         </div>
     </nav>
 
-    <!-- ===================== HERO ===================== -->
     <header class="bg-gradient-to-br from-teal-500 to-teal-700 text-white py-20 px-6">
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-5xl font-extrabold mb-4 tracking-tight">Premium Stock Footage</h2>
@@ -73,7 +77,6 @@
         </div>
     </header>
 
-    <!-- ===================== FILTERS ===================== -->
     <div class="bg-white border-b border-gray-200 sticky top-[73px] z-40 shadow-sm">
         <div class="max-w-7xl mx-auto px-6 py-4">
             <div class="mb-4">
@@ -84,7 +87,6 @@
                 <div class="flex flex-wrap gap-2" id="categoryButtons"></div>
             </div>
 
-            <!-- Subcategories -->
             <div id="subcategorySection" class="mb-4 hidden">
                 <div class="bg-teal-50 border border-teal-200 rounded-xl p-4">
                     <p class="text-sm font-semibold text-teal-800 mb-3" id="subcategoryTitle">Subcategories</p>
@@ -92,7 +94,6 @@
                 </div>
             </div>
 
-            <!-- Sub types -->
             <div id="subSection" class="mb-4 hidden">
                 <div class="bg-purple-50 border border-purple-200 rounded-xl p-4">
                     <p class="text-sm font-semibold text-purple-800 mb-3" id="subTitle">Types</p>
@@ -100,7 +101,6 @@
                 </div>
             </div>
 
-            <!-- Format buttons -->
             <div class="flex items-center gap-3">
                 <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Format</p>
                 <div class="flex gap-2">
@@ -117,7 +117,6 @@
         </div>
     </div>
 
-    <!-- ===================== STATUS ===================== -->
     <div class="max-w-7xl mx-auto px-6 py-4">
         <p id="status-text" class="text-sm text-gray-500">
             <span class="inline-block w-2 h-2 bg-teal-500 rounded-full animate-pulse mr-2"></span>
@@ -125,7 +124,6 @@
         </p>
     </div>
 
-    <!-- ===================== VIDEO GRID ===================== -->
     <main class="max-w-7xl mx-auto px-6 pb-16">
         <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
         <div id="loadMoreSection" class="text-center mt-8 hidden">
@@ -135,7 +133,6 @@
         </div>
     </main>
 
-    <!-- ===================== PREVIEW MODAL ===================== -->
     <div id="previewModal" class="modal-hidden fixed inset-0 bg-black/95 z-[60] items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-2xl overflow-hidden max-w-5xl w-full shadow-2xl relative">
             <button onclick="closeModal()" class="absolute top-4 right-4 z-50 bg-black/70 text-white rounded-full p-2.5 hover:bg-black transition">
@@ -172,7 +169,6 @@
         </div>
     </div>
 
-    <!-- ===================== LOGIN MODAL ===================== -->
     <div id="loginModal" class="modal">
       <div class="modal-content">
         <span class="close-modal" onclick="closeLoginModal()">&times;</span>
@@ -199,7 +195,6 @@
       </div>
     </div>
 
-    <!-- ===================== TOP-UP MODAL ===================== -->
     <div id="topUpModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeTopUpModal()">&times;</span>
@@ -223,7 +218,6 @@
         </div>
     </div>
 
-    <!-- ===================== DOWNLOAD MODAL ===================== -->
     <div id="downloadModal" class="modal">
         <div class="modal-content" style="text-align:center;">
             <span class="close-modal" onclick="closeDownloadModal()">&times;</span>
@@ -238,18 +232,124 @@
         </div>
     </div>
 
-    <!-- ===================== NOTIFICATION TOAST ===================== -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content" style="max-width:600px;">
+            <span class="close-modal" onclick="closeHistoryModal()">&times;</span>
+            <h2>My Purchases</h2>
+            <div id="historyList">Loading...</div>
+        </div>
+    </div>
+
+    <div id="licenseModal" class="modal">
+        <div class="modal-content" style="max-width:700px;max-height:80vh;overflow-y:auto;">
+            <span class="close-modal" onclick="closeLicenseModal()">&times;</span>
+            
+            <h2 style="color:#14B8A6;margin-bottom:10px;">📜 Nmediaservices Stockflow License Terms</h2>
+            <p style="color:#666;font-size:14px;margin-bottom:25px;">Effective Date: February 2026</p>
+            
+            <div style="background:#D1FAE5;border-left:4px solid #10B981;padding:15px;margin-bottom:20px;border-radius:4px;">
+                <h3 style="color:#065F46;margin-top:0;">✅ Permitted Uses</h3>
+                <ul style="margin:10px 0;padding-left:25px;color:#064E3B;line-height:1.8;">
+                    <li><strong>Social Media Content:</strong> Use in posts, stories, reels, and videos on any platform</li>
+                    <li><strong>Commercial Projects:</strong> Advertisements, marketing materials, promotional videos</li>
+                    <li><strong>Creative Works:</strong> Films, documentaries, YouTube videos, podcasts</li>
+                    <li><strong>Client Work:</strong> Include in projects you create for clients</li>
+                    <li><strong>Websites & Apps:</strong> Embed in websites, mobile apps, or digital products</li>
+                    <li><strong>Presentations:</strong> Corporate presentations, pitch decks, educational materials</li>
+                    <li><strong>Broadcast:</strong> Television, streaming platforms, cinema</li>
+                </ul>
+                <p style="margin:10px 0 0 0;color:#065F46;font-size:13px;">
+                    💡 <strong>Value-Add Requirement:</strong> You must incorporate the footage into a larger creative work. 
+                    The footage should be a component of your final product, not the entire product itself.
+                </p>
+            </div>
+            
+            <div style="background:#FEE2E2;border-left:4px solid #EF4444;padding:15px;margin-bottom:20px;border-radius:4px;">
+                <h3 style="color:#991B1B;margin-top:0;">❌ Prohibited Uses</h3>
+                <ul style="margin:10px 0;padding-left:25px;color:#7F1D1D;line-height:1.8;">
+                    <li><strong>Resale/Redistribution:</strong> You may NOT resell, redistribute, or sublicense the footage</li>
+                    <li><strong>Stock Libraries:</strong> You may NOT upload footage to other stock footage sites</li>
+                    <li><strong>Templates for Sale:</strong> You may NOT sell templates, presets, or projects containing our footage</li>
+                    <li><strong>NFTs/Crypto:</strong> You may NOT mint footage as NFTs or use in blockchain projects</li>
+                    <li><strong>Standalone Product:</strong> You may NOT sell the footage as-is without adding significant creative value</li>
+                    <li><strong>Defamatory Use:</strong> You may NOT use in a way that is defamatory, pornographic, or illegal</li>
+                    <li><strong>Trademark/Logo:</strong> You may NOT use footage to create competing trademarks or logos</li>
+                </ul>
+            </div>
+            
+            <div style="background:#FEF3C7;border-left:4px solid #F59E0B;padding:15px;margin-bottom:20px;border-radius:4px;">
+                <h3 style="color:#92400E;margin-top:0;">🔄 Multiple Project Use</h3>
+                <p style="margin:10px 0;color:#78350F;line-height:1.7;">
+                    Each purchase licenses the footage for <strong>one project/end-use</strong>. If you want to use 
+                    the same footage in multiple different projects, best practice is to purchase it separately for each project.
+                </p>
+                <p style="margin:10px 0;color:#78350F;line-height:1.7;font-size:14px;">
+                    <strong>Example:</strong> If you purchase footage for a client's Instagram ad, and later want to use 
+                    the same footage for a different client's YouTube video, you should purchase the footage again.
+                </p>
+            </div>
+            
+            <div style="background:#E0F2FE;border-left:4px solid #0369A1;padding:15px;margin-bottom:20px;border-radius:4px;">
+                <h3 style="color:#0C4A6E;margin-top:0;">ℹ️ Attribution</h3>
+                <p style="margin:10px 0;color:#075985;line-height:1.7;">
+                    <strong>Attribution is NOT required</strong> but always appreciated! If you'd like to credit us, use:
+                </p>
+                <p style="margin:10px 0;padding:10px;background:#BAE6FD;border-radius:4px;font-family:monospace;font-size:13px;color:#0C4A6E;">
+                    Footage by Nmediaservices Stockflow
+                </p>
+            </div>
+            
+            <div style="padding:15px;background:#F9FAFB;border-radius:4px;margin-bottom:15px;">
+                <h3 style="color:#374151;margin-top:0;font-size:16px;">📅 License Duration</h3>
+                <p style="margin:5px 0;color:#4B5563;line-height:1.7;">
+                    This is a <strong>perpetual license</strong> – you can use the footage in your project forever. 
+                    However, if your project changes significantly or you create a new project, a new license is required.
+                </p>
+            </div>
+            
+            <div style="padding:15px;background:#F9FAFB;border-radius:4px;margin-bottom:15px;">
+                <h3 style="color:#374151;margin-top:0;font-size:16px;">© Ownership</h3>
+                <p style="margin:5px 0;color:#4B5563;line-height:1.7;">
+                    Nmediaservices retains full copyright ownership of all footage. You are receiving a license to use 
+                    the footage, not ownership of the copyright itself.
+                </p>
+            </div>
+            
+            <div style="margin-top:25px;padding-top:20px;border-top:1px solid #E5E7EB;text-align:center;">
+                <p style="color:#9CA3AF;font-size:13px;margin:5px 0;">
+                    Questions about licensing? Contact us at support@nmediaservices.com
+                </p>
+                <p style="color:#9CA3AF;font-size:12px;margin:5px 0;">
+                    © 2026 Nmediaservices. All rights reserved.
+                </p>
+            </div>
+            
+            <div style="text-align:center;margin-top:20px;">
+                <button onclick="closeLicenseModal()" 
+                    style="background:#14B8A6;color:white;padding:12px 30px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">
+                    I Understand
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div id="notification"
         style="display:none;position:fixed;top:20px;right:20px;background:#14B8A6;color:white;padding:15px 20px;border-radius:8px;box-shadow:0 4px 6px rgba(0,0,0,0.1);z-index:1001;max-width:300px;">
         <p id="notificationMessage" style="margin:0;"></p>
     </div>
 
-    <!-- ===================== SCRIPTS===================== -->
-    <!-- ADD THIS FIRST (module type required for Firebase) -->
-    <script type="module" src="js/auth.js"></script>
-    <!-- Your existing scripts stay exactly the same -->
+    <footer style="background:#1F2937;color:#9CA3AF;padding:40px 20px;margin-top:60px;">
+        <div style="max-width:1200px;margin:0 auto;text-align:center;">
+            <p style="margin:10px 0;">
+                <a href="#" onclick="showLicenseInfo();return false;" style="color:#14B8A6;text-decoration:none;margin:0 15px;">License Terms</a>
+                <a href="#" style="color:#9CA3AF;text-decoration:none;margin:0 15px;">Contact</a>
+                <a href="#" style="color:#9CA3AF;text-decoration:none;margin:0 15px;">About</a>
+            </p>
+            <p style="margin:20px 0 0 0;font-size:14px;">© 2026 Nmediaservices Stockflow. All rights reserved.</p>
+        </div>
+    </footer>
 
-    <!-- ===================== SCRIPTS (ORDER MATTERS!) ===================== -->
+    <script type="module" src="js/auth.js"></script>
     <script src="js/config.js"></script>
     <script src="js/modals.js"></script>
     <script src="js/videos.js"></script>
