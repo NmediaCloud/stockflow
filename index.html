@@ -8,7 +8,26 @@
     <link rel="stylesheet" href="css/styles.css">
     
     <style>
-        /* ===== MOBILE FIXES ===== */
+        /* ===== DESKTOP WIDTH CONSTRAINT ===== */
+        @media (min-width: 1280px) {
+            .max-w-7xl {
+                max-width: 1280px !important;
+            }
+            
+            .max-w-4xl {
+                max-width: 56rem !important;
+            }
+            
+            .max-w-2xl {
+                max-width: 42rem !important;
+            }
+            
+            .max-w-5xl {
+                max-width: 64rem !important;
+            }
+        }
+
+        /* ===== MOBILE FIXES (KEEP UNCHANGED) ===== */
         html, body {
             overflow-x: hidden;
             max-width: 100%;
@@ -21,10 +40,12 @@
             box-sizing: border-box;
         }
 
-        /* Fix containers to never exceed screen width */
-        .max-w-7xl, .max-w-4xl, .max-w-5xl, .max-w-2xl {
-            width: 100% !important;
-            max-width: 100% !important;
+        /* Fix containers on mobile only */
+        @media (max-width: 1279px) {
+            .max-w-7xl, .max-w-4xl, .max-w-5xl, .max-w-2xl {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
         }
 
         /* === Navigation & Header Mobile Fix === */
@@ -244,6 +265,54 @@
         </div>
     </main>
 
+    <!-- ABOUT SECTION -->
+    <section id="about" style="background:#F9FAFB;border-top:1px solid #E5E7EB;padding:60px 20px;">
+        <div style="max-width:800px;margin:0 auto;">
+            <h2 style="font-size:36px;font-weight:bold;color:#1F2937;margin-bottom:20px;text-align:center;">
+                About Nmediaservices <span style="color:#14B8A6;">Stockflow.media</span>
+            </h2>
+            
+            <div style="background:white;border-radius:12px;padding:30px;box-shadow:0 2px 8px rgba(0,0,0,0.05);margin-bottom:30px;">
+                <p style="font-size:16px;line-height:1.8;color:#4B5563;margin-bottom:15px;">
+                    At <strong>Nmedia</strong>, we provide media content curated for <strong>convenience</strong>, 
+                    <strong>cost-effectiveness</strong>, and <strong>professional quality</strong>. Our collection 
+                    includes assets in multiple formats suitable for marketing, promotional, and documentary purposes.
+                </p>
+                
+                <p style="font-size:16px;line-height:1.8;color:#4B5563;margin-bottom:15px;">
+                    Stock content is carefully curated by experienced <strong>Bellevue artists</strong>, ensuring 
+                    optimal size, format, and usability.
+                </p>
+                
+                <div style="background:#D1FAE5;border-left:4px solid #10B981;padding:20px;border-radius:8px;margin:20px 0;">
+                    <p style="font-size:18px;line-height:1.7;color:#065F46;font-weight:600;margin:0;">
+                        💰 The best part: our professional-grade assets cost <strong>less than a cup of coffee</strong>, 
+                        saving you significant time and money compared to traditional production.
+                    </p>
+                </div>
+            </div>
+            
+            <div style="background:white;border-radius:12px;padding:30px;box-shadow:0 2px 8px rgba(0,0,0,0.05);margin-bottom:30px;">
+                <h3 style="font-size:24px;font-weight:bold;color:#1F2937;margin-bottom:15px;">
+                    👨‍💼 Nanda
+                </h3>
+                <p style="font-size:16px;line-height:1.8;color:#4B5563;margin-bottom:15px;">
+                    __(Placeholder - will change this info :)__
+                </p>
+                <p style="font-size:16px;line-height:1.8;color:#4B5563;">
+                    📧 <a href="mailto:contact@stockflow.com" style="color:#14B8A6;text-decoration:none;font-weight:600;">contact@stockflow.com</a>
+                </p>
+            </div>
+            
+            <div style="background:#E0F2FE;border-radius:12px;padding:20px;text-align:center;">
+                <p style="font-size:14px;color:#0369A1;margin:0;">
+                    ✨ <em>We use latest tech to add enhancements to final products</em>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODALS START HERE (keeping all existing modals unchanged) -->
     <div id="previewModal" class="modal-hidden fixed inset-0 bg-black/95 z-[60] items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-2xl overflow-hidden max-w-5xl w-full shadow-2xl relative">
             <button onclick="closeModal()" class="absolute top-4 right-4 z-50 bg-black/70 text-white rounded-full p-2.5 hover:bg-black transition">
@@ -283,7 +352,7 @@
     <div id="loginModal" class="modal">
       <div class="modal-content">
         <span class="close-modal" onclick="closeLoginModal()">&times;</span>
-        <h2>Sign In to StockFlow</h2>
+        <h2>Sign In to Stockflow</h2>
         <button onclick="signInWithGoogle()" style="width:100%;padding:12px;
           background:#4285F4;color:white;border:none;border-radius:8px;
           font-size:16px;font-weight:bold;cursor:pointer;margin-bottom:15px;">
@@ -347,12 +416,10 @@
         <div class="modal-content" style="max-width:600px;">
             <span class="close-modal" onclick="closeHistoryModal()">&times;</span>
             <h2>My Purchases</h2>
-            <div id="historyList" style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
-                Loading...
-            </div>
+            <div id="historyList">Loading...</div>
         </div>
-    </div>    
-    
+    </div>
+
     <div id="licenseModal" class="modal">
         <div class="modal-content" style="max-width:700px;max-height:80vh;overflow-y:auto;">
             <span class="close-modal" onclick="closeLicenseModal()">&times;</span>
@@ -430,7 +497,7 @@
             
             <div style="margin-top:25px;padding-top:20px;border-top:1px solid #E5E7EB;text-align:center;">
                 <p style="color:#9CA3AF;font-size:13px;margin:5px 0;">
-                    Questions about licensing? Contact us at support@nmediaservices.com
+                    Questions about licensing? See our About section.
                 </p>
                 <p style="color:#9CA3AF;font-size:12px;margin:5px 0;">
                     © 2026 Nmediaservices. All rights reserved.
@@ -453,9 +520,8 @@
     <footer style="background:#1F2937;color:#9CA3AF;padding:40px 20px;margin-top:60px;">
         <div style="max-width:1200px;margin:0 auto;text-align:center;">
             <p style="margin:10px 0;">
-                <a href="#" onclick="showLicenseInfo();return false;" style="color:#14B8A6;text-decoration:none;margin:0 15px;">License Terms</a>
-                <a href="#" style="color:#9CA3AF;text-decoration:none;margin:0 15px;">Contact</a>
-                <a href="#" style="color:#9CA3AF;text-decoration:none;margin:0 15px;">About</a>
+                <a href="#about" style="color:#14B8A6;text-decoration:none;margin:0 15px;">About</a>
+                <a href="#" onclick="showLicenseInfo();return false;" style="color:#9CA3AF;text-decoration:none;margin:0 15px;">License Terms</a>
             </p>
             <p style="margin:20px 0 0 0;font-size:14px;">© 2026 Nmediaservices Stockflow. All rights reserved.</p>
         </div>
@@ -467,5 +533,6 @@
     <script src="js/videos.js"></script>
     <script src="js/wallet.js"></script>
     <script>init();</script>
+
 </body>
 </html>
