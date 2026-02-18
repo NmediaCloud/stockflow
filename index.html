@@ -236,10 +236,12 @@
         <div class="modal-content" style="max-width:600px;">
             <span class="close-modal" onclick="closeHistoryModal()">&times;</span>
             <h2>My Purchases</h2>
-            <div id="historyList">Loading...</div>
+            <div id="historyList" style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
+                Loading...
+            </div>
         </div>
-    </div>
-
+    </div>    
+    
     <div id="licenseModal" class="modal">
         <div class="modal-content" style="max-width:700px;max-height:80vh;overflow-y:auto;">
             <span class="close-modal" onclick="closeLicenseModal()">&times;</span>
