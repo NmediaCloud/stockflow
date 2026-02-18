@@ -1,11 +1,12 @@
 // ============================================
-// wallet.js - Wallet, login, and payment functions
+// wallet.js - Updated with duplicate purchase check
 // ============================================
 
 let currentUser = {
     email: null,
     wallet: 0,
-    isLoggedIn: false
+    isLoggedIn: false,
+    purchases: [] // Track user's purchased videos
 };
 
 // ---- DISPLAY ----
@@ -44,21 +45,40 @@ async function loadUserData(email) {
         const user = await response.json();
 
         if (user && user.email) {
-            currentUser = { email: user.email, wallet: user.wallet || 0, isLoggedIn: true };
+            currentUser.email = user.email;
+            currentUser.wallet = user.wallet || 0;
+            currentUser.isLoggedIn = true;
         } else {
-            currentUser = { email: email, wallet: 0, isLoggedIn: true };
+            currentUser.email = email;
+            currentUser.wallet = 0;
+            currentUser.isLoggedIn = true;
         }
+        
+        // Load user's purchase history to check for duplicates
+        await loadUserPurchases(email);
+        
     } catch (error) {
         console.error('Error loading user data:', error);
-        // Still log them in locally even if API fails
-        currentUser = { email: email, wallet: 0, isLoggedIn: true };
+        currentUser = { email: email, wallet: 0, isLoggedIn: true, purchases: [] };
         showNotification('Signed in (offline mode)', 'info');
+    }
+}
+
+async function loadUserPurchases(email) {
+    try {
+        const url = `${CONFIG.API_URL}?action=getPurchases&email=${encodeURIComponent(email)}`;
+        const response = await fetch(url);
+        const purchases = await response.json();
+        currentUser.purchases = purchases || [];
+    } catch (error) {
+        console.error('Error loading purchases:', error);
+        currentUser.purchases = [];
     }
 }
 
 function logout() {
     localStorage.removeItem(CONFIG.STORAGE_KEY);
-    currentUser = { email: null, wallet: 0, isLoggedIn: false };
+    currentUser = { email: null, wallet: 0, isLoggedIn: false, purchases: [] };
     updateWalletDisplay();
     showNotification('Logged out successfully');
 }
@@ -119,6 +139,18 @@ async function purchaseVideo(videoId, videoTitle, price) {
         return;
     }
 
+    // ✅ CHECK FOR DUPLICATE PURCHASE
+    const alreadyOwned = currentUser.purchases.find(p => p.videoId === videoId);
+    if (alreadyOwned) {
+        const purchaseDate = new Date(alreadyOwned.date).toLocaleDateString();
+        const confirmRepurchase = confirm(
+            `⚠️ You already purchased "${videoTitle}" on ${purchaseDate}.\n\n` +
+            `According to our licensing terms, you should purchase again if using in a new project.\n\n` +
+            `Do you want to purchase this video again for $${price.toFixed(2)}?`
+        );
+        if (!confirmRepurchase) return;
+    }
+
     if (currentUser.wallet < price) {
         const shortage = (price - currentUser.wallet).toFixed(2);
         showNotification(`Need $${shortage} more. Add funds?`, 'error');
@@ -137,6 +169,7 @@ async function purchaseVideo(videoId, videoTitle, price) {
 
         if (result.success) {
             currentUser.wallet = result.newBalance;
+            await loadUserPurchases(currentUser.email); // Refresh purchase list
             updateWalletDisplay();
             closeModal();
             showNotification('✅ Purchase successful!', 'success');
@@ -151,14 +184,6 @@ async function purchaseVideo(videoId, videoTitle, price) {
 }
 
 function handlePurchase() {
-    // ADD THESE DEBUG LINES
-    console.log('=== PURCHASE DEBUG ===');
-    console.log('currentVideo:', currentVideo);
-    console.log('currentVideo.id:', currentVideo ? currentVideo.id : 'null');
-    console.log('currentVideo.title:', currentVideo ? currentVideo.title : 'null');
-    console.log('currentVideo.price:', currentVideo ? currentVideo.price : 'null');
-    console.log('======================'); 
- 
     if (!currentVideo) return;
     purchaseVideo(currentVideo.id, currentVideo.title, parseFloat(currentVideo.price));
 }
@@ -173,6 +198,55 @@ function showDownloadModal(videoTitle, downloadUrl) {
 
 function closeDownloadModal() {
     document.getElementById('downloadModal').style.display = 'none';
+}
+
+// ---- PURCHASE HISTORY ----
+
+async function showPurchaseHistory() {
+    if (!currentUser.isLoggedIn) { showLoginModal(); return; }
+    
+    document.getElementById('historyModal').style.display = 'block';
+    document.getElementById('historyList').innerHTML = '<p style="color:#666;">Loading...</p>';
+    
+    await loadUserPurchases(currentUser.email);
+    
+    if (!currentUser.purchases || currentUser.purchases.length === 0) {
+        document.getElementById('historyList').innerHTML = '<p style="color:#999;">No purchases yet.</p>';
+        return;
+    }
+    
+    let html = '<div style="margin-bottom:15px;padding:12px;background:#FEF3C7;border-radius:8px;">';
+    html += '<p style="font-size:12px;color:#92400E;margin:0;">';
+    html += '💡 <strong>License Reminder:</strong> Each purchase is licensed for one project. ';
+    html += 'Using in multiple projects? Please purchase again. ';
+    html += '<a href="#" onclick="showLicenseInfo();return false;" style="color:#0369A1;text-decoration:underline;">View full license terms</a>';
+    html += '</p></div>';
+    
+    currentUser.purchases.forEach(function(p) {
+        const dlUrl = (p.downloadLink || '').replace('export=view', 'export=download');
+        html += '<div style="border:1px solid #e5e7eb;border-radius:8px;padding:15px;margin-bottom:10px;">';
+        html += '<strong>' + p.title + '</strong>';
+        html += '<span style="float:right;color:#14B8A6;">$' + p.amount + '</span><br>';
+        html += '<small style="color:#999;">' + new Date(p.date).toLocaleDateString() + '</small>';
+        html += '<a href="' + dlUrl + '" style="display:block;margin-top:8px;color:#14B8A6;">📥 Download</a>';
+        html += '</div>';
+    });
+    
+    document.getElementById('historyList').innerHTML = html;
+}
+
+function closeHistoryModal() {
+    document.getElementById('historyModal').style.display = 'none';
+}
+
+// ---- LICENSE INFO ----
+
+function showLicenseInfo() {
+    document.getElementById('licenseModal').style.display = 'block';
+}
+
+function closeLicenseModal() {
+    document.getElementById('licenseModal').style.display = 'none';
 }
 
 // ---- PAYMENT SUCCESS HANDLER ----
@@ -198,7 +272,7 @@ window.addEventListener('DOMContentLoaded', function () {
 });
 
 // ============================================
-// EXPOSE FUNCTIONS TO WINDOW (for HTML onclick)
+// EXPOSE FUNCTIONS TO WINDOW
 // ============================================
 window.showLoginModal = showLoginModal;
 window.closeLoginModal = closeLoginModal;
@@ -211,3 +285,7 @@ window.closeDownloadModal = closeDownloadModal;
 window.loadUserData = loadUserData;
 window.updateWalletDisplay = updateWalletDisplay;
 window.logout = logout;
+window.showPurchaseHistory = showPurchaseHistory;
+window.closeHistoryModal = closeHistoryModal;
+window.showLicenseInfo = showLicenseInfo;
+window.closeLicenseModal = closeLicenseModal;
