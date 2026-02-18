@@ -370,16 +370,24 @@
         </div>
     </div>
 
-    <!-- PURCHASE HISTORY MODAL (WITH SCROLL) -->
+    <!-- PURCHASE HISTORY MODAL (WITH SCROLL & BOTTOM CLOSE BUTTON) -->
     <div id="historyModal" class="modal">
         <div class="modal-content" style="max-width:600px;max-height:80vh;overflow-y:auto;">
             <span class="close-modal" onclick="closeHistoryModal()">&times;</span>
             <h2>My Purchases</h2>
             <div id="historyList">Loading...</div>
+            
+            <!-- CLOSE BUTTON AT THE BOTTOM -->
+            <div style="text-align:center;margin-top:30px;padding-top:20px;border-top:1px solid #E5E7EB;">
+                <button onclick="closeHistoryModal()" 
+                    style="background:#14B8A6;color:white;padding:12px 40px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;font-size:16px;">
+                    Close
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- ABOUT MODAL (NEW - WITH SCROLL) -->
+    <!-- ABOUT MODAL (WITH SCROLL & BOTTOM CLOSE BUTTON) -->
     <div id="aboutModal" class="modal">
         <div class="modal-content" style="max-width:800px;max-height:80vh;overflow-y:auto;">
             <span class="close-modal" onclick="closeAboutModal()">&times;</span>
@@ -420,10 +428,18 @@
                 </p>
             </div>
             
-            <div style="background:#E0F2FE;border-radius:12px;padding:20px;text-align:center;">
+            <div style="background:#E0F2FE;border-radius:12px;padding:20px;text-align:center;margin-bottom:20px;">
                 <p style="font-size:14px;color:#0369A1;margin:0;">
                     ✨ <em>We use latest tech to add enhancements to final products</em>
                 </p>
+            </div>
+            
+            <!-- CLOSE BUTTON AT THE BOTTOM -->
+            <div style="text-align:center;margin-top:30px;padding-top:20px;border-top:1px solid #E5E7EB;">
+                <button onclick="closeAboutModal()" 
+                    style="background:#14B8A6;color:white;padding:12px 40px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;font-size:16px;">
+                    Close
+                </button>
             </div>
         </div>
     </div>
