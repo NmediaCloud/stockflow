@@ -1,5 +1,5 @@
 // ============================================
-// wallet.js - Updated with duplicate purchase check
+// wallet.js - Updated with duplicate purchase check (no price in messages)
 // ============================================
 
 let currentUser = {
@@ -146,7 +146,7 @@ async function purchaseVideo(videoId, videoTitle, price) {
         const confirmRepurchase = confirm(
             `⚠️ You already purchased "${videoTitle}" on ${purchaseDate}.\n\n` +
             `According to our licensing terms, you should purchase again if using in a new project.\n\n` +
-            `Do you want to purchase this video again for $${price.toFixed(2)}?`
+            `Do you want to purchase this video again?`
         );
         if (!confirmRepurchase) return;
     }
@@ -159,7 +159,7 @@ async function purchaseVideo(videoId, videoTitle, price) {
         return;
     }
 
-    if (!confirm(`Purchase "${videoTitle}" for $${price.toFixed(2)}?`)) return;
+    if (!confirm(`Purchase "${videoTitle}"?`)) return;
 
     try {
         showNotification('Processing purchase...');
