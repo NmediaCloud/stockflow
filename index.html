@@ -6,24 +6,6 @@
     <title>Nmediaservices Stockflow | Premium Footage Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/styles.css">
-    <style>
-        /* Custom Scrollbar for Purchase History */
-        #historyList::-webkit-scrollbar {
-            width: 6px;
-        }
-        #historyList::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        #historyList::-webkit-scrollbar-thumb {
-            background: #14B8A6;
-            border-radius: 10px;
-        }
-        .modal-content {
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-    </style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-900">
 
@@ -49,9 +31,9 @@
                             <span style="font-size:14px;color:#0369A1;">Wallet:</span>
                             <strong id="walletAmount" style="color:#14B8A6;font-size:18px;">$0.00</strong>
                         </div>
-
+                        
                         <button onclick="showPurchaseHistory()"
-                            style="background:#F3F4F6;color:#374151;padding:8px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:bold; transition: 0.2s hover;">
+                            style="background:#F3F4F6;color:#374151;padding:8px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;">
                             📜 My Purchases
                         </button>
 
@@ -154,7 +136,9 @@
     <div id="previewModal" class="modal-hidden fixed inset-0 bg-black/95 z-[60] items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-2xl overflow-hidden max-w-5xl w-full shadow-2xl relative">
             <button onclick="closeModal()" class="absolute top-4 right-4 z-50 bg-black/70 text-white rounded-full p-2.5 hover:bg-black transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
             </button>
             <video id="modalVideo" controls class="w-full aspect-video bg-black" src=""></video>
             <div class="p-6">
@@ -165,7 +149,10 @@
                             <span id="modalCategory" class="px-3 py-1 bg-teal-100 text-teal-700 rounded-lg font-medium"></span>
                             <span id="modalSubcategory" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg font-medium"></span>
                             <span id="modalSub" class="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg font-medium"></span>
+                            <span id="modalFormat" class="text-gray-600"></span>
+                            <span id="modalResolution" class="text-gray-600"></span>
                         </div>
+                        <div id="modalTags" class="flex flex-wrap gap-1 mt-2"></div>
                     </div>
                     <div class="flex items-center gap-4">
                         <div class="text-right">
@@ -186,13 +173,23 @@
       <div class="modal-content">
         <span class="close-modal" onclick="closeLoginModal()">&times;</span>
         <h2>Sign In to StockFlow</h2>
-        <button onclick="signInWithGoogle()" style="width:100%;padding:12px;background:#4285F4;color:white;border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;margin-bottom:15px;">
+        <button onclick="signInWithGoogle()" style="width:100%;padding:12px;
+          background:#4285F4;color:white;border:none;border-radius:8px;
+          font-size:16px;font-weight:bold;cursor:pointer;margin-bottom:15px;">
           Sign in with Google
         </button>
         <p style="text-align:center;color:#999;margin:10px 0;">— or —</p>
-        <input type="email" id="authEmail" placeholder="your@email.com" style="width:100%;padding:12px;border:2px solid #14B8A6;border-radius:8px;font-size:16px;margin-bottom:10px;box-sizing:border-box;"/>
-        <input type="password" id="authPassword" placeholder="Password" style="width:100%;padding:12px;border:2px solid #14B8A6;border-radius:8px;font-size:16px;margin-bottom:15px;box-sizing:border-box;"/>
-        <button onclick="signInWithEmail(document.getElementById('authEmail').value, document.getElementById('authPassword').value)" style="width:100%;background:#14B8A6;color:white;padding:12px;border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;">
+        <input type="email" id="authEmail" placeholder="your@email.com"
+          style="width:100%;padding:12px;border:2px solid #14B8A6;
+          border-radius:8px;font-size:16px;margin-bottom:10px;box-sizing:border-box;"/>
+        <input type="password" id="authPassword" placeholder="Password"
+          style="width:100%;padding:12px;border:2px solid #14B8A6;
+          border-radius:8px;font-size:16px;margin-bottom:15px;box-sizing:border-box;"/>
+        <button onclick="signInWithEmail(
+          document.getElementById('authEmail').value,
+          document.getElementById('authPassword').value)
+          " style="width:100%;background:#14B8A6;color:white;padding:12px;
+          border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;">
           Sign In / Create Account
         </button>
       </div>
@@ -202,43 +199,143 @@
         <div class="modal-content">
             <span class="close-modal" onclick="closeTopUpModal()">&times;</span>
             <h2>Add Funds to Wallet</h2>
-            <div style="display:grid;gap:15px;margin-top:15px;">
-                <button onclick="addFunds(10)" class="topup-button"><span style="font-size:24px;font-weight:bold;">$10</span></button>
-                <button onclick="addFunds(20)" class="topup-button"><span style="font-size:24px;font-weight:bold;">$20</span></button>
-                <button onclick="addFunds(30)" class="topup-button"><span style="font-size:24px;font-weight:bold;">$30</span></button>
+            <p style="color:#666;margin-bottom:20px;">Choose an amount to add to your wallet</p>
+            <div style="display:grid;gap:15px;">
+                <button onclick="addFunds(10)" class="topup-button">
+                    <span style="font-size:24px;font-weight:bold;">$10</span>
+                    <span style="font-size:14px;color:#666;">Quick top-up</span>
+                </button>
+                <button onclick="addFunds(20)" class="topup-button">
+                    <span style="font-size:24px;font-weight:bold;">$20</span>
+                    <span style="font-size:14px;color:#666;">Most popular</span>
+                </button>
+                <button onclick="addFunds(30)" class="topup-button">
+                    <span style="font-size:24px;font-weight:bold;">$30</span>
+                    <span style="font-size:14px;color:#666;">Best value</span>
+                </button>
             </div>
+            <p style="font-size:12px;color:#999;margin-top:15px;text-align:center;">Secure payment powered by Stripe</p>
+        </div>
+    </div>
+
+    <div id="downloadModal" class="modal">
+        <div class="modal-content" style="text-align:center;">
+            <span class="close-modal" onclick="closeDownloadModal()">&times;</span>
+            <div style="font-size:60px;margin-bottom:20px;">✅</div>
+            <h2>Purchase Successful!</h2>
+            <p id="downloadVideoTitle" style="color:#666;margin-bottom:20px;"></p>
+            <a id="downloadLink" href="#" target="_blank"
+                style="display:inline-block;background:#14B8A6;color:white;padding:15px 40px;text-decoration:none;border-radius:8px;font-weight:bold;margin:20px 0;">
+                📥 Download High-Res File
+            </a>
+            <p style="font-size:14px;color:#999;">A download link has also been sent to your email.</p>
         </div>
     </div>
 
     <div id="historyModal" class="modal">
-        <div class="modal-content" style="max-width:750px; width: 95%;">
+        <div class="modal-content" style="max-width:600px;">
             <span class="close-modal" onclick="closeHistoryModal()">&times;</span>
-            <h2 class="text-xl font-bold mb-4 border-b pb-2">My Purchases</h2>
-            
-            <div id="historyList" style="max-height: 400px; overflow-y: auto;">
-                <p class="text-gray-500 py-4">Loading your purchase history...</p>
-            </div>
-            
-            <p class="text-xs text-gray-400 mt-4 text-center italic">Scroll to see more purchases</p>
+            <h2>My Purchases</h2>
+            <div id="historyList">Loading...</div>
         </div>
     </div>
 
     <div id="licenseModal" class="modal">
         <div class="modal-content" style="max-width:700px;max-height:80vh;overflow-y:auto;">
             <span class="close-modal" onclick="closeLicenseModal()">&times;</span>
+            
             <h2 style="color:#14B8A6;margin-bottom:10px;">📜 Nmediaservices Stockflow License Terms</h2>
-            <div style="background:#D1FAE5;border-left:4px solid #10B981;padding:15px;margin-bottom:20px;border-radius:4px; font-size:14px;">
-                <h3 style="color:#065F46;margin-top:0;font-weight:bold;">✅ Permitted Uses</h3>
-                <p>Social Media, Commercial Ads, Films, YouTube, Client Work, Broadcast.</p>
+            <p style="color:#666;font-size:14px;margin-bottom:25px;">Effective Date: February 2026</p>
+            
+            <div style="background:#D1FAE5;border-left:4px solid #10B981;padding:15px;margin-bottom:20px;border-radius:4px;">
+                <h3 style="color:#065F46;margin-top:0;">✅ Permitted Uses</h3>
+                <ul style="margin:10px 0;padding-left:25px;color:#064E3B;line-height:1.8;">
+                    <li><strong>Social Media Content:</strong> Use in posts, stories, reels, and videos on any platform</li>
+                    <li><strong>Commercial Projects:</strong> Advertisements, marketing materials, promotional videos</li>
+                    <li><strong>Creative Works:</strong> Films, documentaries, YouTube videos, podcasts</li>
+                    <li><strong>Client Work:</strong> Include in projects you create for clients</li>
+                    <li><strong>Websites & Apps:</strong> Embed in websites, mobile apps, or digital products</li>
+                    <li><strong>Presentations:</strong> Corporate presentations, pitch decks, educational materials</li>
+                    <li><strong>Broadcast:</strong> Television, streaming platforms, cinema</li>
+                </ul>
+                <p style="margin:10px 0 0 0;color:#065F46;font-size:13px;">
+                    💡 <strong>Value-Add Requirement:</strong> You must incorporate the footage into a larger creative work. 
+                    The footage should be a component of your final product, not the entire product itself.
+                </p>
             </div>
-            <div style="background:#FEE2E2;border-left:4px solid #EF4444;padding:15px;margin-bottom:20px;border-radius:4px; font-size:14px;">
-                <h3 style="color:#991B1B;margin-top:0;font-weight:bold;">❌ Prohibited Uses</h3>
-                <p>No Resale, No NFT minting, No redistributing on other stock sites.</p>
+            
+            <div style="background:#FEE2E2;border-left:4px solid #EF4444;padding:15px;margin-bottom:20px;border-radius:4px;">
+                <h3 style="color:#991B1B;margin-top:0;">❌ Prohibited Uses</h3>
+                <ul style="margin:10px 0;padding-left:25px;color:#7F1D1D;line-height:1.8;">
+                    <li><strong>Resale/Redistribution:</strong> You may NOT resell, redistribute, or sublicense the footage</li>
+                    <li><strong>Stock Libraries:</strong> You may NOT upload footage to other stock footage sites</li>
+                    <li><strong>Templates for Sale:</strong> You may NOT sell templates, presets, or projects containing our footage</li>
+                    <li><strong>NFTs/Crypto:</strong> You may NOT mint footage as NFTs or use in blockchain projects</li>
+                    <li><strong>Standalone Product:</strong> You may NOT sell the footage as-is without adding significant creative value</li>
+                    <li><strong>Defamatory Use:</strong> You may NOT use in a way that is defamatory, pornographic, or illegal</li>
+                    <li><strong>Trademark/Logo:</strong> You may NOT use footage to create competing trademarks or logos</li>
+                </ul>
             </div>
-            <div style="text-align:center;">
-                <button onclick="closeLicenseModal()" style="background:#14B8A6;color:white;padding:12px 30px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">I Understand</button>
+            
+            <div style="background:#FEF3C7;border-left:4px solid #F59E0B;padding:15px;margin-bottom:20px;border-radius:4px;">
+                <h3 style="color:#92400E;margin-top:0;">🔄 Multiple Project Use</h3>
+                <p style="margin:10px 0;color:#78350F;line-height:1.7;">
+                    Each purchase licenses the footage for <strong>one project/end-use</strong>. If you want to use 
+                    the same footage in multiple different projects, best practice is to purchase it separately for each project.
+                </p>
+                <p style="margin:10px 0;color:#78350F;line-height:1.7;font-size:14px;">
+                    <strong>Example:</strong> If you purchase footage for a client's Instagram ad, and later want to use 
+                    the same footage for a different client's YouTube video, you should purchase the footage again.
+                </p>
+            </div>
+            
+            <div style="background:#E0F2FE;border-left:4px solid #0369A1;padding:15px;margin-bottom:20px;border-radius:4px;">
+                <h3 style="color:#0C4A6E;margin-top:0;">ℹ️ Attribution</h3>
+                <p style="margin:10px 0;color:#075985;line-height:1.7;">
+                    <strong>Attribution is NOT required</strong> but always appreciated! If you'd like to credit us, use:
+                </p>
+                <p style="margin:10px 0;padding:10px;background:#BAE6FD;border-radius:4px;font-family:monospace;font-size:13px;color:#0C4A6E;">
+                    Footage by Nmediaservices Stockflow
+                </p>
+            </div>
+            
+            <div style="padding:15px;background:#F9FAFB;border-radius:4px;margin-bottom:15px;">
+                <h3 style="color:#374151;margin-top:0;font-size:16px;">📅 License Duration</h3>
+                <p style="margin:5px 0;color:#4B5563;line-height:1.7;">
+                    This is a <strong>perpetual license</strong> – you can use the footage in your project forever. 
+                    However, if your project changes significantly or you create a new project, a new license is required.
+                </p>
+            </div>
+            
+            <div style="padding:15px;background:#F9FAFB;border-radius:4px;margin-bottom:15px;">
+                <h3 style="color:#374151;margin-top:0;font-size:16px;">© Ownership</h3>
+                <p style="margin:5px 0;color:#4B5563;line-height:1.7;">
+                    Nmediaservices retains full copyright ownership of all footage. You are receiving a license to use 
+                    the footage, not ownership of the copyright itself.
+                </p>
+            </div>
+            
+            <div style="margin-top:25px;padding-top:20px;border-top:1px solid #E5E7EB;text-align:center;">
+                <p style="color:#9CA3AF;font-size:13px;margin:5px 0;">
+                    Questions about licensing? Contact us at support@nmediaservices.com
+                </p>
+                <p style="color:#9CA3AF;font-size:12px;margin:5px 0;">
+                    © 2026 Nmediaservices. All rights reserved.
+                </p>
+            </div>
+            
+            <div style="text-align:center;margin-top:20px;">
+                <button onclick="closeLicenseModal()" 
+                    style="background:#14B8A6;color:white;padding:12px 30px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">
+                    I Understand
+                </button>
             </div>
         </div>
+    </div>
+
+    <div id="notification"
+        style="display:none;position:fixed;top:20px;right:20px;background:#14B8A6;color:white;padding:15px 20px;border-radius:8px;box-shadow:0 4px 6px rgba(0,0,0,0.1);z-index:1001;max-width:300px;">
+        <p id="notificationMessage" style="margin:0;"></p>
     </div>
 
     <footer style="background:#1F2937;color:#9CA3AF;padding:40px 20px;margin-top:60px;">
@@ -258,6 +355,7 @@
     <script src="js/videos.js"></script>
     <script src="js/wallet.js"></script>
     <script>
+        // Start the app
         init();
     </script>
 
