@@ -6,6 +6,89 @@
     <title>Nmediaservices Stockflow.media | Premium Footage Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/styles.css">
+    
+    <style>
+        /* ===== MOBILE FIXES ===== */
+        html, body {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+
+        /* Prevent anything from exceeding viewport */
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Fix containers */
+        .max-w-7xl,
+        .max-w-4xl,
+        .max-w-5xl,
+        .max-w-2xl {
+            width: 100% !important;
+        }
+
+        /* Reduce large hero text on mobile */
+        @media (max-width: 640px) {
+
+            header h2 {
+                font-size: 28px !important;
+                line-height: 1.2 !important;
+            }
+
+            header p {
+                font-size: 14px !important;
+            }
+
+            /* Reduce padding everywhere */
+            .px-6 {
+                padding-left: 16px !important;
+                padding-right: 16px !important;
+            }
+
+            .py-20 {
+                padding-top: 60px !important;
+                padding-bottom: 60px !important;
+            }
+
+            /* Fix search button overflow */
+            #searchInput {
+                padding-right: 20px !important;
+                font-size: 14px !important;
+            }
+
+            header button {
+                position: relative !important;
+                right: auto !important;
+                top: auto !important;
+                margin-top: 10px;
+                width: 100%;
+            }
+
+            /* Fix wallet area overflow */
+            #walletWidget > div > div {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 10px !important;
+            }
+
+            /* Fix modal overflow */
+            .modal-content {
+                width: 95% !important;
+                max-width: 95% !important;
+            }
+
+            /* Fix preview modal */
+            #previewModal > div {
+                width: 95% !important;
+                max-width: 95% !important;
+            }
+
+            /* Fix grid spacing */
+            #video-grid {
+                gap: 16px !important;
+            }
+        }
+    </style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-900">
 
