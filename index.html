@@ -27,6 +27,31 @@
             width: 100% !important;
         }
 
+        /* Navigation Responsive Fix */
+        @media (max-width: 768px) {
+            nav > div {
+                flex-wrap: wrap;
+                justify-content: center !important;
+                gap: 10px;
+                padding: 10px !important;
+            }
+            
+            nav h1 {
+                font-size: 1rem !important;
+            }
+
+            #walletWidget > div {
+                flex-wrap: wrap;
+                justify-content: center !important;
+                gap: 8px !important;
+            }
+
+            #walletWidget button, #walletWidget div {
+                font-size: 12px !important;
+                padding: 6px 10px !important;
+            }
+        }
+
         /* Reduce large hero text on mobile */
         @media (max-width: 640px) {
 
@@ -46,8 +71,8 @@
             }
 
             .py-20 {
-                padding-top: 60px !important;
-                padding-bottom: 60px !important;
+                padding-top: 40px !important;
+                padding-bottom: 40px !important;
             }
 
             /* Fix search button overflow */
@@ -64,17 +89,11 @@
                 width: 100%;
             }
 
-            /* Fix wallet area overflow */
-            #walletWidget > div > div {
-                flex-direction: column !important;
-                align-items: stretch !important;
-                gap: 10px !important;
-            }
-
             /* Fix modal overflow */
             .modal-content {
                 width: 95% !important;
                 max-width: 95% !important;
+                padding: 20px !important;
             }
 
             /* Fix preview modal */
