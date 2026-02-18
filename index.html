@@ -265,9 +265,125 @@
         </div>
     </main>
 
-    <!-- ABOUT SECTION -->
-    <section id="about" style="background:#F9FAFB;border-top:1px solid #E5E7EB;padding:60px 20px;">
-        <div style="max-width:800px;margin:0 auto;">
+    <!-- ===================== MODALS ===================== -->
+
+    <!-- PREVIEW MODAL -->
+    <div id="previewModal" class="modal-hidden fixed inset-0 bg-black/95 z-[60] items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl overflow-hidden max-w-5xl w-full shadow-2xl relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 z-50 bg-black/70 text-white rounded-full p-2.5 hover:bg-black transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <video id="modalVideo" controls class="w-full aspect-video bg-black" src=""></video>
+            <div class="p-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                    <div class="flex-1">
+                        <h3 id="modalTitle" class="text-2xl font-bold text-gray-900 mb-2"></h3>
+                        <div class="flex items-center gap-2 text-sm flex-wrap mb-2">
+                            <span id="modalCategory" class="px-3 py-1 bg-teal-100 text-teal-700 rounded-lg font-medium"></span>
+                            <span id="modalSubcategory" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg font-medium"></span>
+                            <span id="modalSub" class="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg font-medium"></span>
+                            <span id="modalFormat" class="text-gray-600"></span>
+                            <span id="modalResolution" class="text-gray-600"></span>
+                        </div>
+                        <div id="modalTags" class="flex flex-wrap gap-1 mt-2"></div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="text-right">
+                            <p class="text-sm text-gray-500">License from</p>
+                            <p class="text-3xl font-bold text-gray-900">$<span id="modalPrice"></span></p>
+                        </div>
+                        <button onclick="handlePurchase()" class="bg-teal-500 text-white px-8 py-3 rounded-xl font-bold hover:bg-teal-600 transition shadow-lg shadow-teal-200">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+                <p id="modalDescription" class="text-gray-600 text-sm"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closeLoginModal()">&times;</span>
+        <h2>Sign In to Stockflow</h2>
+        <button onclick="signInWithGoogle()" style="width:100%;padding:12px;
+          background:#4285F4;color:white;border:none;border-radius:8px;
+          font-size:16px;font-weight:bold;cursor:pointer;margin-bottom:15px;">
+          Sign in with Google
+        </button>
+        <p style="text-align:center;color:#999;margin:10px 0;">— or —</p>
+        <input type="email" id="authEmail" placeholder="your@email.com"
+          style="width:100%;padding:12px;border:2px solid #14B8A6;
+          border-radius:8px;font-size:16px;margin-bottom:10px;box-sizing:border-box;"/>
+        <input type="password" id="authPassword" placeholder="Password"
+          style="width:100%;padding:12px;border:2px solid #14B8A6;
+          border-radius:8px;font-size:16px;margin-bottom:15px;box-sizing:border-box;"/>
+        <button onclick="signInWithEmail(
+          document.getElementById('authEmail').value,
+          document.getElementById('authPassword').value)
+          " style="width:100%;background:#14B8A6;color:white;padding:12px;
+          border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;">
+          Sign In / Create Account
+        </button>
+      </div>
+    </div>
+
+    <!-- TOP-UP MODAL -->
+    <div id="topUpModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeTopUpModal()">&times;</span>
+            <h2>Add Funds to Wallet</h2>
+            <p style="color:#666;margin-bottom:20px;">Choose an amount to add to your wallet</p>
+            <div style="display:grid;gap:15px;">
+                <button onclick="addFunds(10)" class="topup-button">
+                    <span style="font-size:24px;font-weight:bold;">$10</span>
+                    <span style="font-size:14px;color:#666;">Quick top-up</span>
+                </button>
+                <button onclick="addFunds(20)" class="topup-button">
+                    <span style="font-size:24px;font-weight:bold;">$20</span>
+                    <span style="font-size:14px;color:#666;">Most popular</span>
+                </button>
+                <button onclick="addFunds(30)" class="topup-button">
+                    <span style="font-size:24px;font-weight:bold;">$30</span>
+                    <span style="font-size:14px;color:#666;">Best value</span>
+                </button>
+            </div>
+            <p style="font-size:12px;color:#999;margin-top:15px;text-align:center;">Secure payment powered by Stripe</p>
+        </div>
+    </div>
+
+    <!-- DOWNLOAD MODAL -->
+    <div id="downloadModal" class="modal">
+        <div class="modal-content" style="text-align:center;">
+            <span class="close-modal" onclick="closeDownloadModal()">&times;</span>
+            <div style="font-size:60px;margin-bottom:20px;">✅</div>
+            <h2>Purchase Successful!</h2>
+            <p id="downloadVideoTitle" style="color:#666;margin-bottom:20px;"></p>
+            <a id="downloadLink" href="#" target="_blank"
+                style="display:inline-block;background:#14B8A6;color:white;padding:15px 40px;text-decoration:none;border-radius:8px;font-weight:bold;margin:20px 0;">
+                📥 Download High-Res File
+            </a>
+            <p style="font-size:14px;color:#999;">A download link has also been sent to your email.</p>
+        </div>
+    </div>
+
+    <!-- PURCHASE HISTORY MODAL (WITH SCROLL) -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content" style="max-width:600px;max-height:80vh;overflow-y:auto;">
+            <span class="close-modal" onclick="closeHistoryModal()">&times;</span>
+            <h2>My Purchases</h2>
+            <div id="historyList">Loading...</div>
+        </div>
+    </div>
+
+    <!-- ABOUT MODAL (NEW - WITH SCROLL) -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content" style="max-width:800px;max-height:80vh;overflow-y:auto;">
+            <span class="close-modal" onclick="closeAboutModal()">&times;</span>
+            
             <h2 style="font-size:36px;font-weight:bold;color:#1F2937;margin-bottom:20px;text-align:center;">
                 About Nmediaservices <span style="color:#14B8A6;">Stockflow.media</span>
             </h2>
@@ -310,116 +426,9 @@
                 </p>
             </div>
         </div>
-    </section>
-
-    <!-- MODALS START HERE (keeping all existing modals unchanged) -->
-    <div id="previewModal" class="modal-hidden fixed inset-0 bg-black/95 z-[60] items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-2xl overflow-hidden max-w-5xl w-full shadow-2xl relative">
-            <button onclick="closeModal()" class="absolute top-4 right-4 z-50 bg-black/70 text-white rounded-full p-2.5 hover:bg-black transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-            <video id="modalVideo" controls class="w-full aspect-video bg-black" src=""></video>
-            <div class="p-6">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-                    <div class="flex-1">
-                        <h3 id="modalTitle" class="text-2xl font-bold text-gray-900 mb-2"></h3>
-                        <div class="flex items-center gap-2 text-sm flex-wrap mb-2">
-                            <span id="modalCategory" class="px-3 py-1 bg-teal-100 text-teal-700 rounded-lg font-medium"></span>
-                            <span id="modalSubcategory" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg font-medium"></span>
-                            <span id="modalSub" class="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg font-medium"></span>
-                            <span id="modalFormat" class="text-gray-600"></span>
-                            <span id="modalResolution" class="text-gray-600"></span>
-                        </div>
-                        <div id="modalTags" class="flex flex-wrap gap-1 mt-2"></div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <div class="text-right">
-                            <p class="text-sm text-gray-500">License from</p>
-                            <p class="text-3xl font-bold text-gray-900">$<span id="modalPrice"></span></p>
-                        </div>
-                        <button onclick="handlePurchase()" class="bg-teal-500 text-white px-8 py-3 rounded-xl font-bold hover:bg-teal-600 transition shadow-lg shadow-teal-200">
-                            Buy Now
-                        </button>
-                    </div>
-                </div>
-                <p id="modalDescription" class="text-gray-600 text-sm"></p>
-            </div>
-        </div>
     </div>
 
-    <div id="loginModal" class="modal">
-      <div class="modal-content">
-        <span class="close-modal" onclick="closeLoginModal()">&times;</span>
-        <h2>Sign In to Stockflow</h2>
-        <button onclick="signInWithGoogle()" style="width:100%;padding:12px;
-          background:#4285F4;color:white;border:none;border-radius:8px;
-          font-size:16px;font-weight:bold;cursor:pointer;margin-bottom:15px;">
-          Sign in with Google
-        </button>
-        <p style="text-align:center;color:#999;margin:10px 0;">— or —</p>
-        <input type="email" id="authEmail" placeholder="your@email.com"
-          style="width:100%;padding:12px;border:2px solid #14B8A6;
-          border-radius:8px;font-size:16px;margin-bottom:10px;box-sizing:border-box;"/>
-        <input type="password" id="authPassword" placeholder="Password"
-          style="width:100%;padding:12px;border:2px solid #14B8A6;
-          border-radius:8px;font-size:16px;margin-bottom:15px;box-sizing:border-box;"/>
-        <button onclick="signInWithEmail(
-          document.getElementById('authEmail').value,
-          document.getElementById('authPassword').value)
-          " style="width:100%;background:#14B8A6;color:white;padding:12px;
-          border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;">
-          Sign In / Create Account
-        </button>
-      </div>
-    </div>
-
-    <div id="topUpModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeTopUpModal()">&times;</span>
-            <h2>Add Funds to Wallet</h2>
-            <p style="color:#666;margin-bottom:20px;">Choose an amount to add to your wallet</p>
-            <div style="display:grid;gap:15px;">
-                <button onclick="addFunds(10)" class="topup-button">
-                    <span style="font-size:24px;font-weight:bold;">$10</span>
-                    <span style="font-size:14px;color:#666;">Quick top-up</span>
-                </button>
-                <button onclick="addFunds(20)" class="topup-button">
-                    <span style="font-size:24px;font-weight:bold;">$20</span>
-                    <span style="font-size:14px;color:#666;">Most popular</span>
-                </button>
-                <button onclick="addFunds(30)" class="topup-button">
-                    <span style="font-size:24px;font-weight:bold;">$30</span>
-                    <span style="font-size:14px;color:#666;">Best value</span>
-                </button>
-            </div>
-            <p style="font-size:12px;color:#999;margin-top:15px;text-align:center;">Secure payment powered by Stripe</p>
-        </div>
-    </div>
-
-    <div id="downloadModal" class="modal">
-        <div class="modal-content" style="text-align:center;">
-            <span class="close-modal" onclick="closeDownloadModal()">&times;</span>
-            <div style="font-size:60px;margin-bottom:20px;">✅</div>
-            <h2>Purchase Successful!</h2>
-            <p id="downloadVideoTitle" style="color:#666;margin-bottom:20px;"></p>
-            <a id="downloadLink" href="#" target="_blank"
-                style="display:inline-block;background:#14B8A6;color:white;padding:15px 40px;text-decoration:none;border-radius:8px;font-weight:bold;margin:20px 0;">
-                📥 Download High-Res File
-            </a>
-            <p style="font-size:14px;color:#999;">A download link has also been sent to your email.</p>
-        </div>
-    </div>
-
-    <div id="historyModal" class="modal">
-        <div class="modal-content" style="max-width:600px;">
-            <span class="close-modal" onclick="closeHistoryModal()">&times;</span>
-            <h2>My Purchases</h2>
-            <div id="historyList">Loading...</div>
-        </div>
-    </div>
-
+    <!-- LICENSE INFO MODAL (WITH SCROLL) -->
     <div id="licenseModal" class="modal">
         <div class="modal-content" style="max-width:700px;max-height:80vh;overflow-y:auto;">
             <span class="close-modal" onclick="closeLicenseModal()">&times;</span>
@@ -513,26 +522,45 @@
         </div>
     </div>
 
+    <!-- NOTIFICATION TOAST -->
     <div id="notification" style="display:none;position:fixed;top:20px;right:20px;background:#14B8A6;color:white;padding:15px 20px;border-radius:8px;box-shadow:0 4px 6px rgba(0,0,0,0.1);z-index:1001;max-width:300px;">
         <p id="notificationMessage" style="margin:0;"></p>
     </div>
 
+    <!-- FOOTER -->
     <footer style="background:#1F2937;color:#9CA3AF;padding:40px 20px;margin-top:60px;">
         <div style="max-width:1200px;margin:0 auto;text-align:center;">
             <p style="margin:10px 0;">
-                <a href="#about" style="color:#14B8A6;text-decoration:none;margin:0 15px;">About</a>
+                <a href="#" onclick="showAboutModal();return false;" style="color:#14B8A6;text-decoration:none;margin:0 15px;">About</a>
                 <a href="#" onclick="showLicenseInfo();return false;" style="color:#9CA3AF;text-decoration:none;margin:0 15px;">License Terms</a>
             </p>
             <p style="margin:20px 0 0 0;font-size:14px;">© 2026 Nmediaservices Stockflow. All rights reserved.</p>
         </div>
     </footer>
 
+    <!-- SCRIPTS -->
     <script type="module" src="js/auth.js"></script>
     <script src="js/config.js"></script>
     <script src="js/modals.js"></script>
     <script src="js/videos.js"></script>
     <script src="js/wallet.js"></script>
-    <script>init();</script>
+    <script>
+        // About Modal Functions
+        function showAboutModal() {
+            document.getElementById('aboutModal').style.display = 'block';
+        }
+        
+        function closeAboutModal() {
+            document.getElementById('aboutModal').style.display = 'none';
+        }
+        
+        // Expose to window
+        window.showAboutModal = showAboutModal;
+        window.closeAboutModal = closeAboutModal;
+        
+        // Start the app
+        init();
+    </script>
 
 </body>
 </html>
