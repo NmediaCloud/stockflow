@@ -699,7 +699,7 @@
     </footer>
 
     <!-- SCRIPTS -->
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/auth.js"></script>
     <script src="js/config.js"></script>
     <script src="js/modals.js"></script>
     <script src="js/videos.js"></script>
@@ -711,4 +711,27 @@
         }
         
         function closeAboutModal() {
-            document.getElementById('aboutModal').style.d
+            document.getElementById('aboutModal').style.display = 'none';
+        }
+        
+        // License Modal Functions
+        function showLicenseInfo() {
+            document.getElementById('licenseModal').style.display = 'block';
+        }
+        
+        function closeLicenseModal() {
+            document.getElementById('licenseModal').style.display = 'none';
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🎬 DOM loaded, initializing...');
+            if (typeof init === 'function') {
+                init();
+            } else {
+                console.error('❌ init() function not found!');
+            }
+        });
+    </script>
+</body>
+</html>
