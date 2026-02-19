@@ -1,5 +1,5 @@
 // ============================================
-// videos.js - SAFE VERSION (handles any column count)
+// videos.js - FIXED: No featured badges + proper aspect ratios
 // ============================================
 
 let allVideos = [];
@@ -75,19 +75,15 @@ async function loadVideosFromSheet() {
             throw new Error('Sheet has no data rows');
         }
         
-        // Log header for debugging
         console.log('📋 Headers:', rows[0]);
         console.log('📋 Column count:', rows[0].length);
         
-        // Check if Featured column exists (Column O = index 14)
         const hasFeaturedColumn = rows[0].length >= 15;
         console.log('⭐ Has Featured column:', hasFeaturedColumn);
         
-        // Skip header row
         for (let i = 1; i < rows.length; i++) {
             const row = rows[i];
             
-            // Safely read columns with fallbacks
             const video = {
                 id: (row[0] || '').toString().trim(),
                 title: (row[1] || '').toString().trim(),
@@ -102,15 +98,12 @@ async function loadVideosFromSheet() {
                 resolution: (row[10] || '').toString().trim(),
                 tags: (row[11] || '').toString().trim(),
                 highResUrl: (row[13] || '').toString().trim(),
-                // SAFE: Only read Featured if column exists
                 featured: hasFeaturedColumn ? (row[14] === 'TRUE' || row[14] === 'true' || row[14] === true) : false
             };
             
-            // Only add videos with required data
             if (video.id && video.title && video.thumbnail && video.preview) {
                 allVideos.push(video);
                 
-                // Build category structure
                 if (video.category) {
                     categories.add(video.category);
                     
@@ -191,7 +184,6 @@ function buildCategoryButtons() {
     
     const featuredCount = allVideos.filter(v => v.featured).length;
     
-    // Show Featured button only if there are featured videos
     if (featuredCount > 0) {
         const featuredBtn = document.createElement('button');
         featuredBtn.className = 'category-btn active px-4 py-2 rounded-lg text-sm font-medium bg-teal-500 text-white hover:bg-teal-600 transition shadow-sm';
@@ -199,7 +191,6 @@ function buildCategoryButtons() {
         featuredBtn.onclick = () => selectCategory(null);
         container.appendChild(featuredBtn);
     } else {
-        // No featured videos - show "All Videos" button
         const allBtn = document.createElement('button');
         allBtn.className = 'category-btn active px-4 py-2 rounded-lg text-sm font-medium bg-teal-500 text-white hover:bg-teal-600 transition shadow-sm';
         allBtn.textContent = 'All Videos';
@@ -207,7 +198,6 @@ function buildCategoryButtons() {
         container.appendChild(allBtn);
     }
     
-    // Category buttons
     const sortedCategories = Array.from(categories).sort();
     sortedCategories.forEach(cat => {
         const btn = document.createElement('button');
@@ -327,7 +317,6 @@ function filterVideos() {
     const searchTerm = document.getElementById('searchInput')?.value?.toLowerCase() || '';
     
     filteredVideos = allVideos.filter(video => {
-        // Featured filter: if "Featured" button selected (null) AND video has featured=true
         if (selectedCategory === null) {
             const hasFeatured = allVideos.some(v => v.featured);
             if (hasFeatured && !video.featured) return false;
@@ -412,13 +401,22 @@ function createVideoCard(video) {
         '16:9': '🖥️ 16:9'
     }[video.format] || video.format;
     
-    const featuredBadge = video.featured 
-        ? '<span class="absolute top-2 left-2 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-md text-xs font-bold shadow-lg">⭐ FEATURED</span>' 
-        : '';
+    // ============================================
+    // FIXED: Proper aspect ratios based on format
+    // ============================================
+    let aspectClass = 'aspect-video';  // Default 16:9
+    if (video.format === '9:16') {
+        aspectClass = 'aspect-[9/16]';  // Vertical
+    } else if (video.format === '1:1') {
+        aspectClass = 'aspect-square';  // Square
+    }
+    
+    // ============================================
+    // REMOVED: Featured badge (no yellow label)
+    // ============================================
     
     card.innerHTML = `
-        <div class="relative overflow-hidden aspect-video bg-gray-900">
-            ${featuredBadge}
+        <div class="relative overflow-hidden ${aspectClass} bg-gray-900">
             <span class="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded-md text-xs font-medium">${formatBadge}</span>
             <img src="${video.thumbnail}" alt="${video.title}" class="w-full h-full object-cover group-hover:opacity-0 transition-opacity duration-300" loading="lazy">
             <video src="${video.preview}" class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300" muted loop playsinline onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0"></video>
