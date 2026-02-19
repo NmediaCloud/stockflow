@@ -1,5 +1,5 @@
 // ============================================
-// videos.js - Featured videos with clean UI
+// videos.js - SAFE VERSION (handles any column count)
 // ============================================
 
 let allVideos = [];
@@ -8,7 +8,6 @@ let displayedVideos = [];
 let currentVideo = null;
 let currentLoadIndex = 0;
 
-// Track categories and filters
 let categories = new Set();
 let subcategories = {};
 let subs = {};
@@ -17,21 +16,16 @@ let selectedSubcategory = null;
 let selectedSub = null;
 let selectedFormat = 'all';
 
-// ============================================
-// INITIALIZATION
-// ============================================
-
 async function init() {
     console.log('🎬 Initializing Stockflow...');
     
-    // Show loading state
     document.getElementById('status-text').innerHTML = 
-        '<span class="inline-block w-2 h-2 bg-teal-500 rounded-full animate-pulse mr-2"></span>Loading featured content...';
+        '<span class="inline-block w-2 h-2 bg-teal-500 rounded-full animate-pulse mr-2"></span>Loading content...';
     
     try {
         await loadVideosFromSheet();
         
-        // Sort videos: Featured first, then by File_ID
+        // Sort: Featured first (if exists), then by ID
         allVideos.sort((a, b) => {
             if (a.featured && !b.featured) return -1;
             if (!a.featured && b.featured) return 1;
@@ -41,85 +35,114 @@ async function init() {
         buildCategoryButtons();
         filterVideos();
         
-        console.log(`✅ Loaded ${allVideos.length} videos (${allVideos.filter(v => v.featured).length} featured)`);
+        const featuredCount = allVideos.filter(v => v.featured).length;
+        console.log(`✅ Loaded ${allVideos.length} videos (${featuredCount} featured)`);
         
     } catch (error) {
         console.error('❌ Init error:', error);
         document.getElementById('status-text').innerHTML = 
             '<span style="color: #EF4444;">⚠️ Error loading videos. Please refresh the page.</span>';
+        document.getElementById('video-grid').innerHTML = `
+            <div class="col-span-full bg-red-50 p-8 rounded-xl">
+                <h3 class="text-red-800 font-bold text-xl mb-3">Error Loading Videos</h3>
+                <p class="text-red-600 mb-3">${error.message}</p>
+                <p class="text-sm text-gray-600">Check browser console (F12) for details.</p>
+            </div>
+        `;
     }
 }
-
-// ============================================
-// LOAD DATA FROM GOOGLE SHEETS
-// ============================================
 
 async function loadVideosFromSheet() {
     const csvUrl = CONFIG.SHEET_CSV_URL;
     
+    console.log('📡 Fetching from:', csvUrl);
+    
     try {
         const response = await fetch(csvUrl);
-        if (!response.ok) throw new Error('Failed to fetch sheet');
+        if (!response.ok) throw new Error('Failed to fetch sheet: HTTP ' + response.status);
         
         const csvText = await response.text();
+        console.log('📄 CSV received, length:', csvText.length);
+        
+        if (!csvText || csvText.trim().length === 0) {
+            throw new Error('Sheet returned empty data');
+        }
+        
         const rows = parseCSV(csvText);
+        console.log('📊 Parsed rows:', rows.length);
+        
+        if (rows.length < 2) {
+            throw new Error('Sheet has no data rows');
+        }
+        
+        // Log header for debugging
+        console.log('📋 Headers:', rows[0]);
+        console.log('📋 Column count:', rows[0].length);
+        
+        // Check if Featured column exists (Column O = index 14)
+        const hasFeaturedColumn = rows[0].length >= 15;
+        console.log('⭐ Has Featured column:', hasFeaturedColumn);
         
         // Skip header row
         for (let i = 1; i < rows.length; i++) {
             const row = rows[i];
-            if (row.length < 12) continue;
             
+            // Safely read columns with fallbacks
             const video = {
-                id: row[0] || '',
-                title: row[1] || '',
-                category: row[2] || '',
-                subcategory: row[3] || '',
-                sub: row[4] || '',
-                description: row[5] || '',
-                thumbnail: row[6] || '',
-                preview: row[7] || '',
-                price: parseFloat(row[8]) || 25,
-                format: row[9] || '16:9',
-                resolution: row[10] || '',
-                tags: row[11] || '',
-                highResUrl: row[13] || '',
-                featured: row[14] === 'TRUE'
+                id: (row[0] || '').toString().trim(),
+                title: (row[1] || '').toString().trim(),
+                category: (row[2] || '').toString().trim(),
+                subcategory: (row[3] || '').toString().trim(),
+                sub: (row[4] || '').toString().trim(),
+                description: (row[5] || '').toString().trim(),
+                thumbnail: (row[6] || '').toString().trim(),
+                preview: (row[7] || '').toString().trim(),
+                price: parseFloat(row[8]) || 1,
+                format: (row[9] || '16:9').toString().trim(),
+                resolution: (row[10] || '').toString().trim(),
+                tags: (row[11] || '').toString().trim(),
+                highResUrl: (row[13] || '').toString().trim(),
+                // SAFE: Only read Featured if column exists
+                featured: hasFeaturedColumn ? (row[14] === 'TRUE' || row[14] === 'true' || row[14] === true) : false
             };
             
+            // Only add videos with required data
             if (video.id && video.title && video.thumbnail && video.preview) {
                 allVideos.push(video);
                 
-                categories.add(video.category);
-                
-                if (!subcategories[video.category]) {
-                    subcategories[video.category] = new Set();
-                }
-                if (video.subcategory) {
-                    subcategories[video.category].add(video.subcategory);
-                }
-                
-                const catSubKey = `${video.category}|${video.subcategory}`;
-                if (!subs[catSubKey]) {
-                    subs[catSubKey] = new Set();
-                }
-                if (video.sub) {
-                    subs[catSubKey].add(video.sub);
+                // Build category structure
+                if (video.category) {
+                    categories.add(video.category);
+                    
+                    if (!subcategories[video.category]) {
+                        subcategories[video.category] = new Set();
+                    }
+                    if (video.subcategory) {
+                        subcategories[video.category].add(video.subcategory);
+                    }
+                    
+                    const catSubKey = `${video.category}|${video.subcategory}`;
+                    if (!subs[catSubKey]) {
+                        subs[catSubKey] = new Set();
+                    }
+                    if (video.sub) {
+                        subs[catSubKey].add(video.sub);
+                    }
                 }
             }
         }
         
-        console.log(`📊 Parsed ${allVideos.length} videos from sheet`);
-        console.log(`⭐ Featured videos: ${allVideos.filter(v => v.featured).length}`);
+        if (allVideos.length === 0) {
+            throw new Error('No valid videos found in sheet');
+        }
+        
+        console.log(`✅ Successfully loaded ${allVideos.length} videos`);
         
     } catch (error) {
-        console.error('Error loading videos:', error);
+        console.error('❌ Error loading videos:', error);
         throw error;
     }
 }
-
-// ============================================
-// CSV PARSING
-// ============================================
 
 function parseCSV(text) {
     const rows = [];
@@ -162,29 +185,31 @@ function parseCSV(text) {
     return rows;
 }
 
-// ============================================
-// CATEGORY BUTTONS
-// ============================================
-
 function buildCategoryButtons() {
     const container = document.getElementById('categoryButtons');
     container.innerHTML = '';
     
-    // Featured count
     const featuredCount = allVideos.filter(v => v.featured).length;
     
-    // Featured button (only special button)
-    const featuredBtn = document.createElement('button');
-    featuredBtn.className = 'category-btn active px-4 py-2 rounded-lg text-sm font-medium bg-teal-500 text-white hover:bg-teal-600 transition shadow-sm';
-    featuredBtn.innerHTML = '⭐ Featured';
-    featuredBtn.onclick = () => selectCategory(null);
-    container.appendChild(featuredBtn);
+    // Show Featured button only if there are featured videos
+    if (featuredCount > 0) {
+        const featuredBtn = document.createElement('button');
+        featuredBtn.className = 'category-btn active px-4 py-2 rounded-lg text-sm font-medium bg-teal-500 text-white hover:bg-teal-600 transition shadow-sm';
+        featuredBtn.innerHTML = '⭐ Featured';
+        featuredBtn.onclick = () => selectCategory(null);
+        container.appendChild(featuredBtn);
+    } else {
+        // No featured videos - show "All Videos" button
+        const allBtn = document.createElement('button');
+        allBtn.className = 'category-btn active px-4 py-2 rounded-lg text-sm font-medium bg-teal-500 text-white hover:bg-teal-600 transition shadow-sm';
+        allBtn.textContent = 'All Videos';
+        allBtn.onclick = () => selectCategory(null);
+        container.appendChild(allBtn);
+    }
     
-    // Regular category buttons (no special styling)
+    // Category buttons
     const sortedCategories = Array.from(categories).sort();
     sortedCategories.forEach(cat => {
-        const count = allVideos.filter(v => v.category === cat).length;
-        
         const btn = document.createElement('button');
         btn.className = 'category-btn px-4 py-2 rounded-lg text-sm font-medium bg-white text-gray-700 hover:bg-teal-500 hover:text-white border border-gray-200 transition shadow-sm';
         btn.textContent = cat;
@@ -199,7 +224,6 @@ function selectCategory(category) {
     selectedSubcategory = null;
     selectedSub = null;
     
-    // Update button states
     document.querySelectorAll('.category-btn').forEach(btn => {
         btn.classList.remove('active', 'bg-teal-500', 'text-white');
         btn.classList.add('bg-white', 'text-gray-700');
@@ -212,7 +236,6 @@ function selectCategory(category) {
     const subSubSection = document.getElementById('subSection');
     
     if (category === null) {
-        // Featured view - hide subcategories
         subSection.classList.add('hidden');
         subSubSection.classList.add('hidden');
     } else if (subcategories[category] && subcategories[category].size > 0) {
@@ -300,30 +323,21 @@ function selectSub(sub) {
     filterVideos();
 }
 
-// ============================================
-// FILTERING
-// ============================================
-
 function filterVideos() {
     const searchTerm = document.getElementById('searchInput')?.value?.toLowerCase() || '';
     
     filteredVideos = allVideos.filter(video => {
-        // Featured filter: only show featured videos when Featured is selected
-        if (selectedCategory === null && !video.featured) return false;
+        // Featured filter: if "Featured" button selected (null) AND video has featured=true
+        if (selectedCategory === null) {
+            const hasFeatured = allVideos.some(v => v.featured);
+            if (hasFeatured && !video.featured) return false;
+        }
         
-        // Category filter
         if (selectedCategory !== null && video.category !== selectedCategory) return false;
-        
-        // Subcategory filter
         if (selectedSubcategory && video.subcategory !== selectedSubcategory) return false;
-        
-        // Sub filter
         if (selectedSub && video.sub !== selectedSub) return false;
-        
-        // Format filter
         if (selectedFormat !== 'all' && video.format !== selectedFormat) return false;
         
-        // Search filter
         if (searchTerm) {
             const searchableText = `${video.title} ${video.description} ${video.tags} ${video.category} ${video.subcategory} ${video.sub}`.toLowerCase();
             if (!searchableText.includes(searchTerm)) return false;
@@ -332,18 +346,14 @@ function filterVideos() {
         return true;
     });
     
-    // Reset display
     currentLoadIndex = 0;
     displayedVideos = [];
     document.getElementById('video-grid').innerHTML = '';
     
-    // Load first batch
     loadMore();
     
-    // Update result count
     document.getElementById('resultCount').textContent = `${filteredVideos.length} videos`;
     
-    // Update status text
     const statusEl = document.getElementById('status-text');
     if (filteredVideos.length === 0) {
         statusEl.innerHTML = '<span style="color: #9CA3AF;">No videos match your filters</span>';
@@ -366,10 +376,6 @@ function filterByFormat(format) {
     filterVideos();
 }
 
-// ============================================
-// LOAD MORE (PAGINATION)
-// ============================================
-
 function loadMore() {
     const grid = document.getElementById('video-grid');
     const loadMoreBtn = document.getElementById('loadMoreSection');
@@ -385,21 +391,15 @@ function loadMore() {
     
     currentLoadIndex = endIndex;
     
-    // Show/hide load more button
     if (currentLoadIndex < filteredVideos.length) {
         loadMoreBtn.classList.remove('hidden');
     } else {
         loadMoreBtn.classList.add('hidden');
     }
     
-    // Update status
     document.getElementById('status-text').innerHTML = 
         `<span class="inline-block w-2 h-2 bg-teal-500 rounded-full mr-2"></span>${displayedVideos.length} of ${filteredVideos.length} videos loaded`;
 }
-
-// ============================================
-// VIDEO CARD CREATION
-// ============================================
 
 function createVideoCard(video) {
     const card = document.createElement('div');
@@ -436,7 +436,6 @@ function createVideoCard(video) {
     return card;
 }
 
-// Make functions global
 window.init = init;
 window.filterVideos = filterVideos;
 window.filterByFormat = filterByFormat;
