@@ -1,5 +1,9 @@
 // ============================================
-// videos.js - UNIFORM HEIGHT (All cards same 16:9 size)
+// videos.js - PERFORMANCE OPTIMIZED
+// - Uniform 16:9 containers (same height)
+// - Original aspect ratios preserved inside (object-contain)
+// - NO video previews on hover (images only)
+// - Fast loading with optimized thumbnails
 // ============================================
 
 let allVideos = [];
@@ -400,16 +404,27 @@ function createVideoCard(video) {
     }[video.format] || video.format;
     
     // ============================================
-    // UNIFORM HEIGHT: All cards use aspect-video (16:9)
-    // Images will crop/fit within this container
-    // This keeps all cards the same height for uniform grid
+    // PERFORMANCE OPTIMIZED:
+    // - Container: aspect-video (uniform 16:9 height)
+    // - Image: object-contain (preserves original aspect ratio)
+    // - NO video preview (removed for performance)
+    // - Play icon overlay (indicates video available)
     // ============================================
     
     card.innerHTML = `
         <div class="relative overflow-hidden aspect-video bg-gray-900">
             <span class="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded-md text-xs font-medium">${formatBadge}</span>
-            <img src="${video.thumbnail}" alt="${video.title}" class="w-full h-full object-cover group-hover:opacity-0 transition-opacity duration-300" loading="lazy">
-            <video src="${video.preview}" class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300" muted loop playsinline onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0"></video>
+            <img src="${video.thumbnail}" 
+                 alt="${video.title}" 
+                 class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110" 
+                 loading="lazy">
+            <div class="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div class="bg-white/95 p-4 rounded-full shadow-xl">
+                    <svg class="w-8 h-8 text-teal-500 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path>
+                    </svg>
+                </div>
+            </div>
         </div>
         <div class="p-4">
             <h3 class="font-bold text-gray-900 text-sm mb-1 line-clamp-2 group-hover:text-teal-600 transition">${video.title}</h3>
