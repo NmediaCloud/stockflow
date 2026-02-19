@@ -1,5 +1,5 @@
 // ============================================
-// videos.js - FIXED: No featured badges + proper aspect ratios
+// videos.js - UNIFORM HEIGHT (All cards same 16:9 size)
 // ============================================
 
 let allVideos = [];
@@ -25,7 +25,6 @@ async function init() {
     try {
         await loadVideosFromSheet();
         
-        // Sort: Featured first (if exists), then by ID
         allVideos.sort((a, b) => {
             if (a.featured && !b.featured) return -1;
             if (!a.featured && b.featured) return 1;
@@ -75,7 +74,6 @@ async function loadVideosFromSheet() {
             throw new Error('Sheet has no data rows');
         }
         
-        console.log('📋 Headers:', rows[0]);
         console.log('📋 Column count:', rows[0].length);
         
         const hasFeaturedColumn = rows[0].length >= 15;
@@ -402,21 +400,13 @@ function createVideoCard(video) {
     }[video.format] || video.format;
     
     // ============================================
-    // FIXED: Proper aspect ratios based on format
-    // ============================================
-    let aspectClass = 'aspect-video';  // Default 16:9
-    if (video.format === '9:16') {
-        aspectClass = 'aspect-[9/16]';  // Vertical
-    } else if (video.format === '1:1') {
-        aspectClass = 'aspect-square';  // Square
-    }
-    
-    // ============================================
-    // REMOVED: Featured badge (no yellow label)
+    // UNIFORM HEIGHT: All cards use aspect-video (16:9)
+    // Images will crop/fit within this container
+    // This keeps all cards the same height for uniform grid
     // ============================================
     
     card.innerHTML = `
-        <div class="relative overflow-hidden ${aspectClass} bg-gray-900">
+        <div class="relative overflow-hidden aspect-video bg-gray-900">
             <span class="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded-md text-xs font-medium">${formatBadge}</span>
             <img src="${video.thumbnail}" alt="${video.title}" class="w-full h-full object-cover group-hover:opacity-0 transition-opacity duration-300" loading="lazy">
             <video src="${video.preview}" class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300" muted loop playsinline onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0"></video>
