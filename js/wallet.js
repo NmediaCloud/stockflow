@@ -159,7 +159,7 @@ async function purchaseVideo(videoId, videoTitle, price) {
         return;
     }
 
-    if (!confirm(`Purchase "${videoTitle}"?`)) return;
+    //if (!confirm(`Purchase "${videoTitle}"?`)) return;
 
     try {
         showNotification('Processing purchase...');
@@ -226,9 +226,9 @@ async function showPurchaseHistory() {
         const dlUrl = (p.downloadLink || '').replace('export=view', 'export=download');
         html += '<div style="border:1px solid #e5e7eb;border-radius:8px;padding:15px;margin-bottom:10px;">';
         html += '<strong>' + p.title + '</strong>';
-        html += '<span style="float:right;color:#14B8A6;">$' + p.amount + '</span><br>';
+        html += '<span style="float:right;color:#F97316;">$' + p.amount + '</span><br>';
         html += '<small style="color:#999;">' + new Date(p.date).toLocaleDateString() + '</small>';
-        html += '<a href="' + dlUrl + '" style="display:block;margin-top:8px;color:#14B8A6;">📥 Download</a>';
+        html += '<a href="' + dlUrl + '" style="display:block;margin-top:8px;color:#F97316;">📥 Download</a>';
         html += '</div>';
     });
     
