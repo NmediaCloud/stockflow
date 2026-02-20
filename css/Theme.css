@@ -1,0 +1,394 @@
+/* ============================================
+   STOCKFLOW.MEDIA — THEME v2.0
+   Dark Charcoal + Burnt Orange
+   
+   HOW TO USE:
+   Add this single line to your index.html <head>
+   AFTER your existing styles.css:
+   
+   <link rel="stylesheet" href="css/theme.css">
+   
+   That's it. This file overrides all teal/green
+   with the new dark orange direction.
+   ============================================ */
+
+/* ── CSS VARIABLES ─────────────────────────── */
+:root {
+  --bg-main:        #111111;
+  --bg-section:     #1F2933;
+  --bg-card:        #2A2F36;
+  --bg-border:      #3A3F46;
+  --text-primary:   #F3F4F6;
+  --text-secondary: #9CA3AF;
+  --orange-primary: #F97316;
+  --orange-burnt:   #C2410C;
+  --orange-hover:   #FB923C;
+  --amber-deep:     #D97706;
+  --amber-dark:     #B45309;
+  --amber-light:    #F59E0B;
+}
+
+/* ── BODY & BASE ────────────────────────────── */
+body {
+  background: var(--bg-main) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ── NAVIGATION ─────────────────────────────── */
+nav {
+  background: #111111 !important;
+  border-bottom: 1px solid var(--bg-border) !important;
+}
+
+nav h1 { color: var(--text-primary) !important; }
+
+nav h1 .text-teal-500,
+nav h1 span { color: var(--orange-primary) !important; }
+
+/* ── HERO HEADER ────────────────────────────── */
+header {
+  background: linear-gradient(135deg, #1a1208 0%, #111111 45%, #1a1510 100%) !important;
+}
+
+header h2 { color: var(--text-primary) !important; }
+header p  { color: var(--text-secondary) !important; }
+
+/* Search input */
+#searchInput {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--bg-border) !important;
+  color: var(--text-primary) !important;
+}
+
+#searchInput:focus {
+  border-color: var(--orange-primary) !important;
+  box-shadow: 0 0 0 3px rgba(249,115,22,0.15) !important;
+  outline: none !important;
+}
+
+/* Search button */
+header button {
+  background: var(--orange-burnt) !important;
+  color: white !important;
+}
+
+header button:hover {
+  background: var(--orange-primary) !important;
+}
+
+/* ── CATEGORY / FILTER BAR ──────────────────── */
+.bg-white.border-b {
+  background: #151515 !important;
+  border-bottom: 1px solid var(--bg-border) !important;
+}
+
+/* Category buttons */
+#categoryButtons button,
+#subcategoryButtons button,
+#subButtons button {
+  background: var(--bg-card) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--bg-border) !important;
+}
+
+#categoryButtons button:hover,
+#subcategoryButtons button:hover,
+#subButtons button:hover,
+#categoryButtons button.active,
+#subcategoryButtons button.active,
+#subButtons button.active {
+  background: var(--orange-primary) !important;
+  color: white !important;
+  border-color: var(--orange-primary) !important;
+}
+
+/* Format buttons */
+.format-btn {
+  background: var(--bg-card) !important;
+  color: var(--text-secondary) !important;
+}
+
+.format-btn:hover,
+.format-btn.active {
+  background: var(--orange-primary) !important;
+  color: white !important;
+}
+
+/* Subcategory sections */
+.bg-teal-50  { background: rgba(249,115,22,0.05) !important; }
+.border-teal-200 { border-color: rgba(249,115,22,0.2) !important; }
+.text-teal-800   { color: var(--orange-primary) !important; }
+
+.bg-purple-50    { background: rgba(249,115,22,0.03) !important; }
+.border-purple-200 { border-color: var(--bg-border) !important; }
+.text-purple-800 { color: var(--text-secondary) !important; }
+
+/* ── VIDEO CARDS ────────────────────────────── */
+#video-grid > div,
+.video-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--bg-border) !important;
+  color: var(--text-primary) !important;
+}
+
+#video-grid > div:hover,
+.video-card:hover {
+  border-color: rgba(249,115,22,0.4) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
+}
+
+/* Card title */
+#video-grid h3,
+.video-card h3 {
+  color: var(--text-primary) !important;
+}
+
+/* Card meta text */
+#video-grid p,
+.video-card p {
+  color: var(--text-secondary) !important;
+}
+
+/* Price */
+#video-grid .text-gray-900,
+.video-card .price {
+  color: var(--orange-primary) !important;
+}
+
+/* Buy / Preview buttons on cards */
+#video-grid button,
+.video-card button {
+  background: var(--orange-burnt) !important;
+  color: white !important;
+}
+
+#video-grid button:hover,
+.video-card button:hover {
+  background: var(--orange-primary) !important;
+  box-shadow: 0 0 14px rgba(249,115,22,0.35) !important;
+}
+
+/* Category badge on cards */
+#video-grid .bg-teal-100,
+.video-card .badge {
+  background: rgba(249,115,22,0.12) !important;
+  color: var(--orange-primary) !important;
+}
+
+/* ── WALLET WIDGET ──────────────────────────── */
+#walletDisplay > div {
+  background: transparent !important;
+}
+
+#walletAmount {
+  color: var(--orange-primary) !important;
+}
+
+/* Wallet balance pill */
+#walletDisplay > div > div:first-child {
+  background: var(--bg-section) !important;
+  border: 1px solid var(--bg-border) !important;
+}
+
+/* Add Funds button */
+button[onclick="showTopUpModal()"] {
+  background: var(--orange-primary) !important;
+  color: white !important;
+  box-shadow: 0 0 18px rgba(249,115,22,0.25) !important;
+}
+
+button[onclick="showTopUpModal()"]:hover {
+  background: var(--orange-hover) !important;
+  box-shadow: 0 0 28px rgba(249,115,22,0.4) !important;
+}
+
+/* My Purchases button */
+button[onclick="showPurchaseHistory()"] {
+  background: var(--bg-card) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--bg-border) !important;
+}
+
+/* User menu button */
+#userMenuButton {
+  background: var(--bg-card) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--bg-border) !important;
+}
+
+/* User dropdown menu */
+#userMenu {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--bg-border) !important;
+}
+
+/* Sign In button */
+#loginButton {
+  background: var(--orange-primary) !important;
+  box-shadow: 0 0 18px rgba(249,115,22,0.2) !important;
+}
+
+#loginButton:hover {
+  background: var(--orange-hover) !important;
+}
+
+/* ── MODALS ─────────────────────────────────── */
+.modal-content {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--bg-border) !important;
+}
+
+.modal-content h2 {
+  color: var(--text-primary) !important;
+}
+
+.modal-content p {
+  color: var(--text-secondary) !important;
+}
+
+.close-modal {
+  color: var(--text-secondary) !important;
+}
+
+.close-modal:hover {
+  color: var(--orange-primary) !important;
+}
+
+/* ── TOP-UP MODAL ───────────────────────────── */
+.topup-button {
+  background: var(--bg-section) !important;
+  border: 1px solid var(--bg-border) !important;
+  color: var(--text-primary) !important;
+  border-radius: 10px !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+
+.topup-button:hover {
+  border-color: var(--orange-primary) !important;
+  box-shadow: 0 0 16px rgba(249,115,22,0.2) !important;
+}
+
+.topup-button span:first-child {
+  color: var(--orange-primary) !important;
+}
+
+/* ── PREVIEW MODAL ──────────────────────────── */
+#previewModal .bg-white {
+  background: var(--bg-card) !important;
+}
+
+#previewModal h3 {
+  color: var(--text-primary) !important;
+}
+
+#previewModal p {
+  color: var(--text-secondary) !important;
+}
+
+/* Buy Now in preview modal */
+#previewModal button[onclick="handlePurchase()"] {
+  background: var(--orange-primary) !important;
+  box-shadow: 0 4px 14px rgba(249,115,22,0.3) !important;
+}
+
+#previewModal button[onclick="handlePurchase()"]:hover {
+  background: var(--orange-hover) !important;
+}
+
+/* Category tags in modal */
+#modalCategory {
+  background: rgba(249,115,22,0.12) !important;
+  color: var(--orange-primary) !important;
+}
+
+#modalSubcategory {
+  background: var(--bg-section) !important;
+  color: var(--text-secondary) !important;
+}
+
+/* ── LOGIN MODAL ────────────────────────────── */
+#loginModal input[type="email"],
+#loginModal input[type="password"] {
+  background: var(--bg-section) !important;
+  border-color: var(--bg-border) !important;
+  color: var(--text-primary) !important;
+}
+
+#loginModal input:focus {
+  border-color: var(--orange-primary) !important;
+  outline: none !important;
+}
+
+/* ── DOWNLOAD MODAL ─────────────────────────── */
+#downloadModal a {
+  background: var(--orange-primary) !important;
+  box-shadow: 0 0 20px rgba(249,115,22,0.25) !important;
+}
+
+/* ── HISTORY MODAL ──────────────────────────── */
+#historyModal button,
+#historyModal .close-btn {
+  background: var(--orange-primary) !important;
+  color: white !important;
+}
+
+/* ── LOAD MORE BUTTON ───────────────────────── */
+#loadMoreSection button {
+  background: var(--orange-primary) !important;
+  color: white !important;
+}
+
+#loadMoreSection button:hover {
+  background: var(--orange-hover) !important;
+}
+
+/* ── NOTIFICATION TOAST ─────────────────────── */
+#notification {
+  background: var(--orange-burnt) !important;
+  border-left: 3px solid var(--orange-primary) !important;
+}
+
+/* ── STATUS TEXT ────────────────────────────── */
+#status-text .bg-teal-500,
+.animate-pulse {
+  background: var(--orange-primary) !important;
+}
+
+/* ── FOOTER ─────────────────────────────────── */
+footer {
+  background: #0D0D0D !important;
+  color: var(--text-secondary) !important;
+  border-top: 1px solid var(--bg-border) !important;
+}
+
+footer a {
+  color: var(--orange-primary) !important;
+}
+
+footer a:hover {
+  color: var(--orange-hover) !important;
+}
+
+/* ── TAILWIND OVERRIDES ─────────────────────── */
+/* These catch any remaining Tailwind teal classes */
+.bg-teal-500  { background-color: var(--orange-primary) !important; }
+.bg-teal-600  { background-color: var(--orange-burnt) !important; }
+.bg-teal-700  { background-color: var(--orange-burnt) !important; }
+.text-teal-500 { color: var(--orange-primary) !important; }
+.text-teal-600 { color: var(--orange-burnt) !important; }
+.text-teal-700 { color: var(--orange-burnt) !important; }
+.hover\:bg-teal-500:hover { background-color: var(--orange-primary) !important; }
+.hover\:bg-teal-600:hover { background-color: var(--orange-burnt) !important; }
+.hover\:bg-teal-700:hover { background-color: var(--orange-burnt) !important; }
+.ring-teal-300 { --tw-ring-color: rgba(249,115,22,0.3) !important; }
+.shadow-teal-200 { --tw-shadow-color: rgba(249,115,22,0.2) !important; }
+.bg-gray-50  { background-color: var(--bg-main) !important; }
+.bg-gray-100 { background-color: var(--bg-section) !important; }
+.bg-white    { background-color: var(--bg-card) !important; }
+.text-gray-900 { color: var(--text-primary) !important; }
+.text-gray-700 { color: var(--text-primary) !important; }
+.text-gray-600 { color: var(--text-secondary) !important; }
+.text-gray-500 { color: var(--text-secondary) !important; }
+.border-gray-200 { border-color: var(--bg-border) !important; }
+.border-gray-100 { border-color: var(--bg-border) !important; }
