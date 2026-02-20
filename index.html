@@ -291,6 +291,391 @@
 </head>
 <body class="bg-gray-50 font-sans text-gray-900">
 
+
+    <!-- ============================================
+     STOCKFLOW — ONE-TIME OFFERS BANNER v3 FINAL
+     - Subscription required disclaimer on every popup
+     - Newsletter: auto-verify
+     - Review + YouTube: paste link, manual verify
+     - Sheet-driven toggles and amounts
+     - No teal — full orange theme
+     Drop ABOVE your <nav> in index.html
+     ============================================ -->
+
+<style>
+  #offerBanner {
+    background: linear-gradient(90deg, #1a1510, #221808, #1a1510);
+    border-bottom: 1px solid rgba(249,115,22,0.2);
+    padding: 9px 56px;
+    text-align: center;
+    position: relative;
+    z-index: 60;
+  }
+
+  .offer-inner { display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap; }
+  .offer-label { font-size:11px; font-weight:700; color:#E8834A; letter-spacing:2px; text-transform:uppercase; margin-right:4px; font-family:monospace; }
+  .offer-divider { color:#3A3F46; margin:0 4px; font-size:12px; }
+
+  .offer-btn {
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(249,115,22,0.06); border:1px solid rgba(249,115,22,0.15);
+    color:#E8834A; padding:5px 12px; border-radius:20px;
+    font-size:12px; font-weight:700; cursor:pointer;
+    transition:all 0.2s; font-family:Arial,sans-serif;
+  }
+  .offer-btn:hover { background:rgba(249,115,22,0.14); border-color:rgba(249,115,22,0.35); transform:translateY(-1px); box-shadow:0 4px 12px rgba(249,115,22,0.15); }
+  .offer-btn .reward { background:rgba(249,115,22,0.75); color:rgba(255,255,255,0.9); padding:1px 7px; border-radius:10px; font-size:11px; font-weight:800; }
+
+  .offer-pulse { width:6px; height:6px; background:#F97316; border-radius:50%; display:inline-block; animation:blink 1.5s infinite; margin-right:6px; vertical-align:middle; }
+  @keyframes blink { 0%,100%{opacity:1;box-shadow:0 0 4px #F97316;} 50%{opacity:0.3;box-shadow:none;} }
+
+  #bannerDismiss { position:absolute; right:14px; top:50%; transform:translateY(-50%); background:none; border:none; color:#4B5563; font-size:16px; cursor:pointer; padding:4px 8px; border-radius:4px; transition:color 0.2s; line-height:1; }
+  #bannerDismiss:hover { color:#F97316; }
+
+  /* OVERLAY */
+  .offer-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.82); z-index:1000; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(4px); }
+  .offer-overlay.open { display:flex; }
+
+  /* POPUP */
+  .offer-popup { background:#161412; border:1px solid #2A2F36; border-radius:16px; max-width:460px; width:100%; overflow:hidden; position:relative; box-shadow:0 40px 80px rgba(0,0,0,0.7); animation:popIn 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+  @keyframes popIn { from{opacity:0;transform:scale(0.88) translateY(20px);} to{opacity:1;transform:scale(1) translateY(0);} }
+
+  .popup-accent { height:3px; }
+  .popup-accent.nl { background:linear-gradient(90deg,#065F46,#10B981,#34D399); }
+  .popup-accent.rv { background:linear-gradient(90deg,#1E3A5F,#3B82F6,#60A5FA); }
+  .popup-accent.yt { background:linear-gradient(90deg,#C2410C,#F97316,#FB923C); }
+
+  .popup-body { padding:30px 30px 22px; }
+
+  .popup-badge { display:inline-flex; align-items:center; gap:7px; padding:5px 13px; border-radius:20px; font-size:12px; font-weight:800; margin-bottom:16px; }
+  .badge-nl { background:rgba(16,185,129,0.08); color:#10B981; border:1px solid rgba(16,185,129,0.2); }
+  .badge-rv { background:rgba(59,130,246,0.08); color:#60A5FA; border:1px solid rgba(59,130,246,0.2); }
+  .badge-yt { background:rgba(249,115,22,0.08); color:#F97316; border:1px solid rgba(249,115,22,0.2); }
+
+  .popup-title { font-size:22px; font-weight:800; color:#F3F4F6; line-height:1.2; margin-bottom:8px; }
+  .popup-title span { color:#F97316; }
+  .popup-desc { font-size:13px; color:#9CA3AF; line-height:1.7; margin-bottom:18px; }
+
+  .popup-steps { background:#1a1e24; border:1px solid #2A2F36; border-radius:10px; padding:14px 16px; margin-bottom:16px; }
+  .popup-step { display:flex; align-items:flex-start; gap:9px; margin-bottom:9px; font-size:12px; color:#9CA3AF; line-height:1.5; }
+  .popup-step:last-child { margin-bottom:0; }
+  .step-num { width:19px; height:19px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; flex-shrink:0; margin-top:2px; }
+  .step-nl { background:rgba(16,185,129,0.12); color:#10B981; }
+  .step-rv { background:rgba(59,130,246,0.12); color:#60A5FA; }
+  .step-yt { background:rgba(249,115,22,0.12); color:#F97316; }
+
+  /* ── SUBSCRIPTION DISCLAIMER — on every popup ── */
+  .sub-disclaimer {
+    background:rgba(249,115,22,0.05);
+    border:1px solid rgba(249,115,22,0.15);
+    border-radius:8px;
+    padding:10px 13px;
+    margin-bottom:16px;
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+  }
+  .sub-disclaimer-icon { font-size:14px; flex-shrink:0; margin-top:1px; }
+  .sub-disclaimer-text { font-size:11px; color:#9CA3AF; line-height:1.6; }
+  .sub-disclaimer-text strong { color:#F97316; }
+  .sub-disclaimer-text a { color:#F97316; text-decoration:none; }
+  .sub-disclaimer-text a:hover { text-decoration:underline; }
+
+  .popup-note { font-size:11px; color:#4B5563; line-height:1.5; margin-bottom:14px; font-style:italic; }
+
+  .popup-close { position:absolute; top:11px; right:11px; background:#1F2933; border:1px solid #2A2F36; color:#6B7280; width:25px; height:25px; border-radius:50%; cursor:pointer; font-size:12px; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
+  .popup-close:hover { color:#F97316; border-color:#F97316; }
+
+  /* FORM */
+  .claim-input { width:100%; background:#1a1e24; border:1px solid #3A3F46; border-radius:7px; padding:10px 12px; color:#F3F4F6; font-size:13px; margin-bottom:8px; box-sizing:border-box; font-family:Arial,sans-serif; outline:none; transition:border-color 0.2s; }
+  .claim-input:focus { border-color:#F97316; }
+  .claim-input::placeholder { color:#4B5563; }
+
+  .popup-action { display:block; width:100%; padding:12px; border-radius:7px; font-size:13px; font-weight:700; text-align:center; text-decoration:none; border:none; cursor:pointer; transition:all 0.2s; font-family:Arial,sans-serif; margin-bottom:7px; box-sizing:border-box; }
+  .action-nl { background:#10B981; color:white; }
+  .action-nl:hover { background:#059669; }
+  .action-rv { background:#3B82F6; color:white; }
+  .action-rv:hover { background:#2563EB; }
+  .action-yt { background:#F97316; color:white; }
+  .action-yt:hover { background:#EA6C0A; }
+  .action-ghost { background:transparent; color:#4B5563; font-size:12px; padding:6px; }
+  .action-ghost:hover { color:#9CA3AF; }
+
+  .claim-success { display:none; background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.18); border-radius:8px; padding:12px 14px; font-size:13px; color:#10B981; text-align:center; margin-top:8px; }
+  .claim-error   { display:none; background:rgba(239,68,68,0.07); border:1px solid rgba(239,68,68,0.18); border-radius:8px; padding:12px 14px; font-size:13px; color:#EF4444; text-align:center; margin-top:8px; }
+  .claim-error.sub-error { background:rgba(249,115,22,0.07); border-color:rgba(249,115,22,0.25); color:#F97316; }
+
+  @media (max-width:640px) {
+    #offerBanner { padding:8px 40px; }
+    .offer-label { display:none; }
+    .offer-btn { font-size:11px; padding:4px 8px; }
+    .popup-body { padding:22px 18px 16px; }
+    .popup-title { font-size:19px; }
+  }
+</style>
+
+<!-- BANNER -->
+<div id="offerBanner" style="display:none;">
+  <div class="offer-inner">
+    <span class="offer-pulse"></span>
+    <span class="offer-label">One-Time Offers</span>
+    <div id="bannerOffers"></div>
+  </div>
+  <button id="bannerDismiss" onclick="dismissBanner()" title="Dismiss">✕</button>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- POPUP 1 — NEWSLETTER $5                   -->
+<!-- ══════════════════════════════════════════ -->
+<div class="offer-overlay" id="overlay-newsletter">
+  <div class="offer-popup">
+    <button class="popup-close" onclick="closeOffer('newsletter')">✕</button>
+    <div class="popup-accent nl"></div>
+    <div class="popup-body">
+      <div class="popup-badge badge-nl">✔️ FREE <span id="nl-badge-amt">$5</span> Wallet Credit</div>
+      <div class="popup-title">Check Spam.<br>Confirm & <span>Earn.</span></div>
+      <div class="popup-desc">Our newsletter may have landed in your spam folder. Confirm your subscription below — if you're subscribed, we'll instantly credit your wallet.</div>
+
+      <div class="popup-steps">
+        <div class="popup-step"><div class="step-num step-nl">1</div><div>Check spam for email from <strong style="color:#F3F4F6;">noreply@stockflow.media</strong></div></div>
+        <div class="popup-step"><div class="step-num step-nl">2</div><div>Mark it <strong style="color:#F3F4F6;">Not Spam</strong> to keep future emails</div></div>
+        <div class="popup-step"><div class="step-num step-nl">3</div><div>Enter your Stockflow account email below — credit is automatic!</div></div>
+      </div>
+
+      <!-- Subscription disclaimer -->
+      <div class="sub-disclaimer">
+        <span class="sub-disclaimer-icon">📬</span>
+        <div class="sub-disclaimer-text">
+          <strong>Active subscription required.</strong> Keep our newsletter to stay eligible for all offers. New collections, drops and exclusive deals are sent via newsletter — don't miss out! <a href="#">Manage subscription</a>
+        </div>
+      </div>
+
+      <input class="claim-input" id="nl-email" type="email" placeholder="Your Stockflow account email">
+      <button class="popup-action action-nl" onclick="submitOffer('newsletter')">Check & Claim My Credit →</button>
+      <div class="claim-success" id="nl-success"></div>
+      <div class="claim-error" id="nl-error"></div>
+      <button class="popup-action action-ghost" onclick="closeOffer('newsletter')">Maybe later</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- POPUP 2 — GOOGLE REVIEW $10               -->
+<!-- ══════════════════════════════════════════ -->
+<div class="offer-overlay" id="overlay-review">
+  <div class="offer-popup">
+    <button class="popup-close" onclick="closeOffer('review')">✕</button>
+    <div class="popup-accent rv"></div>
+    <div class="popup-body">
+      <div class="popup-badge badge-rv">⭐ FREE <span id="rv-badge-amt">$10</span> Wallet Credit</div>
+      <div class="popup-title">Write a Review.<br><span>Earn Credit.</span></div>
+      <div class="popup-desc">Leave an honest review on Google — helps others find us and earns you wallet credit. One time per account.</div>
+
+      <div class="popup-steps">
+        <div class="popup-step"><div class="step-num step-rv">1</div><div>Click below to open our <strong style="color:#F3F4F6;">Google Business listing</strong></div></div>
+        <div class="popup-step"><div class="step-num step-rv">2</div><div>Leave an honest review and <strong style="color:#F3F4F6;">copy the link</strong> to your review</div></div>
+        <div class="popup-step"><div class="step-num step-rv">3</div><div>Paste it below — we verify and credit within 24h</div></div>
+      </div>
+
+      <!-- Subscription disclaimer -->
+      <div class="sub-disclaimer">
+        <span class="sub-disclaimer-icon">📬</span>
+        <div class="sub-disclaimer-text">
+          <strong>Active subscription required.</strong> You must be subscribed to our newsletter to claim any reward. Unsubscribing voids all pending and future offers.
+        </div>
+      </div>
+
+      <a href="https://g.page/r/YOUR_GOOGLE_REVIEW_LINK/review" target="_blank"
+         class="popup-action action-rv" style="color:white;text-decoration:none;display:block;text-align:center;">
+        ⭐ Open Google Review Page →
+      </a>
+
+      <input class="claim-input" id="rv-email" type="email" placeholder="Your Stockflow account email" style="margin-top:10px;">
+      <input class="claim-input" id="rv-link" type="url" placeholder="Paste your Google review link here">
+      <button class="popup-action action-rv" onclick="submitOffer('review')">Submit for <span id="rv-btn-amt">$10</span> Credit →</button>
+      <div class="claim-success" id="rv-success"></div>
+      <div class="claim-error" id="rv-error"></div>
+      <button class="popup-action action-ghost" onclick="closeOffer('review')">Maybe later</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- POPUP 3 — YOUTUBE $50                     -->
+<!-- ══════════════════════════════════════════ -->
+<div class="offer-overlay" id="overlay-youtube">
+  <div class="offer-popup">
+    <button class="popup-close" onclick="closeOffer('youtube')">✕</button>
+    <div class="popup-accent yt"></div>
+    <div class="popup-body">
+      <div class="popup-badge badge-yt">🎬 <span id="yt-badge-amt">$50</span> Wallet Credit</div>
+      <div class="popup-title">Feature Us on<br>YouTube. <span>Earn Big.</span></div>
+      <div class="popup-desc">Create a YouTube video featuring Stockflow.media with a clickable link in the description — review, tutorial, or footage showcase.</div>
+
+      <div class="popup-steps">
+        <div class="popup-step"><div class="step-num step-yt">1</div><div>Create a public YouTube video mentioning <strong style="color:#F3F4F6;">Stockflow.media</strong></div></div>
+        <div class="popup-step"><div class="step-num step-yt">2</div><div>Add <strong style="color:#F3F4F6;">https://stockflow.media</strong> as a clickable link in the video description</div></div>
+        <div class="popup-step"><div class="step-num step-yt">3</div><div>Paste your video URL below — we review within 48h</div></div>
+      </div>
+
+      <div class="popup-note">✔️ Video must be public, min 2 minutes, with a clickable link to stockflow.media in description. One reward per creator.</div>
+
+      <!-- Subscription disclaimer -->
+      <div class="sub-disclaimer">
+        <span class="sub-disclaimer-icon">📬</span>
+        <div class="sub-disclaimer-text">
+          <strong>Active subscription required.</strong> You must remain subscribed to our newsletter to receive and keep this reward. Unsubscribing before we process your claim will void it.
+        </div>
+      </div>
+
+      <input class="claim-input" id="yt-email" type="email" placeholder="Your Stockflow account email">
+      <input class="claim-input" id="yt-url" type="url" placeholder="Your YouTube video URL">
+      <button class="popup-action action-yt" onclick="submitOffer('youtube')">Submit for <span id="yt-btn-amt">$50</span> Credit →</button>
+      <div class="claim-success" id="yt-success"></div>
+      <div class="claim-error" id="yt-error"></div>
+      <button class="popup-action action-ghost" onclick="closeOffer('youtube')">Maybe later</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script>
+// Default config (overridden by sheet on load)
+let OFFERS = {
+  newsletter: { label:'Newsletter Reward', amount:5,  active:true },
+  review:     { label:'Google Review',     amount:10, active:true },
+  youtube:    { label:'YouTube Feature',   amount:50, active:true }
+};
+
+// Load offers from Apps Script sheet
+async function loadOffers() {
+  try {
+    const res  = await fetch(CONFIG.API_URL + '?action=getOffers');
+    const data = await res.json();
+    if (data && Object.keys(data).length > 0) OFFERS = data;
+  } catch(e) {
+    console.log('Using default offer config');
+  }
+  renderBanner();
+}
+
+function renderBanner() {
+  const container = document.getElementById('bannerOffers');
+  container.innerHTML = '';
+
+  const active = Object.keys(OFFERS).filter(k => OFFERS[k].active);
+  if (!active.length) { document.getElementById('offerBanner').style.display = 'none'; return; }
+
+  // Update popup amounts dynamically
+  active.forEach((key, i) => {
+    const o = OFFERS[key];
+    const pre = key.substring(0,2);
+    ['badge-amt', 'btn-amt'].forEach(id => {
+      const el = document.getElementById(`${pre}-${id}`);
+      if (el) el.textContent = '$' + o.amount;
+    });
+
+    if (i > 0) {
+      const d = document.createElement('span');
+      d.className = 'offer-divider';
+      d.textContent = '·';
+      container.appendChild(d);
+    }
+    const btn = document.createElement('button');
+    btn.className = 'offer-btn';
+    btn.onclick = () => openOffer(key);
+    btn.innerHTML = `<span class="reward">FREE $${o.amount}</span> ${o.label}`;
+    container.appendChild(btn);
+  });
+
+  // Banner version — change to force re-show for all users
+  const OFFER_VERSION = 'v3';
+  if (localStorage.getItem('sf_offer_version') !== OFFER_VERSION) {
+    localStorage.removeItem('sf_banner_dismissed');
+    localStorage.setItem('sf_offer_version', OFFER_VERSION);
+  }
+  if (localStorage.getItem('sf_banner_dismissed') !== 'true') {
+    document.getElementById('offerBanner').style.display = 'block';
+  }
+}
+
+function dismissBanner() {
+  document.getElementById('offerBanner').style.display = 'none';
+  localStorage.setItem('sf_banner_dismissed', 'true');
+}
+
+function openOffer(type) {
+  document.getElementById('overlay-' + type).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeOffer(type) {
+  document.getElementById('overlay-' + type).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.offer-overlay').forEach(o => {
+  o.addEventListener('click', e => {
+    if (e.target === o) { o.classList.remove('open'); document.body.style.overflow = ''; }
+  });
+});
+
+async function submitOffer(type) {
+  let email = '', extra = '';
+  const pre = type.substring(0,2);
+
+  if (type === 'newsletter') {
+    email = document.getElementById('nl-email').value.trim();
+  } else if (type === 'review') {
+    email = document.getElementById('rv-email').value.trim();
+    extra = document.getElementById('rv-link').value.trim();
+  } else if (type === 'youtube') {
+    email = document.getElementById('yt-email').value.trim();
+    extra = document.getElementById('yt-url').value.trim();
+  }
+
+  const successEl = document.getElementById(pre + '-success');
+  const errorEl   = document.getElementById(pre + '-error');
+  successEl.style.display = 'none';
+  errorEl.style.display   = 'none';
+  errorEl.className       = 'claim-error';
+
+  if (!email) { errorEl.textContent = 'Please enter your account email.'; errorEl.style.display = 'block'; return; }
+  if ((type === 'review' || type === 'youtube') && !extra) {
+    errorEl.textContent = type === 'review' ? 'Please paste your Google review link.' : 'Please paste your YouTube video URL.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  // Disable button while submitting
+  const btns = document.querySelectorAll(`#overlay-${type} button.popup-action:not(.action-ghost)`);
+  btns.forEach(b => { b.disabled = true; b.style.opacity = '0.6'; });
+
+  try {
+    const url    = CONFIG.API_URL + '?action=submitClaim&claimType=' + encodeURIComponent(type) + '&email=' + encodeURIComponent(email) + '&extra=' + encodeURIComponent(extra);
+    const res    = await fetch(url);
+    const result = await res.json();
+
+    if (result.success) {
+      successEl.textContent = result.message;
+      successEl.style.display = 'block';
+      btns.forEach(b => b.style.display = 'none');
+    } else {
+      // Subscription error gets orange styling
+      if (result.subscriptionRequired) errorEl.classList.add('sub-error');
+      errorEl.textContent = result.message || 'Something went wrong. Please try again.';
+      errorEl.style.display = 'block';
+      btns.forEach(b => { b.disabled = false; b.style.opacity = '1'; });
+    }
+  } catch(e) {
+    errorEl.textContent = 'Connection error. Please try again.';
+    errorEl.style.display = 'block';
+    btns.forEach(b => { b.disabled = false; b.style.opacity = '1'; });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadOffers);
+</script>
     <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
