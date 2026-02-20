@@ -13,10 +13,12 @@ const CONFIG = {
     
     // 🔑 STRIPE PUBLISHABLE KEY
     // TEST KEY (current):
-   // STRIPE_PUBLISHABLE_KEY: 'pk_test_51QyslcLCsrdrH708FItDkp1XvwWgwZjAWbDpRIoAJ2SVMoMnIjp7EvpqfEGdGzvXJyPTCK9G4QH9wFWBQgjDJQAz00FVZe83Od',
-    
-    // LIVE KEY (uncomment when ready to go live):
-    STRIPE_PUBLISHABLE_KEY: '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',
+   // STRIPE_PUBLISHABLE_KEY: 'pk_test_',
+     
+    // 🔑 Will be replaced during deployment
+    STRIPE_PUBLISHABLE_KEY: '__STRIPE_PUBLISHABLE_KEY__',
+   // LIVE KEY (uncomment when ready to go live):
+   // STRIPE_PUBLISHABLE_KEY: 'sk_live_xxxxx',
     
     // Wallet settings
     TOPUP_AMOUNTS: [10, 20, 30],
@@ -32,4 +34,4 @@ console.log('✅ Config loaded');
 console.log('📊 Sheet ID:', CONFIG.REAL_SHEET_ID);
 console.log('📋 Tab GID:', CONFIG.TAB_GID);
 console.log('🔗 CSV URL:', CONFIG.SHEET_CSV_URL);
-console.log('🔑 Stripe Key:', CONFIG.STRIPE_PUBLISHABLE_KEY ? 'Loaded' : 'Missing');
+console.log('🔑 Stripe key:', CONFIG.STRIPE_PUBLISHABLE_KEY !== '__STRIPE_PUBLISHABLE_KEY__' ? 'Loaded ✅' : 'Missing ❌');
