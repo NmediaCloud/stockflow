@@ -139,7 +139,7 @@ async function purchaseVideo(videoId, videoTitle, price) {
         return;
     }
 
-    // ✅ CHECK FOR DUPLICATE PURCHASE
+    // ✔️ CHECK FOR DUPLICATE PURCHASE
     const alreadyOwned = currentUser.purchases.find(p => p.videoId === videoId);
     if (alreadyOwned) {
         const purchaseDate = new Date(alreadyOwned.date).toLocaleDateString();
@@ -172,7 +172,7 @@ async function purchaseVideo(videoId, videoTitle, price) {
             await loadUserPurchases(currentUser.email); // Refresh purchase list
             updateWalletDisplay();
             closeModal();
-            showNotification('✅ Purchase successful!', 'success');
+            showNotification('✔️ Purchase successful!', 'success');
             showDownloadModal(videoTitle, result.downloadLink);
         } else {
             showNotification('Error: ' + (result.message || 'Purchase failed'), 'error');
@@ -259,7 +259,7 @@ window.addEventListener('DOMContentLoaded', function () {
             if (currentUser.email) {
                 await loadUserData(currentUser.email);
                 updateWalletDisplay();
-                showNotification('✅ Payment successful! Wallet updated.', 'success');
+                showNotification('✔️ Payment successful! Wallet updated.', 'success');
             }
         }, 1000);
         window.history.replaceState({}, document.title, window.location.pathname);
