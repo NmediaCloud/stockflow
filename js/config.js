@@ -17,7 +17,7 @@ const CONFIG = {
    // STRIPE_PUBLISHABLE_KEY: 'sk_live_xxxxx',
     
     // Wallet settings
-    TOPUP_AMOUNTS: [5, 10, 20, 30],
+    TOPUP_AMOUNTS: [1, 5, 10, 20, 30],
     STORAGE_KEY: 'stockflow_user_email',
     ITEMS_PER_LOAD: 80,
     SITE_URL: 'https://stockflow.media'
