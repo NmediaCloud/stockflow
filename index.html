@@ -737,6 +737,806 @@ document.addEventListener('DOMContentLoaded', loadOffers);
         </div>
     </nav>
 
+<!-- ============================================
+     STOCKFLOW PROMOTIONAL BANNER - DARK ORANGE THEME
+     Place this RIGHT AFTER <nav> in index.html
+     Matches your exact color scheme
+     ============================================ -->
+
+<style>
+  /* ── PROMOTIONAL BANNER (DARK ORANGE THEME) ── */
+  #offerBanner {
+    background: linear-gradient(90deg, #1F2933 0%, #2A2F36 50%, #1F2933 100%);
+    border-bottom: 1px solid #3A3F46;
+    border-top: 1px solid #3A3F46;
+    padding: 11px 20px;
+    text-align: center;
+    position: relative;
+    z-index: 50;
+    overflow: hidden;
+  }
+
+  /* Subtle orange glow effect */
+  #offerBanner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 100px,
+      rgba(249,115,22,0.03) 100px,
+      rgba(249,115,22,0.03) 101px
+    );
+    pointer-events: none;
+  }
+
+  .offer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    max-width: 1280px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .offer-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    color: #F97316;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .offer-pulse {
+    width: 6px;
+    height: 6px;
+    background: #F97316;
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    box-shadow: 0 0 8px rgba(249,115,22,0.5);
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+
+  .offer-divider {
+    color: #3A3F46;
+    margin: 0 8px;
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  .offer-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(249,115,22,0.08);
+    border: 1px solid rgba(249,115,22,0.25);
+    color: #F97316;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.3px;
+  }
+
+  .offer-btn:hover {
+    background: rgba(249,115,22,0.15);
+    border-color: #F97316;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(249,115,22,0.2);
+  }
+
+  .offer-btn .reward {
+    background: #F97316;
+    color: #111111;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  #bannerDismiss {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(249,115,22,0.1);
+    border: 1px solid rgba(249,115,22,0.2);
+    color: #F97316;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+    border-radius: 4px;
+    transition: all 0.2s;
+    line-height: 1;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 400;
+  }
+
+  #bannerDismiss:hover {
+    background: rgba(249,115,22,0.2);
+    border-color: #F97316;
+  }
+
+  /* ── MOBILE RESPONSIVE ── */
+  @media (max-width: 768px) {
+    #offerBanner {
+      padding: 9px 50px 9px 15px;
+    }
+    
+    .offer-inner {
+      gap: 6px;
+    }
+    
+    .offer-label {
+      display: none;
+    }
+    
+    .offer-btn {
+      font-size: 11px;
+      padding: 5px 11px;
+      gap: 5px;
+    }
+    
+    .offer-btn .reward {
+      font-size: 10px;
+      padding: 1px 6px;
+    }
+    
+    .offer-divider {
+      margin: 0 3px;
+      font-size: 12px;
+    }
+    
+    #bannerDismiss {
+      right: 12px;
+      width: 24px;
+      height: 24px;
+      font-size: 14px;
+    }
+  }
+
+  /* ── OVERLAY ── */
+  .offer-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(6px);
+  }
+
+  .offer-overlay.open {
+    display: flex;
+    animation: fadeIn 0.25s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* ── POPUP (DARK THEME) ── */
+  .offer-popup {
+    background: #1F2933;
+    border: 1px solid #3A3F46;
+    border-radius: 12px;
+    max-width: 520px;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.9), 0 0 0 1px rgba(249,115,22,0.1);
+    animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.92) translateY(30px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .popup-accent {
+    height: 3px;
+  }
+
+  .popup-accent.green {
+    background: linear-gradient(90deg, #065F46, #10B981, #34D399);
+  }
+
+  .popup-accent.blue {
+    background: linear-gradient(90deg, #1E3A5F, #3B82F6, #60A5FA);
+  }
+
+  .popup-accent.orange {
+    background: linear-gradient(90deg, #C2410C, #F97316, #FB923C);
+  }
+
+  .popup-body {
+    padding: 38px 38px 30px;
+  }
+
+  .popup-reward-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 18px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 22px;
+    letter-spacing: 0.8px;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+  }
+
+  .badge-green {
+    background: rgba(16,185,129,0.12);
+    color: #10B981;
+    border: 1px solid rgba(16,185,129,0.3);
+  }
+
+  .badge-blue {
+    background: rgba(59,130,246,0.12);
+    color: #60A5FA;
+    border: 1px solid rgba(59,130,246,0.3);
+  }
+
+  .badge-orange {
+    background: rgba(249,115,22,0.12);
+    color: #F97316;
+    border: 1px solid rgba(249,115,22,0.3);
+  }
+
+  .popup-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: #F3F4F6;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+  }
+
+  .popup-title span.hi {
+    color: #F97316;
+  }
+
+  .popup-desc {
+    font-size: 15px;
+    color: #9CA3AF;
+    line-height: 1.7;
+    margin-bottom: 28px;
+    font-weight: 300;
+  }
+
+  .popup-steps {
+    background: #2A2F36;
+    border: 1px solid #3A3F46;
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin-bottom: 28px;
+  }
+
+  .popup-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: #9CA3AF;
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  .popup-step:last-child {
+    margin-bottom: 0;
+  }
+
+  .popup-step strong {
+    color: #F3F4F6;
+    font-weight: 500;
+  }
+
+  .step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .step-num.green {
+    background: rgba(16,185,129,0.15);
+    color: #10B981;
+  }
+
+  .step-num.blue {
+    background: rgba(59,130,246,0.15);
+    color: #60A5FA;
+  }
+
+  .step-num.orange {
+    background: rgba(249,115,22,0.15);
+    color: #F97316;
+  }
+
+  .popup-note {
+    font-size: 12px;
+    color: #9CA3AF;
+    line-height: 1.6;
+    margin-bottom: 22px;
+    padding: 14px 18px;
+    background: rgba(249,115,22,0.05);
+    border-radius: 8px;
+    border-left: 3px solid #F97316;
+    font-weight: 300;
+  }
+
+  .popup-action {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    letter-spacing: 0.3px;
+  }
+
+  .action-green {
+    background: #10B981;
+    color: white;
+    border: 1px solid #10B981;
+  }
+
+  .action-green:hover {
+    background: #059669;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+    transform: translateY(-1px);
+  }
+
+  .action-blue {
+    background: #3B82F6;
+    color: white;
+    border: 1px solid #3B82F6;
+  }
+
+  .action-blue:hover {
+    background: #2563EB;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
+    transform: translateY(-1px);
+  }
+
+  .action-orange {
+    background: #F97316;
+    color: #111111;
+    border: 1px solid #F97316;
+  }
+
+  .action-orange:hover {
+    background: #FB923C;
+    box-shadow: 0 4px 16px rgba(249, 115, 22, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .action-ghost {
+    background: transparent;
+    color: #9CA3AF;
+    font-size: 13px;
+    padding: 10px;
+    font-weight: 500;
+    border: 1px solid transparent;
+  }
+
+  .action-ghost:hover {
+    color: #F97316;
+    background: rgba(249,115,22,0.05);
+  }
+
+  .popup-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: #2A2F36;
+    border: 1px solid #3A3F46;
+    color: #9CA3AF;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    line-height: 1;
+    font-weight: 300;
+  }
+
+  .popup-close:hover {
+    color: #F97316;
+    border-color: #F97316;
+    background: rgba(249,115,22,0.08);
+  }
+
+  /* ── CLAIM FORM ── */
+  .claim-form {
+    display: none;
+    margin-top: 20px;
+  }
+
+  .claim-form.open {
+    display: block;
+  }
+
+  .claim-input {
+    width: 100%;
+    background: #2A2F36;
+    border: 1px solid #3A3F46;
+    border-radius: 8px;
+    padding: 13px 16px;
+    color: #F3F4F6;
+    font-size: 14px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  .claim-input:focus {
+    border-color: #F97316;
+    background: #1F2933;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+  }
+
+  .claim-input::placeholder {
+    color: #6B7280;
+  }
+
+  .claim-success {
+    display: none;
+    background: rgba(16,185,129,0.12);
+    border: 1px solid rgba(16,185,129,0.3);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 14px;
+    color: #10B981;
+    text-align: center;
+    margin-top: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 640px) {
+    .popup-body {
+      padding: 30px 22px 22px;
+    }
+    
+    .popup-title {
+      font-size: 28px;
+    }
+    
+    .popup-step {
+      font-size: 13px;
+    }
+  }
+</style>
+
+<!-- ── BANNER ── -->
+<div id="offerBanner">
+  <div class="offer-inner">
+    <span class="offer-label">
+      <span class="offer-pulse"></span>
+      Limited Offers
+    </span>
+
+    <button class="offer-btn" onclick="openOffer('newsletter')">
+      <span class="reward">$5</span> Newsletter
+    </button>
+
+    <span class="offer-divider">·</span>
+
+    <button class="offer-btn" onclick="openOffer('review')">
+      <span class="reward">$10</span> Google Review
+    </button>
+
+    <span class="offer-divider">·</span>
+
+    <button class="offer-btn" onclick="openOffer('youtube')">
+      <span class="reward">$100</span> YouTube Feature
+    </button>
+  </div>
+  <button id="bannerDismiss" onclick="dismissBanner()" title="Dismiss">×</button>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- POPUP 1 — NEWSLETTER $5 (AUTO-REWARD)     -->
+<!-- ══════════════════════════════════════════ -->
+<div class="offer-overlay" id="overlay-newsletter">
+  <div class="offer-popup">
+    <button class="popup-close" onclick="closeOffer('newsletter')">×</button>
+    <div class="popup-accent green"></div>
+    <div class="popup-body">
+      <div class="popup-reward-badge badge-green">✨ Free $5 Credit</div>
+      <div class="popup-title">Find Our Newsletter.<br><span class="hi">Reply & Earn $5.</span></div>
+      <div class="popup-desc">
+        Our newsletter might be in your spam folder. Find it, mark it as "Not Spam", and reply to it. We'll automatically add <strong style="color:#F3F4F6;">$5 to your wallet</strong> when we receive your reply.
+      </div>
+      <div class="popup-steps">
+        <div class="popup-step">
+          <div class="step-num green">1</div>
+          <div>Check your spam folder for email from <strong>stockflowmedia.contact@gmail.com</strong></div>
+        </div>
+        <div class="popup-step">
+          <div class="step-num green">2</div>
+          <div>Mark it as <strong>Not Spam</strong> and move to inbox</div>
+        </div>
+        <div class="popup-step">
+          <div class="step-num green">3</div>
+          <div>Reply to the email with your account email - we'll <strong>automatically credit $5</strong></div>
+        </div>
+      </div>
+      <div class="popup-note">
+        ✔ One-time reward per account. Auto-credited within 24 hours of reply.
+      </div>
+
+      <button class="popup-action action-green" onclick="closeOffer('newsletter')">
+        Got It! I'll Check My Spam →
+      </button>
+      <button class="popup-action action-ghost" onclick="closeOffer('newsletter')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- POPUP 2 — GOOGLE REVIEW $10               -->
+<!-- ══════════════════════════════════════════ -->
+<div class="offer-overlay" id="overlay-review">
+  <div class="offer-popup">
+    <button class="popup-close" onclick="closeOffer('review')">×</button>
+    <div class="popup-accent blue"></div>
+    <div class="popup-body">
+      <div class="popup-reward-badge badge-blue">⭐ Free $10 Credit</div>
+      <div class="popup-title">Write a Review.<br><span class="hi">Earn $10.</span></div>
+      <div class="popup-desc">
+        Leave an honest review on Google Business. It helps others discover us and rewards you with <strong style="color:#F3F4F6;">$10 wallet credit</strong>. One time per account.
+      </div>
+      <div class="popup-steps">
+        <div class="popup-step">
+          <div class="step-num blue">1</div>
+          <div>Click below to open our <strong>Google Business listing</strong></div>
+        </div>
+        <div class="popup-step">
+          <div class="step-num blue">2</div>
+          <div>Leave an <strong>honest review</strong> — share your experience with Stockflow</div>
+        </div>
+        <div class="popup-step">
+          <div class="step-num blue">3</div>
+          <div>Submit your info below — we'll verify and credit <strong>$10 within 24 hours</strong></div>
+        </div>
+      </div>
+      <div class="popup-note">
+        ✔ One review per account. Manual verification. Honest reviews only — any rating welcome.
+      </div>
+
+      <!-- TODO: Replace with your actual Google Business review link -->
+      <a href="https://g.page/r/YOUR_GOOGLE_BUSINESS_ID/review"
+         target="_blank"
+         class="popup-action action-blue"
+         onclick="showClaimForm('review'); return true;"
+         id="cta-review">
+        ⭐ Write Google Review →
+      </a>
+
+      <div id="form-review" class="claim-form">
+        <input class="claim-input" id="rv-email" type="email" placeholder="Your Stockflow account email" required>
+        <input class="claim-input" id="rv-name" type="text" placeholder="Name used in your Google review" required>
+        <button class="popup-action action-blue" onclick="submitClaim('review')">Submit for $10 Credit →</button>
+        <div class="claim-success" id="success-review">
+          ✔ Claim received! We'll verify your review and credit $10 within 24 hours.
+        </div>
+      </div>
+
+      <button class="popup-action action-ghost" onclick="closeOffer('review')">Maybe Later</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- POPUP 3 — YOUTUBE $100                    -->
+<!-- ══════════════════════════════════════════ -->
+<div class="offer-overlay" id="overlay-youtube">
+  <div class="offer-popup">
+    <button class="popup-close" onclick="closeOffer('youtube')">×</button>
+    <div class="popup-accent orange"></div>
+    <div class="popup-body">
+      <div class="popup-reward-badge badge-orange">🎬 $100 Credit</div>
+      <div class="popup-title">Feature Us on<br><span class="hi">YouTube. Earn $100.</span></div>
+      <div class="popup-desc">
+        Create a YouTube video featuring Stockflow.media — a review, tutorial, or showcase — with our link in the description. We'll reward you with <strong style="color:#F3F4F6;">$100 wallet credit</strong>.
+      </div>
+      <div class="popup-steps">
+        <div class="popup-step">
+          <div class="step-num orange">1</div>
+          <div>Create a YouTube video mentioning <strong>Stockflow.media</strong> (review, tutorial, or showcase)</div>
+        </div>
+        <div class="popup-step">
+          <div class="step-num orange">2</div>
+          <div>Include <strong>https://stockflow.media</strong> as a clickable link in description</div>
+        </div>
+        <div class="popup-step">
+          <div class="step-num orange">3</div>
+          <div>Submit below — we'll review and credit <strong>$100 within 48 hours</strong></div>
+        </div>
+      </div>
+      <div class="popup-note">
+        ✔ One reward per creator. Video must be public, 2+ minutes, with clickable link in description.
+      </div>
+
+      <div id="form-youtube" class="claim-form open">
+        <input class="claim-input" id="yt-email" type="email" placeholder="Your Stockflow account email" required>
+        <input class="claim-input" id="yt-url" type="url" placeholder="Your YouTube video URL" required>
+        <input class="claim-input" id="yt-channel" type="text" placeholder="Your channel name (optional)">
+        <button class="popup-action action-orange" onclick="submitClaim('youtube')">Submit for $100 Credit →</button>
+        <div class="claim-success" id="success-youtube">
+          🎬 Submission received! We'll review your video and credit $100 within 48 hours.
+        </div>
+      </div>
+
+      <button class="popup-action action-ghost" onclick="closeOffer('youtube')">Maybe Later</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── BANNER SCRIPTS ── -->
+<script>
+  // ── Banner Persistence ──
+  const OFFER_VERSION = 'v1.0';
+  
+  if (localStorage.getItem('sf_offer_version') !== OFFER_VERSION) {
+    localStorage.removeItem('sf_banner_dismissed');
+    localStorage.setItem('sf_offer_version', OFFER_VERSION);
+  }
+  
+  if (localStorage.getItem('sf_banner_dismissed') === 'true') {
+    const banner = document.getElementById('offerBanner');
+    if (banner) banner.style.display = 'none';
+  }
+
+  function dismissBanner() {
+    const banner = document.getElementById('offerBanner');
+    if (banner) {
+      banner.style.display = 'none';
+      localStorage.setItem('sf_banner_dismissed', 'true');
+    }
+  }
+
+  function openOffer(type) {
+    const overlay = document.getElementById('overlay-' + type);
+    if (overlay) {
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeOffer(type) {
+    const overlay = document.getElementById('overlay-' + type);
+    if (overlay) {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+
+  document.querySelectorAll('.offer-overlay').forEach(overlay => {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) {
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    });
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.offer-overlay.open').forEach(overlay => {
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    }
+  });
+
+  function showClaimForm(type) {
+    const form = document.getElementById('form-' + type);
+    const cta = document.getElementById('cta-' + type);
+    if (form) form.classList.add('open');
+    if (cta) cta.style.display = 'none';
+  }
+
+  async function submitClaim(type) {
+    let email = '', extra = '', extra2 = '';
+
+    if (type === 'review') {
+      email = document.getElementById('rv-email')?.value.trim() || '';
+      extra = document.getElementById('rv-name')?.value.trim() || '';
+    } else if (type === 'youtube') {
+      email = document.getElementById('yt-email')?.value.trim() || '';
+      extra = document.getElementById('yt-url')?.value.trim() || '';
+      extra2 = document.getElementById('yt-channel')?.value.trim() || '';
+    }
+
+    if (!email) {
+      alert('Please enter your Stockflow account email.');
+      return;
+    }
+
+    if (type === 'review' && !extra) {
+      alert('Please enter the name you used in your Google review.');
+      return;
+    }
+
+    if (type === 'youtube' && !extra) {
+      alert('Please enter your YouTube video URL.');
+      return;
+    }
+
+    try {
+      const url = CONFIG.API_URL +
+        '?action=submitClaim' +
+        '&claimType=' + encodeURIComponent(type) +
+        '&email=' + encodeURIComponent(email) +
+        '&extra=' + encodeURIComponent(extra) +
+        '&extra2=' + encodeURIComponent(extra2);
+
+      await fetch(url, { method: 'GET' });
+    } catch (error) {
+      console.log('Claim submission (offline mode):', error);
+    }
+
+    const submitBtn = document.querySelector(`#form-${type} button.popup-action:not(.action-ghost)`);
+    const successMsg = document.getElementById(`success-${type}`);
+    
+    if (submitBtn) submitBtn.style.display = 'none';
+    if (successMsg) successMsg.style.display = 'block';
+  }
+</script>
+    
+
     <header class="bg-gradient-to-br from-orange-500 to-orange-700 text-white py-20 px-6">
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-5xl font-extrabold mb-4 tracking-tight">Premium Stock Footage</h2>
