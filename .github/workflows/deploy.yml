@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
 
 jobs:
   deploy:
@@ -12,7 +12,7 @@ jobs:
 
       - name: Inject Stripe Key
         run: |
-          sed -i "s|__STRIPE_PUBLISHABLE_KEY__|${{ secrets.STRIPE_PUBLISHABLE_KEY }}|g" config.js
+          sed -i "s|__STRIPE_PUBLISHABLE_KEY__|${{ secrets.STRIPE_PUBLISHABLE_KEY }}|g" js/config.js
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
