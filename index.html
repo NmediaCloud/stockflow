@@ -486,20 +486,18 @@
             <span class="close-modal" onclick="closeTopUpModal()">&times;</span>
             <h2>Add Funds to Wallet</h2>
             <p style="color:#666;margin-bottom:20px;">Choose an amount to add to your wallet</p>
-            <div style="display:grid;gap:15px;">
-                <button onclick="addFunds(10)" class="topup-button">
-                    <span style="font-size:24px;font-weight:bold;">$10</span>
-                    <span style="font-size:14px;color:#666;">Quick top-up</span>
-                </button>
-                <button onclick="addFunds(20)" class="topup-button">
-                    <span style="font-size:24px;font-weight:bold;">$20</span>
-                    <span style="font-size:14px;color:#666;">Most popular</span>
-                </button>
-                <button onclick="addFunds(30)" class="topup-button">
-                    <span style="font-size:24px;font-weight:bold;">$30</span>
-                    <span style="font-size:14px;color:#666;">Best value</span>
-                </button>
-            </div>
+            <div id="topupAmounts" style="display:grid;gap:15px;"></div>
+            <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const amounts = CONFIG.TOPUP_AMOUNTS || [5,10,20,30];
+                const container = document.getElementById('topupAmounts');
+                amounts.forEach(amt => {
+                    container.innerHTML += `<button onclick="addFunds(${amt})" class="topup-button">
+                        <span style="font-size:24px;font-weight:bold;">$${amt}</span>
+                    </button>`;
+                });
+            });
+            </script>
             <p style="font-size:12px;color:#999;margin-top:15px;text-align:center;">Secure payment powered by Stripe</p>
         </div>
     </div>
