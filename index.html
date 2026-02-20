@@ -552,15 +552,22 @@ let OFFERS = {
 // Load offers from Apps Script sheet
 async function loadOffers() {
   try {
+    if (typeof CONFIG === 'undefined') { renderBanner(); return; }
     const res  = await fetch(CONFIG.API_URL + '?action=getOffers');
     const data = await res.json();
     if (data && Object.keys(data).length > 0) OFFERS = data;
+    else throw new Error('Empty response');
   } catch(e) {
     console.log('Using default offer config');
+    // Reset to hardcoded defaults so banner always shows
+    OFFERS = {
+      newsletter: { label:'Newsletter Reward', amount:5,  active:true },
+      review:     { label:'Google Review',     amount:10, active:true },
+      youtube:    { label:'YouTube Feature',   amount:50, active:true }
+    };
   }
   renderBanner();
 }
-
 function renderBanner() {
   const container = document.getElementById('bannerOffers');
   container.innerHTML = '';
