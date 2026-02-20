@@ -44,7 +44,7 @@
     <link rel="canonical" href="https://stockflow.media/">
     
     <!-- Additional Meta Tags -->
-    <meta name="theme-color" content="#14B8A6">
+    <meta name="theme-color" content="#F97316">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -297,13 +297,13 @@
                 <img src="./assets/logo.png" alt="Nmediaservices Logo"
                      class="h-10 w-auto max-w-[150px]" onerror="this.style.display='none'">
                 <h1 class="text-xl font-bold tracking-tight text-gray-900">
-                    Nmediaservices<span class="text-teal-500">Stockflow.media</span>
+                    Nmediaservices<span class="text-orange-500">Stockflow.media</span>
                 </h1>
             </div>
 
             <div id="walletWidget">
                 <button id="loginButton" onclick="showLoginModal()"
-                    style="background:#14B8A6;color:white;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;">
+                    style="background:#F97316;color:white;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;">
                     Sign In
                 </button>
 
@@ -311,7 +311,7 @@
                     <div style="display:flex;align-items:center;gap:15px;">
                         <div style="background:#E0F2FE;padding:8px 15px;border-radius:6px;">
                             <span style="font-size:14px;color:#0369A1;">Wallet:</span>
-                            <strong id="walletAmount" style="color:#14B8A6;font-size:18px;">$0.00</strong>
+                            <strong id="walletAmount" style="color:#F97316;font-size:18px;">$0.00</strong>
                         </div>
                         
                         <button onclick="showPurchaseHistory()"
@@ -320,7 +320,7 @@
                         </button>
 
                         <button onclick="showTopUpModal()"
-                            style="background:#14B8A6;color:white;padding:8px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;">
+                            style="background:#F97316;color:white;padding:8px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;">
                             Add Funds
                         </button>
                         
@@ -343,16 +343,16 @@
         </div>
     </nav>
 
-    <header class="bg-gradient-to-br from-teal-500 to-teal-700 text-white py-20 px-6">
+    <header class="bg-gradient-to-br from-orange-500 to-orange-700 text-white py-20 px-6">
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-5xl font-extrabold mb-4 tracking-tight">Premium Stock Footage</h2>
-            <p class="text-xl text-teal-100 mb-8">Discover high-quality videos for your creative projects</p>
+            <p class="text-xl text-orange-100 mb-8">Discover high-quality videos for your creative projects</p>
             <div class="relative max-w-2xl mx-auto">
                 <input type="text" id="searchInput"
                     placeholder="Search footage by title, description, or tags..."
                     class="w-full px-6 py-4 pr-32 rounded-full text-gray-900 text-lg focus:outline-none focus:ring-4 focus:ring-teal-300 shadow-xl"
                     oninput="filterVideos()">
-                <button class="absolute right-2 top-2 bg-teal-600 text-white px-8 py-2 rounded-full font-semibold hover:bg-teal-700 transition">
+                <button class="absolute right-2 top-2 bg-orange-600 text-white px-8 py-2 rounded-full font-semibold hover:bg-orange-700 transition">
                     Search
                 </button>
             </div>
@@ -371,7 +371,7 @@
 
             <div id="subcategorySection" class="mb-4 hidden">
                 <div class="bg-teal-50 border border-teal-200 rounded-xl p-4">
-                    <p class="text-sm font-semibold text-teal-800 mb-3" id="subcategoryTitle">Subcategories</p>
+                    <p class="text-sm font-semibold text-orange-800 mb-3" id="subcategoryTitle">Subcategories</p>
                     <div class="flex flex-wrap gap-2" id="subcategoryButtons"></div>
                 </div>
             </div>
@@ -386,13 +386,13 @@
             <div class="flex items-center gap-3">
                 <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Format</p>
                 <div class="flex gap-2">
-                    <button class="format-btn active px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition"
+                    <button class="format-btn active px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-orange-500 hover:text-white transition"
                             data-format="all" onclick="filterByFormat('all')">All</button>
-                    <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition"
+                    <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-orange-500 hover:text-white transition"
                             data-format="9:16" onclick="filterByFormat('9:16')">📱 9:16</button>
-                    <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition"
+                    <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-orange-500 hover:text-white transition"
                             data-format="16:9" onclick="filterByFormat('16:9')">🖥️ 16:9</button>
-                    <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-teal-500 hover:text-white transition"
+                    <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-orange-500 hover:text-white transition"
                             data-format="1:1" onclick="filterByFormat('1:1')">⬜ 1:1</button>
                 </div>
             </div>
@@ -401,7 +401,7 @@
 
     <div class="max-w-7xl mx-auto px-6 py-4">
         <p id="status-text" class="text-sm text-gray-500">
-            <span class="inline-block w-2 h-2 bg-teal-500 rounded-full animate-pulse mr-2"></span>
+            <span class="inline-block w-2 h-2 bg-orange-500 rounded-full animate-pulse mr-2"></span>
             Loading footage...
         </p>
     </div>
@@ -409,7 +409,7 @@
     <main class="max-w-7xl mx-auto px-6 pb-16">
         <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
         <div id="loadMoreSection" class="text-center mt-8 hidden">
-            <button onclick="loadMore()" class="bg-teal-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-teal-600 transition">
+            <button onclick="loadMore()" class="bg-orange-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-orange-600 transition">
                 Load More
             </button>
         </div>
@@ -431,7 +431,7 @@
                     <div class="flex-1">
                         <h3 id="modalTitle" class="text-2xl font-bold text-gray-900 mb-2"></h3>
                         <div class="flex items-center gap-2 text-sm flex-wrap mb-2">
-                            <span id="modalCategory" class="px-3 py-1 bg-teal-100 text-teal-700 rounded-lg font-medium"></span>
+                            <span id="modalCategory" class="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg font-medium"></span>
                             <span id="modalSubcategory" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg font-medium"></span>
                             <span id="modalSub" class="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg font-medium"></span>
                             <span id="modalFormat" class="text-gray-600"></span>
@@ -444,7 +444,7 @@
                             <p class="text-sm text-gray-500">License from</p>
                             <p class="text-3xl font-bold text-gray-900">$<span id="modalPrice"></span></p>
                         </div>
-                        <button onclick="handlePurchase()" class="bg-teal-500 text-white px-8 py-3 rounded-xl font-bold hover:bg-teal-600 transition shadow-lg shadow-teal-200">
+                        <button onclick="handlePurchase()" class="bg-orange-500 text-white px-8 py-3 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg shadow-teal-200">
                             Buy Now
                         </button>
                     </div>
@@ -466,15 +466,15 @@
         </button>
         <p style="text-align:center;color:#999;margin:10px 0;">— or —</p>
         <input type="email" id="authEmail" placeholder="your@email.com"
-          style="width:100%;padding:12px;border:2px solid #14B8A6;
+          style="width:100%;padding:12px;border:2px solid #F97316;
           border-radius:8px;font-size:16px;margin-bottom:10px;box-sizing:border-box;"/>
         <input type="password" id="authPassword" placeholder="Password"
-          style="width:100%;padding:12px;border:2px solid #14B8A6;
+          style="width:100%;padding:12px;border:2px solid #F97316;
           border-radius:8px;font-size:16px;margin-bottom:15px;box-sizing:border-box;"/>
         <button onclick="signInWithEmail(
           document.getElementById('authEmail').value,
           document.getElementById('authPassword').value)
-          " style="width:100%;background:#14B8A6;color:white;padding:12px;
+          " style="width:100%;background:#F97316;color:white;padding:12px;
           border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;">
           Sign In / Create Account
         </button>
@@ -511,7 +511,7 @@
             <h2>Purchase Successful!</h2>
             <p id="downloadVideoTitle" style="color:#666;margin-bottom:20px;"></p>
             <a id="downloadLink" href="#" target="_blank"
-                style="display:inline-block;background:#14B8A6;color:white;padding:15px 40px;text-decoration:none;border-radius:8px;font-weight:bold;margin:20px 0;">
+                style="display:inline-block;background:#F97316;color:white;padding:15px 40px;text-decoration:none;border-radius:8px;font-weight:bold;margin:20px 0;">
                 📥 Download High-Res File
             </a>
             <p style="font-size:14px;color:#999;">A download link has also been sent to your email.</p>
@@ -528,7 +528,7 @@
             <!-- CLOSE BUTTON AT THE BOTTOM -->
             <div style="text-align:center;margin-top:30px;padding-top:20px;border-top:1px solid #E5E7EB;">
                 <button onclick="closeHistoryModal()" 
-                    style="background:#14B8A6;color:white;padding:12px 40px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;font-size:16px;">
+                    style="background:#F97316;color:white;padding:12px 40px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;font-size:16px;">
                     Close
                 </button>
             </div>
@@ -541,7 +541,7 @@
             <span class="close-modal" onclick="closeAboutModal()">&times;</span>
             
             <h2 style="font-size:36px;font-weight:bold;color:#1F2937;margin-bottom:20px;text-align:center;">
-                About Nmediaservices <span style="color:#14B8A6;">Stockflow.media</span>
+                About Nmediaservices <span style="color:#F97316;">Stockflow.media</span>
             </h2>
             
             <div style="background:white;border-radius:12px;padding:30px;box-shadow:0 2px 8px rgba(0,0,0,0.05);margin-bottom:30px;">
@@ -572,7 +572,7 @@
                     <a href="mailto:stockflowmedia.contact@gmail.com" class="__cf_email__" data-cfemail="0271766d6169646e6d756f67666b632c616d6c7663617642656f636b6e2c616d6f">stockflowmedia.contact@gmail.com</a>
                 </p>
                 <p style="font-size:16px;line-height:1.8;color:#4B5563;">
-                    📧 <a href="https://stockflow.media" style="color:#14B8A6;text-decoration:none;font-weight:600;">stockflow.media</a>
+                    📧 <a href="https://stockflow.media" style="color:#F97316;text-decoration:none;font-weight:600;">stockflow.media</a>
                 </p>
             </div>
             
@@ -585,7 +585,7 @@
             <!-- CLOSE BUTTON AT THE BOTTOM -->
             <div style="text-align:center;margin-top:30px;padding-top:20px;border-top:1px solid #E5E7EB;">
                 <button onclick="closeAboutModal()" 
-                    style="background:#14B8A6;color:white;padding:12px 40px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;font-size:16px;">
+                    style="background:#F97316;color:white;padding:12px 40px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;font-size:16px;">
                     Close
                 </button>
             </div>
@@ -597,7 +597,7 @@
         <div class="modal-content" style="max-width:700px;max-height:80vh;overflow-y:auto;">
             <span class="close-modal" onclick="closeLicenseModal()">&times;</span>
             
-            <h2 style="color:#14B8A6;margin-bottom:10px;">📜 Nmediaservices Stockflow License Terms</h2>
+            <h2 style="color:#F97316;margin-bottom:10px;">📜 Nmediaservices Stockflow License Terms</h2>
             <p style="color:#666;font-size:14px;margin-bottom:25px;">Effective Date: February 2026</p>
             
             <div style="background:#D1FAE5;border-left:4px solid #10B981;padding:15px;margin-bottom:20px;border-radius:4px;">
@@ -679,7 +679,7 @@
             
             <div style="text-align:center;margin-top:20px;">
                 <button onclick="closeLicenseModal()" 
-                    style="background:#14B8A6;color:white;padding:12px 30px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">
+                    style="background:#F97316;color:white;padding:12px 30px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">
                     I Understand
                 </button>
             </div>
@@ -687,7 +687,7 @@
     </div>
 
     <!-- NOTIFICATION TOAST -->
-    <div id="notification" style="display:none;position:fixed;top:20px;right:20px;background:#14B8A6;color:white;padding:15px 20px;border-radius:8px;box-shadow:0 4px 6px rgba(0,0,0,0.1);z-index:1001;max-width:300px;">
+    <div id="notification" style="display:none;position:fixed;top:20px;right:20px;background:#F97316;color:white;padding:15px 20px;border-radius:8px;box-shadow:0 4px 6px rgba(0,0,0,0.1);z-index:1001;max-width:300px;">
         <p id="notificationMessage" style="margin:0;"></p>
     </div>
 
@@ -695,7 +695,7 @@
     <footer style="background:#1F2937;color:#9CA3AF;padding:40px 20px;margin-top:60px;">
         <div style="max-width:1200px;margin:0 auto;text-align:center;">
             <p style="margin:10px 0;">
-                <a href="#" onclick="showAboutModal();return false;" style="color:#14B8A6;text-decoration:none;margin:0 15px;">About</a>
+                <a href="#" onclick="showAboutModal();return false;" style="color:#F97316;text-decoration:none;margin:0 15px;">About</a>
                 <a href="#" onclick="showLicenseInfo();return false;" style="color:#9CA3AF;text-decoration:none;margin:0 15px;">License Terms</a>
             </p>
             <p style="margin:20px 0 0 0;font-size:14px;">© 2026 Nmediaservices Stockflow. All rights reserved.</p>
