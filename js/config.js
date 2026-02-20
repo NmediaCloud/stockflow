@@ -12,7 +12,7 @@ const CONFIG = {
     // TEST KEY (current):
    // STRIPE_PUBLISHABLE_KEY: 'pk_test_',
    // 🔑 Will be replaced during deployment
-    STRIPE_PUBLISHABLE_KEY: STRIPE_PUBLISHABLE_KEY: import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY,
+    STRIPE_PUBLISHABLE_KEY: '__STRIPE_PUBLISHABLE_KEY__',
    // LIVE KEY (uncomment when ready to go live):
    // STRIPE_PUBLISHABLE_KEY: 'sk_live_xxxxx',
     
