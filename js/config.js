@@ -17,7 +17,7 @@ const CONFIG = {
    // STRIPE_PUBLISHABLE_KEY: 'sk_live_xxxxx',
     
     // Wallet settings
-    TOPUP_AMOUNTS: [5, 10, 20, 30],
+    TOPUP_AMOUNTS: [1, 5, 10, 20, 30],
     STORAGE_KEY: 'stockflow_user_email',
     ITEMS_PER_LOAD: 80,
     SITE_URL: 'https://stockflow.media'
@@ -30,4 +30,4 @@ console.log('✅ Config loaded');
 console.log('📊 Sheet ID:', CONFIG.REAL_SHEET_ID);
 console.log('📋 Tab GID:', CONFIG.TAB_GID);
 console.log('🔗 CSV URL:', CONFIG.SHEET_CSV_URL);
-console.log('🔑 Stripe key:', CONFIG.STRIPE_PUBLISHABLE_KEY !== 'pk_live_xxxxx' ? 'Loaded ✅' : 'Missing ❌');
+console.log('🔑 Stripe key:', CONFIG.STRIPE_PUBLISHABLE_KEY !== 'pk_live_51T1UnqLzE6HNp6WvbNGBawVgCF6eJMY5UtgCBe1pPWuvOxhKdQCTjK7tMRi9Bo5GMEVHTDDqKVSPxZccDp7gNfpk00FPgUygsr' ? 'Loaded ✅' : 'Missing ❌');
