@@ -7,6 +7,10 @@ const CONFIG = {
   // Google Sheets Data Source
   REAL_SHEET_ID: '12eyXAI9-hT0TFSx2HhVDUWHXo4X9QVT-vSPmGQBx6c8',
   TAB_GID: '65282458',
+
+  // ⭐ ADD THIS LINE:
+  SHEET_CSV_URL: `https://docs.google.com/spreadsheets/d/12eyXAI9-hT0TFSx2HhVDUWHXo4X9QVT-vSPmGQBx6c8/export?format=csv&gid=65282458`,
+  
   
   // Apps Script API Endpoint
   API_URL: 'https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec',
