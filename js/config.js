@@ -15,7 +15,7 @@ const CONFIG = {
   STRIPE_PUBLISHABLE_KEY: '__STRIPE_PUBLISHABLE_KEY__',
   
   // Top-up amounts
-  TOPUP_AMOUNTS: [10, 20, 30],
+  TOPUP_AMOUNTS: [1, 5, 10, 20, 30],
   
   // Storage
   STORAGE_KEY: 'stockflow_user_email',
