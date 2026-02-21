@@ -1,10 +1,5 @@
 // ============================================
-// SIGNUP WITH $5 BONUS + ANTI-ABUSE SYSTEM
-// Frontend (auth.js) + Backend (Apps Script)
-// ============================================
-
-// ============================================
-// PART 1: FRONTEND (auth.js)
+// auth.js - FIREBASE AUTH + SIGNUP BONUS
 // ============================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
@@ -14,17 +9,21 @@ import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  sendEmailVerification, // ⭐ For verification
+  sendEmailVerification,
   onAuthStateChanged,
   signOut 
 } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
-// Your Firebase config
+// ============================================
+// FIREBASE CONFIG (YOUR ACTUAL CONFIG)
+// ============================================
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  // ... rest of config
+  apiKey: "AIzaSyD8XdS12Yxmnt4smaC5B33Zfs_46X4R0NA",
+  authDomain: "nmedia-stockfootage.firebaseapp.com",
+  projectId: "nmedia-stockfootage",
+  storageBucket: "nmedia-stockfootage.firebasestorage.app",
+  messagingSenderId: "932305719254",
+  appId: "1:932305719254:web:845cc2ac393757fe685e77"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -35,7 +34,6 @@ const googleProvider = new GoogleAuthProvider();
 // DEVICE FINGERPRINT (Anti-abuse)
 // ============================================
 function getDeviceFingerprint() {
-  // Creates unique ID based on browser/device
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
   ctx.textBaseline = 'top';
@@ -52,7 +50,6 @@ function getDeviceFingerprint() {
     plugins: Array.from(navigator.plugins).map(p => p.name).join(',')
   };
   
-  // Create hash from fingerprint
   const fingerprintString = JSON.stringify(fingerprint);
   let hash = 0;
   for (let i = 0; i < fingerprintString.length; i++) {
@@ -74,7 +71,6 @@ window.signInWithGoogle = async function() {
     
     console.log('✅ Google Sign-In:', user.email);
     
-    // Google accounts are pre-verified
     const deviceId = getDeviceFingerprint();
     
     // Create user in backend (will check if new)
@@ -101,7 +97,7 @@ window.signInWithGoogle = async function() {
 };
 
 // ============================================
-// SIGN UP WITH EMAIL/PASSWORD
+// SIGN IN WITH EMAIL/PASSWORD
 // ============================================
 window.signInWithEmail = async function(email, password) {
   if (!email || !password) {
@@ -120,13 +116,14 @@ window.signInWithEmail = async function(email, password) {
     } catch (signInError) {
       // Create new account
       if (signInError.code === 'auth/user-not-found' || 
-          signInError.code === 'auth/invalid-credential') {
+          signInError.code === 'auth/invalid-credential' ||
+          signInError.code === 'auth/wrong-password') {
         
         userCredential = await createUserWithEmailAndPassword(auth, email, password);
         isNewUser = true;
         console.log('✅ New account created');
         
-        // ⭐ SEND VERIFICATION EMAIL
+        // Send verification email
         await sendEmailVerification(userCredential.user);
         console.log('📧 Verification email sent');
       } else {
@@ -138,7 +135,7 @@ window.signInWithEmail = async function(email, password) {
     const deviceId = getDeviceFingerprint();
     
     if (isNewUser) {
-      // ⭐ NEW USER - CREATE IN BACKEND
+      // NEW USER - CREATE IN BACKEND
       const createResult = await createUserInBackend(
         user.email,
         '',
@@ -154,7 +151,7 @@ window.signInWithEmail = async function(email, password) {
       }
       
     } else {
-      // ⭐ EXISTING USER - JUST LOAD DATA
+      // EXISTING USER - JUST LOAD DATA
       await window.loadUserData(user.email);
     }
     
@@ -165,11 +162,38 @@ window.signInWithEmail = async function(email, password) {
     console.error('Email auth error:', error);
     
     let errorMessage = 'Sign-in failed';
-    if (error.code === 'auth/invalid-email') errorMessage = 'Invalid email';
-    else if (error.code === 'auth/weak-password') errorMessage = 'Password too weak (min 6 chars)';
-    else if (error.code === 'auth/email-already-in-use') errorMessage = 'Email already registered';
+    if (error.code === 'auth/invalid-email') {
+      errorMessage = 'Invalid email';
+    } else if (error.code === 'auth/weak-password') {
+      errorMessage = 'Password too weak (min 6 chars)';
+    } else if (error.code === 'auth/email-already-in-use') {
+      errorMessage = 'Email already registered';
+    } else {
+      errorMessage = 'Sign-in failed: ' + error.message;
+    }
     
     showNotification(errorMessage, 'error');
+  }
+};
+
+// ============================================
+// LOGOUT
+// ============================================
+window.logout = async function() {
+  try {
+    await signOut(auth);
+    
+    if (window.currentUser) {
+      window.currentUser.email = null;
+      window.currentUser.wallet = 0;
+      window.currentUser.isLoggedIn = false;
+    }
+    
+    window.updateWalletDisplay();
+    showNotification('Logged out successfully');
+  } catch (error) {
+    console.error('Logout error:', error);
+    showNotification('Logout failed', 'error');
   }
 };
 
@@ -193,7 +217,9 @@ async function createUserInBackend(email, name, giveWelcomeBonus, emailVerified,
       console.log('✅ New user created in backend');
       
       if (result.welcomeBonus) {
-        window.currentUser.wallet = 5;
+        if (window.currentUser) {
+          window.currentUser.wallet = 5;
+        }
         window.updateWalletDisplay();
       }
     }
@@ -207,7 +233,31 @@ async function createUserInBackend(email, name, giveWelcomeBonus, emailVerified,
 }
 
 // ============================================
-// LISTEN FOR EMAIL VERIFICATION
+// GRANT BONUS AFTER EMAIL VERIFICATION
+// ============================================
+async function grantWelcomeBonusAfterVerification(email, deviceId) {
+  try {
+    const url = CONFIG.API_URL + 
+      '?action=grantWelcomeBonus' +
+      '&email=' + encodeURIComponent(email) +
+      '&deviceId=' + encodeURIComponent(deviceId);
+    
+    const response = await fetch(url);
+    const result = await response.json();
+    
+    if (result.success && window.currentUser) {
+      window.currentUser.wallet = result.wallet;
+      window.updateWalletDisplay();
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('Bonus grant error:', error);
+  }
+}
+
+// ============================================
+// AUTH STATE LISTENER
 // ============================================
 onAuthStateChanged(auth, async (user) => {
   if (user) {
@@ -227,94 +277,40 @@ onAuthStateChanged(auth, async (user) => {
         localStorage.removeItem('sf_unverified_' + user.email);
         showNotification('🎉 Email verified! $5 added to your wallet!', 'success');
       }
-    } else {
+    } else if (user.email) {
       // Mark as unverified
       localStorage.setItem('sf_unverified_' + user.email, 'true');
     }
     
+    // Load user data
     await window.loadUserData(user.email);
+    window.updateWalletDisplay();
+    
+  } else {
+    console.log('🔓 User signed out');
+    
+    if (window.currentUser) {
+      window.currentUser.email = null;
+      window.currentUser.wallet = 0;
+      window.currentUser.isLoggedIn = false;
+    }
+    
     window.updateWalletDisplay();
   }
 });
 
 // ============================================
-// GRANT BONUS AFTER VERIFICATION
+// NOTIFICATION HELPER
 // ============================================
-async function grantWelcomeBonusAfterVerification(email, deviceId) {
-  try {
-    const url = CONFIG.API_URL + 
-      '?action=grantWelcomeBonus' +
-      '&email=' + encodeURIComponent(email) +
-      '&deviceId=' + encodeURIComponent(deviceId);
-    
-    const response = await fetch(url);
-    const result = await response.json();
-    
-    if (result.success) {
-      window.currentUser.wallet = result.wallet;
-      window.updateWalletDisplay();
-    }
-    
-    return result;
-  } catch (error) {
-    console.error('Bonus grant error:', error);
+function showNotification(message, type = 'success') {
+  if (window.showNotification) {
+    window.showNotification(message, type);
+  } else {
+    console.log('📢', message);
   }
 }
 
-console.log('✅ Auth with anti-abuse + $5 welcome bonus loaded');
-
-
-
-// js/auth.js — Firebase Authentication
-// Fill in YOUR values from Firebase Console Step 1.1
-
-import { initializeApp }
-  from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-import { getAuth, GoogleAuthProvider, signInWithPopup,
-         createUserWithEmailAndPassword, signInWithEmailAndPassword,
-         signOut, onAuthStateChanged }
-  from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
-
-const firebaseConfig = {
-  
-  apiKey: "AIzaSyD8XdS12Yxmnt4smaC5B33Zfs_46X4R0NA",
-  authDomain: "nmedia-stockfootage.firebaseapp.com",
-  projectId: "nmedia-stockfootage",
-  storageBucket: "nmedia-stockfootage.firebasestorage.app",
-  messagingSenderId: "932305719254",
-  appId: "1:932305719254:web:845cc2ac393757fe685e77"
-
-  
-};
-
-const app      = initializeApp(firebaseConfig);
-const auth     = getAuth(app);
-const provider = new GoogleAuthProvider();
-
-onAuthStateChanged(auth, async (firebaseUser) => {
-  if (firebaseUser) {
-    await loadUserData(firebaseUser.email);
-    updateWalletDisplay();
-  } else {
-    currentUser = { email: null, wallet: 0, isLoggedIn: false };
-    updateWalletDisplay();
-  }
-});
-
-window.signInWithGoogle = async () => {
-  try { await signInWithPopup(auth, provider); closeLoginModal(); }
-  catch(e) { showNotification('Sign-in failed', 'error'); }
-};
-
-window.signInWithEmail = async (email, password) => {
-  try { await signInWithEmailAndPassword(auth, email, password); closeLoginModal(); }
-  catch(e) {
-    if (e.code === 'auth/user-not-found') {
-      await createUserWithEmailAndPassword(auth, email, password);
-      closeLoginModal();
-    } else { showNotification('Sign-in failed: ' + e.message, 'error'); }
-  }
-};
-
-window.logout = async () => { await signOut(auth); showNotification('Logged out'); };
-
+console.log('✅ Auth module loaded with signup bonus + anti-abuse');
+console.log('   - signInWithEmail:', typeof window.signInWithEmail);
+console.log('   - signInWithGoogle:', typeof window.signInWithGoogle);
+console.log('   - logout:', typeof window.logout);
