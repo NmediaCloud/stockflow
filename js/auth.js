@@ -310,7 +310,7 @@ onAuthStateChanged(auth, async (user) => {
 // ============================================
 // FORGOT PASSWORD
 // ============================================
-import { sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+//import { sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
 window.handleForgotPassword = async function() {
   const email = document.getElementById('authEmail').value.trim();
