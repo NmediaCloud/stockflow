@@ -1698,7 +1698,7 @@ document.addEventListener('DOMContentLoaded', loadOffers);
             <div id="topupAmounts" style="display:grid;gap:15px;"></div>
             <script>
             document.addEventListener('DOMContentLoaded', () => {
-                const amounts = CONFIG.TOPUP_AMOUNTS || [5,10,20,30];
+                const amounts = CONFIG.TOPUP_AMOUNTS;
                 const container = document.getElementById('topupAmounts');
                 amounts.forEach(amt => {
                     container.innerHTML += `<button onclick="addFunds(${amt})" class="topup-button">
