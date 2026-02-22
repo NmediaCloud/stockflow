@@ -2104,16 +2104,24 @@ async function submitClaim(type) {
                     successEl.style.display = 'block';
                     buttons.forEach(btn => btn.style.display = 'none');
                 } else {
-                    errorEl.textContent = result.message || 'Submission failed.';
+                    // This shows the actual error from your backend
+                    errorEl.textContent = result.message || 'Submission rejected by server.';
                     errorEl.style.display = 'block';
-                   throw new Error(result.message);
+                    
+                    // Re-enable buttons so user can try again
+                    buttons.forEach(btn => {
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                        btn.textContent = type === 'review' ? 'Submit for $10 Credit →' : 'Submit for $50 Credit →';
+                    });
                 }
             } catch (err) {
                 console.error('❌ Submission Error:', err);
-                errorEl.textContent = 'Submission failed. Ensure you are subscribed to the newsletter.';
+                // General connection error message instead of the newsletter one
+                errorEl.textContent = 'Connection error. Please check your internet or try again later.';
                 errorEl.style.display = 'block';
         
-                // Re-enable buttons if failed
+                // Re-enable buttons if connection failed
                 buttons.forEach(btn => {
                     btn.disabled = false;
                     btn.style.opacity = '1';
