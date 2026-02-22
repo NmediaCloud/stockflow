@@ -2053,25 +2053,6 @@ async function submitClaim(type) {
         o.addEventListener('click', e => { if (e.target === o) closeOffer(o.id.replace('overlay-', '')); });
     });
    </script>
-        // ── Submit Claim Handler ────────────────────────────────────────────
-        
-        // ── Optional promo init log ─────────────────────────────────────────
-        function initPromotions() {
-            console.log('🎁 Promotional system ready – connected to Apps Script');
-        }
-
-        // ── Final page initialization ───────────────────────────────────────
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('🎬 DOM loaded, initializing...');
-            if (typeof init === 'function') {
-                init();
-            } else {
-                console.error('❌ init() function not found!');
-            }
-            // Call promo init
-            initPromotions();
-        });
-    </script>
-
+    
 </body>
 </html>
