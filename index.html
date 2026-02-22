@@ -1917,23 +1917,6 @@ document.addEventListener('DOMContentLoaded', loadOffers);
     <script src="js/videos.js"></script>
     <script src="js/wallet.js"></script>
     <script>
-        // About Modal Functions
-        function showAboutModal() {
-            document.getElementById('aboutModal').style.display = 'block';
-        }
-        
-        function closeAboutModal() {
-            document.getElementById('aboutModal').style.display = 'none';
-        }
-        
-        // License Modal Functions
-        function showLicenseInfo() {
-            document.getElementById('licenseModal').style.display = 'block';
-        }
-        
-        function closeLicenseModal() {
-            document.getElementById('licenseModal').style.display = 'none';
-        }
         
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', () => {
@@ -1944,21 +1927,40 @@ document.addEventListener('DOMContentLoaded', loadOffers);
                 console.error('❌ init() function not found!');
             }
         });
-
+        // About Modal Functions
+        function showAboutModal() {
+            document.getElementById('aboutModal').style.display = 'block';
+        }
+       
+        function closeAboutModal() {
+            document.getElementById('aboutModal').style.display = 'none';
+        }
+       
+        // License Modal Functions
+        function showLicenseInfo() {
+            document.getElementById('licenseModal').style.display = 'block';
+        }
+       
+        function closeLicenseModal() {
+            document.getElementById('licenseModal').style.display = 'none';
+        }
 
         // ================================================
-        //   STOCKFLOW PROMOTIONAL CLAIMS – CONNECTED TO APPS SCRIPT
-        //   Uses your live URL: https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec
+        //   STOCKFLOW PROMOTIONAL CLAIMS – CONNECTED VERSION
+        //   URL: https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec
         // ================================================
 
         const API_URL = "https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec";
 
-        // ── Popup open / close ──────────────────────────────────────────────
+        // ── Open / Close Popups ─────────────────────────────────────────────
         function openOffer(type) {
             const overlay = document.getElementById('overlay-' + type);
             if (overlay) {
                 overlay.classList.add('open');
                 document.body.style.overflow = 'hidden';
+                console.log(`🎁 Opened popup: ${type}`);
+            } else {
+                console.warn(`Popup overlay not found for: ${type}`);
             }
         }
 
@@ -1967,34 +1969,41 @@ document.addEventListener('DOMContentLoaded', loadOffers);
             if (overlay) {
                 overlay.classList.remove('open');
                 document.body.style.overflow = '';
+                console.log(`Closed popup: ${type}`);
             }
         }
 
-        // Close popup when clicking outside or pressing ESC
+        // Close on outside click
         document.querySelectorAll('.offer-overlay').forEach(overlay => {
             overlay.addEventListener('click', e => {
                 if (e.target === overlay) {
-                    closeOffer(overlay.id.replace('overlay-', ''));
+                    const type = overlay.id.replace('overlay-', '');
+                    closeOffer(type);
                 }
             });
         });
 
+        // Close with ESC key
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape') {
-                document.querySelectorAll('.offer-overlay.open').forEach(o => {
-                    o.classList.remove('open');
-                    document.body.style.overflow = '';
+                document.querySelectorAll('.offer-overlay.open').forEach(overlay => {
+                    const type = overlay.id.replace('overlay-', '');
+                    closeOffer(type);
                 });
             }
         });
 
-        // ── Submit claim (Google Review or YouTube) ─────────────────────────
+        // ── Submit Claim Handler ────────────────────────────────────────────
         async function submitClaim(type) {
-            const successEl = document.querySelector(`#overlay-${type} .claim-success`) || document.getElementById(type + '-success');
-            const errorEl   = document.querySelector(`#overlay-${type} .claim-error`)   || document.getElementById(type + '-error');
+            console.log(`Submitting claim for: ${type}`);
+
+            // Find success/error elements inside the popup
+            const popup = document.getElementById('overlay-' + type);
+            const successEl = popup?.querySelector('.claim-success') || document.getElementById(type + '-success');
+            const errorEl   = popup?.querySelector('.claim-error')   || document.getElementById(type + '-error');
 
             if (!successEl || !errorEl) {
-                console.error('❌ Success/error elements missing for: ' + type);
+                console.error(`❌ Missing .claim-success or .claim-error in popup: ${type}`);
                 return;
             }
 
@@ -2012,22 +2021,25 @@ document.addEventListener('DOMContentLoaded', loadOffers);
                 extra = (document.getElementById('yt-url')?.value || '').trim();
             }
 
+            // Basic validation
             if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
                 errorEl.textContent = 'Please enter a valid email address.';
                 errorEl.style.display = 'block';
+                console.warn('Invalid email');
                 return;
             }
 
             if (!extra) {
-                errorEl.textContent = type === 'review' 
-                    ? 'Please paste your Google review link.' 
+                errorEl.textContent = type === 'review'
+                    ? 'Please paste your Google review link.'
                     : 'Please paste your YouTube video URL.';
                 errorEl.style.display = 'block';
+                console.warn('Missing link/URL');
                 return;
             }
 
-            // Disable submit buttons
-            const buttons = document.querySelectorAll(`#overlay-${type} .popup-action:not(.action-ghost)`);
+            // Disable buttons during request
+            const buttons = popup?.querySelectorAll('.popup-action:not(.action-ghost)') || [];
             buttons.forEach(btn => {
                 btn.disabled = true;
                 btn.style.opacity = '0.6';
@@ -2042,28 +2054,36 @@ document.addEventListener('DOMContentLoaded', loadOffers);
                     extra: extra
                 });
 
-                const res = await fetch(API_URL + '?' + params, { method: 'GET', mode: 'cors' });
+                console.log('Sending request to:', API_URL + '?' + params);
+
+                const res = await fetch(API_URL + '?' + params, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+
                 const result = await res.json();
+                console.log('Response from Apps Script:', result);
 
                 if (result.success) {
-                    successEl.textContent = result.message || 'Submission received! We’ll verify soon.';
+                    successEl.textContent = result.message || 'Submission received! We’ll verify it soon.';
                     successEl.style.display = 'block';
                     buttons.forEach(btn => btn.style.display = 'none');
                     console.log(`✅ ${type} claim submitted successfully`);
                 } else {
-                    errorEl.textContent = result.message || 'Submission failed. Try again.';
+                    errorEl.textContent = result.message || 'Submission failed. Please try again.';
                     if (result.subscriptionRequired) {
-                        errorEl.textContent = 'Active newsletter subscription required first.';
+                        errorEl.textContent = 'You need an active newsletter subscription first.';
                     }
                     errorEl.style.display = 'block';
                     console.error('❌ Claim failed:', result);
                 }
             } catch (err) {
-                console.error('❌ Network error during claim:', err);
-                errorEl.textContent = 'Connection issue – please try again.';
+                console.error('❌ Fetch error:', err);
+                errorEl.textContent = 'Connection issue – please check internet and try again.';
                 errorEl.style.display = 'block';
             } finally {
-                // Re-enable if failed
+                // Re-enable buttons only if failed
                 if (successEl.style.display !== 'block') {
                     buttons.forEach(btn => {
                         btn.disabled = false;
@@ -2074,12 +2094,12 @@ document.addEventListener('DOMContentLoaded', loadOffers);
             }
         }
 
-        // ── Optional: Banner init (if you still use dynamic banner) ────────
+        // ── Optional promo init log ─────────────────────────────────────────
         function initPromotions() {
-            console.log('🎁 Promotional popups ready – connected to Apps Script');
+            console.log('🎁 Promotional system ready – connected to Apps Script');
         }
 
-        // Initialize on page load (keep your existing init logic)
+        // ── Final page initialization ───────────────────────────────────────
         document.addEventListener('DOMContentLoaded', () => {
             console.log('🎬 DOM loaded, initializing...');
             if (typeof init === 'function') {
@@ -2087,12 +2107,10 @@ document.addEventListener('DOMContentLoaded', loadOffers);
             } else {
                 console.error('❌ init() function not found!');
             }
-            // Also call our promo init
-            if (typeof initPromotions === 'function') {
-                initPromotions();
-            }
+            // Call promo init
+            initPromotions();
         });
-
     </script>
+
 </body>
 </html>
