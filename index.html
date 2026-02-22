@@ -1517,48 +1517,53 @@ async function submitClaim(type) {
     }
 
     try {
-        const params = new URLSearchParams({
-            action: 'submitClaim',
-            claimType: type,
-            email: email,
-            extra: extra
-        });
+                const params = new URLSearchParams({
+                    action: 'submitClaim',
+                    claimType: type,
+                    email: email,
+                    extra: extra
+                });
 
-        // Use a clean URL construction to avoid CORS and variable pollution
-        const finalApiUrl = `${SCRIPT_URL}?${params.toString()}`;
+                const finalUrl = `${API_URL}?${params.toString()}`;
+                console.log('🚀 Destination:', finalUrl);
+
+                const res = await fetch(finalUrl, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+
+                const result = await res.json();
+
+                if (result.success) {
+                    successEl.textContent = result.message || 'Submission received!';
+                    successEl.style.display = 'block';
+                    buttons.forEach(btn => btn.style.display = 'none');
+                } else {
+                    // Display the ACTUAL error from the server, not the newsletter text
+                    errorEl.textContent = result.message || 'Submission failed.';
+                    errorEl.style.display = 'block';
+                    
+                    // Re-enable buttons so user can try again
+                    buttons.forEach(btn => {
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                        btn.textContent = type === 'review' ? 'Submit for $10 Credit →' : 'Submit for $50 Credit →';
+                    });
+                }
+            } catch (err) {
+                console.error('❌ Network/System Error:', err);
+                // General error message for actual connection failures
+                errorEl.textContent = 'Connection error. Please check your internet or try again later.';
+                errorEl.style.display = 'block';
         
-        const res = await fetch(finalApiUrl, {
-            method: 'GET',
-            mode: 'cors'
-        });
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.textContent = type === 'review' ? 'Submit for $10 Credit →' : 'Submit for $50 Credit →';
+                });
+            }    
 
-        const result = await res.json();
-
-        if (result.success) {
-            successEl.textContent = result.message;
-            successEl.style.display = 'block';
-            if (submitBtn) submitBtn.style.display = 'none';
-        } else {
-            // Display the ACTUAL message from Apps Script
-            errorEl.textContent = result.message || 'Submission rejected by server.';
-            errorEl.style.display = 'block';
-            if (submitBtn) {
-                submitBtn.disabled = false;
-                submitBtn.style.opacity = '1';
-                submitBtn.textContent = 'Try Again';
-            }
-        }
-    } catch (err) {
-        console.error('❌ Network Error:', err);
-        // ⭐ REMOVED THE NEWSLETTER STRING HERE
-        errorEl.textContent = 'Connection error. Please check your internet or try again later.';
-        errorEl.style.display = 'block';
-        if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.style.opacity = '1';
-        }
-    }
-}
 
     
     
