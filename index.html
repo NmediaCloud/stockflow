@@ -495,9 +495,18 @@
 
       <!-- Form – always visible, no toggle -->
       <div class="claim-form" style="margin-top:10px;">
-        <input class="claim-input" id="rv-email" type="email" placeholder="Your Stockflow account email" required>
-        <input class="claim-input" id="rv-link" type="url" placeholder="Paste your Google review link here" required>
-        
+          <input class="claim-input" id="rv-email" type="email" placeholder="Your Stockflow account email" required>
+    
+          <input class="claim-input" id="rv-link" type="url" placeholder="Paste your Google review link here" required>
+    
+          <p style="font-size:13px; color:#9CA3AF; margin:10px 0; text-align:center;">
+              Tip: After reviewing, tap Share → Copy Link in Google. Paste it above!
+          </p>
+
+          <button class="popup-action action-blue" onclick="submitClaim('review')" style="width:100%;">
+            Submit Review Link for $10 Credit →
+          </button>
+     </div>
         <!-- Helpful tip right below inputs -->
         <p style="font-size:13px; color:#9CA3AF; margin:10px 0; text-align:center;">
           Tip: After reviewing, tap Share → Copy Link in Google. Paste it above — we'll accept short links!
@@ -1503,54 +1512,85 @@ document.addEventListener('DOMContentLoaded', loadOffers);
     }
   });
 
-  
-
   async function submitClaim(type) {
-    let email = '', extra = '', extra2 = '';
+    console.log(`Submitting claim for: ${type}`);
+
+    const popup = document.getElementById('overlay-' + type);
+    const successEl = document.getElementById(`success-${type}`);
+    const errorEl = document.getElementById(`error-${type}`);
+
+    if (!successEl || !errorEl) return;
+
+    successEl.style.display = 'none';
+    errorEl.style.display = 'none';
+
+    let email = '';
+    let extra = '';
 
     if (type === 'review') {
-      email = document.getElementById('rv-email')?.value.trim() || '';
-      extra = document.getElementById('rv-name')?.value.trim() || '';
+        // Corrected to grab the email and the LINK
+        email = document.getElementById('rv-email')?.value.trim();
+        extra = document.getElementById('rv-link')?.value.trim(); 
     } else if (type === 'youtube') {
-      email = document.getElementById('yt-email')?.value.trim() || '';
-      extra = document.getElementById('yt-url')?.value.trim() || '';
-      extra2 = document.getElementById('yt-channel')?.value.trim() || '';
+        email = document.getElementById('yt-email')?.value.trim();
+        extra = document.getElementById('yt-url')?.value.trim();
     }
 
-    if (!email) {
-      alert('Please enter your Stockflow account email.');
-      return;
+    // Validation
+    if (!email || !extra) {
+        errorEl.textContent = 'Please fill in all fields.';
+        errorEl.style.display = 'block';
+        return;
     }
 
-    if (type === 'review' && !extra) {
-      alert('Please enter the name you used in your Google review.');
-      return;
-    }
-
-    if (type === 'youtube' && !extra) {
-      alert('Please enter your YouTube video URL.');
-      return;
+    // UI Feedback: Disable button
+    const btn = popup.querySelector('.popup-action:not(.action-ghost)');
+    if (btn) {
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+        btn.textContent = 'Verifying...';
     }
 
     try {
-      const url = CONFIG.API_URL +
-        '?action=submitClaim' +
-        '&claimType=' + encodeURIComponent(type) +
-        '&email=' + encodeURIComponent(email) +
-        '&extra=' + encodeURIComponent(extra) +
-        '&extra2=' + encodeURIComponent(extra2);
+        const params = new URLSearchParams({
+            action: 'submitClaim',
+            claimType: type,
+            email: email,
+            extra: extra
+        });
 
-      await fetch(url, { method: 'GET' });
-    } catch (error) {
-      console.log('Claim submission (offline mode):', error);
+        const res = await fetch(API_URL + '?' + params);
+        const result = await res.json();
+
+        if (result.success) {
+            successEl.textContent = result.message;
+            successEl.style.display = 'block';
+            if (btn) btn.style.display = 'none';
+        } else {
+            errorEl.textContent = result.message || 'Error occurred.';
+            errorEl.style.display = 'block';
+            if (btn) {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.textContent = 'Submit Again';
+            }
+        }
+    } catch (err) {
+        errorEl.textContent = 'Connection error. Please try again.';
+        errorEl.style.display = 'block';
+        if (btn) {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+        }
     }
+}
 
-    const submitBtn = document.querySelector(`#form-${type} button.popup-action:not(.action-ghost)`);
-    const successMsg = document.getElementById(`success-${type}`);
+
+
+
+
+
     
-    if (submitBtn) submitBtn.style.display = 'none';
-    if (successMsg) successMsg.style.display = 'block';
-  }
 </script>
     
 
