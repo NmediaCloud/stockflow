@@ -2031,15 +2031,18 @@ document.addEventListener('DOMContentLoaded', loadOffers);
         async function submitClaim(type) {
             console.log(`Submitting claim for: ${type}`);
 
-            // Find success/error elements inside the popup
-            const popup = document.getElementById('overlay-' + type);
-            const successEl = popup?.querySelector('.claim-success') || document.getElementById(type + '-success');
-            const errorEl   = popup?.querySelector('.claim-error')   || document.getElementById(type + '-error');
-
-            if (!successEl || !errorEl) {
-                console.error(`❌ Missing .claim-success or .claim-error in popup: ${type}`);
+            // Ensure we are using the global API_URL defined in your config
+            // If it's missing, the script will alert you immediately
+            if (typeof API_URL === 'undefined' || !API_URL.includes('script.google.com')) {
+                console.error("❌ API_URL is undefined or incorrect. Check config.js.");
                 return;
             }
+
+            const popup = document.getElementById('overlay-' + type);
+            const successEl = popup?.querySelector('.claim-success');
+            const errorEl = popup?.querySelector('.claim-error');
+
+            if (!successEl || !errorEl) return;
 
             successEl.style.display = 'none';
             errorEl.style.display = 'none';
@@ -2055,24 +2058,20 @@ document.addEventListener('DOMContentLoaded', loadOffers);
                 extra = (document.getElementById('yt-url')?.value || '').trim();
             }
 
-            // Basic validation
+            // Validation
             if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
                 errorEl.textContent = 'Please enter a valid email address.';
                 errorEl.style.display = 'block';
-                console.warn('Invalid email');
                 return;
             }
 
             if (!extra) {
-                errorEl.textContent = type === 'review'
-                    ? 'Please paste your Google review link.'
-                    : 'Please paste your YouTube video URL.';
+                errorEl.textContent = 'Please provide the link for verification.';
                 errorEl.style.display = 'block';
-                console.warn('Missing link/URL');
                 return;
             }
 
-            // Disable buttons during request
+            // UI Feedback
             const buttons = popup?.querySelectorAll('.popup-action:not(.action-ghost)') || [];
             buttons.forEach(btn => {
                 btn.disabled = true;
@@ -2088,46 +2087,41 @@ document.addEventListener('DOMContentLoaded', loadOffers);
                     extra: extra
                 });
 
-                console.log('Sending request to:', API_URL + '?' + params);
+                // SAFETY: We use a local constant to prevent any chance of 'extra' 
+                // overwriting our target destination.
+                const finalUrl = `${API_URL}?${params.toString()}`;
+                console.log('🚀 Destination:', finalUrl);
 
-                const res = await fetch(API_URL + '?' + params, {
+                const res = await fetch(finalUrl, {
                     method: 'GET',
                     mode: 'cors',
                     cache: 'no-cache'
                 });
 
                 const result = await res.json();
-                console.log('Response from Apps Script:', result);
 
                 if (result.success) {
-                    successEl.textContent = result.message || 'Submission received! We’ll verify it soon.';
+                    successEl.textContent = result.message || 'Submission received!';
                     successEl.style.display = 'block';
                     buttons.forEach(btn => btn.style.display = 'none');
-                    console.log(`✅ ${type} claim submitted successfully`);
                 } else {
-                    errorEl.textContent = result.message || 'Submission failed. Please try again.';
-                    if (result.subscriptionRequired) {
-                        errorEl.textContent = 'You need an active newsletter subscription first.';
-                    }
+                    errorEl.textContent = result.message || 'Submission failed.';
                     errorEl.style.display = 'block';
-                    console.error('❌ Claim failed:', result);
+                   throw new Error(result.message);
                 }
             } catch (err) {
-                console.error('❌ Fetch error:', err);
-                errorEl.textContent = 'Connection issue – please check internet and try again.';
+                console.error('❌ Submission Error:', err);
+                errorEl.textContent = 'Submission failed. Ensure you are subscribed to the newsletter.';
                 errorEl.style.display = 'block';
-            } finally {
-                // Re-enable buttons only if failed
-                if (successEl.style.display !== 'block') {
-                    buttons.forEach(btn => {
-                        btn.disabled = false;
-                        btn.style.opacity = '1';
-                        btn.textContent = type === 'review' ? 'Submit for $10 Credit →' : 'Submit for $50 Credit →';
-                    });
-                }
+        
+                // Re-enable buttons if failed
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.textContent = type === 'review' ? 'Submit for $10 Credit →' : 'Submit for $50 Credit →';
+                });
             }
         }
-
         // ── Optional promo init log ─────────────────────────────────────────
         function initPromotions() {
             console.log('🎁 Promotional system ready – connected to Apps Script');
