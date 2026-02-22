@@ -463,7 +463,7 @@
 <!-- POPUP 2 — GOOGLE REVIEW $10               -->
 <!-- ══════════════════════════════════════════ -->
 <!-- ══════════════════════════════════════════ -->
-<!-- POPUP 2 — GOOGLE REVIEW $10 -->
+<!-- POPUP 2 — GOOGLE REVIEW $10 (FIXED FORM) -->
 <!-- ══════════════════════════════════════════ -->
 <div class="offer-overlay" id="overlay-review">
   <div class="offer-popup">
@@ -476,50 +476,46 @@
         Leave an honest review on Google Business. It helps others discover us and rewards you with <strong style="color:#F3F4F6;">$10 wallet credit</strong>. One time per account.
       </div>
       <div class="popup-steps">
-        <div class="popup-step">
-          <div class="step-num blue">1</div>
-          <div>Click below to open our <strong>Google Business listing</strong></div>
-        </div>
-        <div class="popup-step">
-          <div class="step-num blue">2</div>
-          <div>Leave an <strong>honest review</strong> — share your experience with Stockflow</div>
-        </div>
-        <div class="popup-step">
-          <div class="step-num blue">3</div>
-          <div>Submit your info below — we'll verify and credit <strong>$10 within 24 hours</strong></div>
-        </div>
+        <div class="popup-step"><div class="step-num blue">1</div><div>Click below to open our Google Business listing</div></div>
+        <div class="popup-step"><div class="step-num blue">2</div><div>Leave an honest review — share your experience</div></div>
+        <div class="popup-step"><div class="step-num blue">3</div><div>Copy the link to your review and paste it below — we'll verify and credit $10 within 24 hours</div></div>
       </div>
       <div class="popup-note">
         ✔ One review per account. Manual verification. Honest reviews only — any rating welcome.
       </div>
-      <!-- TODO: Replace with your actual Google Business review link -->
+
+      <!-- Direct review link – use your working one -->
       <a href="https://g.page/r/CcaLxiFI_1IbEAE/review"
          target="_blank"
-         class="popup-action action-blue"
-         onclick="showClaimForm('review'); return true;"
-         id="cta-review">
-        ⭐ Write Google Review →
+         class="popup-action action-blue">
+        ⭐ Open Google Review Page →
       </a>
 
-      <div id="form-review" class="claim-form">
+      <!-- Form: only email + link (removed name field) -->
+      <div id="form-review" class="claim-form" style="margin-top:20px;">
         <input class="claim-input" id="rv-email" type="email" placeholder="Your Stockflow account email" required>
-        <input class="claim-input" id="rv-name" type="text" placeholder="Name used in your Google review" required>
+        <input class="claim-input" id="rv-link" type="url" placeholder="Paste your Google review link here" required>
+        
+        <!-- Tiny tip to help users -->
+        <p style="font-size:13px; color:#9CA3AF; margin:8px 0; text-align:center;">
+          Tip: After posting your review, tap Share → Copy Link (short links like maps.app.goo.gl are fine!)
+        </p>
+
         <button class="popup-action action-blue" onclick="submitClaim('review')">Submit for $10 Credit →</button>
       </div>
 
-      <!-- SUCCESS & ERROR MESSAGES – placed here so JS can find them reliably -->
+      <!-- Success & Error messages – critical for feedback -->
       <div class="claim-success" id="success-review" style="display:none; margin-top:16px; padding:14px; background:rgba(16,185,129,0.2); border:1px solid #10B981; border-radius:8px; color:#065F46; text-align:center; font-weight:500;">
-        ✔ Claim received! We'll verify your review and credit $10 within 24 hours.
+        ✔ Submission received! We'll verify your review and credit $10 within 24 hours.
       </div>
       <div class="claim-error" id="error-review" style="display:none; margin-top:16px; padding:14px; background:rgba(239,68,68,0.2); border:1px solid #EF4444; border-radius:8px; color:#991B1B; text-align:center; font-weight:500;">
-        <!-- Error messages (e.g. "Invalid email", "Not subscribed") will appear here -->
+        <!-- Errors appear here -->
       </div>
 
       <button class="popup-action action-ghost" onclick="closeOffer('review')">Maybe Later</button>
     </div>
   </div>
 </div>
-
 <!-- ══════════════════════════════════════════ -->
 <!-- POPUP 3 — YOUTUBE $100 -->
 <!-- ══════════════════════════════════════════ -->
