@@ -56,8 +56,8 @@ async function init() {
 }
 
 async function loadVideosFromSheet() {
+    allVideos = []; // ⭐ THE FIX: Clear the array before loading new data
     const csvUrl = CONFIG.SHEET_CSV_URL;
-    
     console.log('📡 Fetching from:', csvUrl);
     
     try {
