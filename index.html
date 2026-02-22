@@ -1951,7 +1951,7 @@ async function submitClaim(type) {
     <script src="js/wallet.js"></script>
   
     
-   <script>
+<script>
     // 1. Initialize on page load
     document.addEventListener('DOMContentLoaded', () => {
         console.log('🎬 DOM loaded, initializing...');
@@ -1976,11 +1976,11 @@ async function submitClaim(type) {
         }
     }
 
-    // 3. The Unified Submit Handler
+    // 3. The Unified Submit Handler (Fixes Google Review & YouTube)
     async function submitClaim(type) {
         console.log(`Submitting claim for: ${type}`);
 
-        // Safety: Hardcode destination to prevent variable pollution
+        // Your Apps Script Exec URL
         const SCRIPT_DEST = "https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec";
 
         const popup = document.getElementById('overlay-' + type);
@@ -2029,7 +2029,7 @@ async function submitClaim(type) {
                 successEl.style.display = 'block';
                 if (submitBtn) submitBtn.style.display = 'none';
             } else {
-                // Show actual server error (no longer hardcoded to newsletter)
+                // Shows the ACTUAL server error (no longer hardcoded to "newsletter")
                 errorEl.textContent = result.message || 'Submission failed.';
                 errorEl.style.display = 'block';
                 if (submitBtn) {
@@ -2050,11 +2050,13 @@ async function submitClaim(type) {
         }
     }
 
-    // Modal Close Helper
+    // Modal Close Helper (outside click)
     document.querySelectorAll('.offer-overlay').forEach(o => {
         o.addEventListener('click', e => { if (e.target === o) closeOffer(o.id.replace('overlay-', '')); });
     });
 </script>
+    
+
         // ── Submit Claim Handler ────────────────────────────────────────────
         
         // ── Optional promo init log ─────────────────────────────────────────
