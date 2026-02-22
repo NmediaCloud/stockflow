@@ -661,32 +661,6 @@ document.querySelectorAll('.offer-overlay').forEach(o => {
   });
 });
 
-async function submitOffer(type) {
-  let email = '', extra = '';
-  const pre = type.substring(0,2);
-
-  if (type === 'newsletter') {
-    email = document.getElementById('nl-email').value.trim();
-  } else if (type === 'review') {
-    email = document.getElementById('rv-email').value.trim();
-    extra = document.getElementById('rv-link').value.trim();
-  } else if (type === 'youtube') {
-    email = document.getElementById('yt-email').value.trim();
-    extra = document.getElementById('yt-url').value.trim();
-  }
-
-  const successEl = document.getElementById(pre + '-success');
-  const errorEl   = document.getElementById(pre + '-error');
-  successEl.style.display = 'none';
-  errorEl.style.display   = 'none';
-  errorEl.className       = 'claim-error';
-
-  if (!email) { errorEl.textContent = 'Please enter your account email.'; errorEl.style.display = 'block'; return; }
-  if ((type === 'review' || type === 'youtube') && !extra) {
-    errorEl.textContent = type === 'review' ? 'Please paste your Google review link.' : 'Please paste your YouTube video URL.';
-    errorEl.style.display = 'block';
-    return;
-  }
 
   // Disable button while submitting
   const btns = document.querySelectorAll(`#overlay-${type} button.popup-action:not(.action-ghost)`);
@@ -1529,12 +1503,7 @@ document.addEventListener('DOMContentLoaded', loadOffers);
     }
   });
 
-  function showClaimForm(type) {
-    const form = document.getElementById('form-' + type);
-    const cta = document.getElementById('cta-' + type);
-    if (form) form.classList.add('open');
-    if (cta) cta.style.display = 'none';
-  }
+  
 
   async function submitClaim(type) {
     let email = '', extra = '', extra2 = '';
