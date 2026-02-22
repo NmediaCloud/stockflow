@@ -1488,44 +1488,37 @@ document.addEventListener('DOMContentLoaded', loadOffers);
       });
     }
   });
-
-  async function submitClaim(type) {
+async function submitClaim(type) {
     console.log(`Submitting claim for: ${type}`);
 
+    // 1. HARDCODE your Apps Script URL here to prevent variable overwriting
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec"; 
+
     const popup = document.getElementById('overlay-' + type);
-    const successEl = document.getElementById(`success-${type}`);
-    const errorEl = document.getElementById(`error-${type}`);
+    const successEl = popup?.querySelector('.claim-success');
+    const errorEl = popup?.querySelector('.claim-error');
+    const submitBtn = popup?.querySelector('.popup-action:not(.action-ghost)');
 
     if (!successEl || !errorEl) return;
 
     successEl.style.display = 'none';
     errorEl.style.display = 'none';
 
-    let email = '';
-    let extra = '';
+    let email = (document.getElementById(type === 'review' ? 'rv-email' : 'yt-email')?.value || '').trim();
+    let extra = (document.getElementById(type === 'review' ? 'rv-link' : 'yt-url')?.value || '').trim();
 
-    if (type === 'review') {
-        // Corrected to grab the email and the LINK
-        email = document.getElementById('rv-email')?.value.trim();
-        extra = document.getElementById('rv-link')?.value.trim(); 
-    } else if (type === 'youtube') {
-        email = document.getElementById('yt-email')?.value.trim();
-        extra = document.getElementById('yt-url')?.value.trim();
-    }
-
-    // Validation
+    // Basic Validation
     if (!email || !extra) {
         errorEl.textContent = 'Please fill in all fields.';
         errorEl.style.display = 'block';
         return;
     }
 
-    // UI Feedback: Disable button
-    const btn = popup.querySelector('.popup-action:not(.action-ghost)');
-    if (btn) {
-        btn.disabled = true;
-        btn.style.opacity = '0.5';
-        btn.textContent = 'Verifying...';
+    // UI Feedback
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.6';
+        submitBtn.textContent = 'Sending...';
     }
 
     try {
@@ -1536,35 +1529,40 @@ document.addEventListener('DOMContentLoaded', loadOffers);
             extra: extra
         });
 
-        const res = await fetch(API_URL + '?' + params);
+        // 2. LOG THE ACTUAL DESTINATION TO VERIFY
+        console.log('🚀 Sending to Script:', SCRIPT_URL);
+
+        const res = await fetch(`${SCRIPT_URL}?${params.toString()}`, {
+            method: 'GET',
+            mode: 'cors'
+        });
+
         const result = await res.json();
+        console.log('📦 Response:', result);
 
         if (result.success) {
             successEl.textContent = result.message;
             successEl.style.display = 'block';
-            if (btn) btn.style.display = 'none';
+            if (submitBtn) submitBtn.style.display = 'none';
         } else {
-            errorEl.textContent = result.message || 'Error occurred.';
+            errorEl.textContent = result.message || 'Submission failed.';
             errorEl.style.display = 'block';
-            if (btn) {
-                btn.disabled = false;
-                btn.style.opacity = '1';
-                btn.textContent = 'Submit Again';
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+                submitBtn.textContent = 'Retry Submission';
             }
         }
     } catch (err) {
-        errorEl.textContent = 'Connection error. Please try again.';
+        console.error('❌ Fetch Error:', err);
+        errorEl.textContent = 'Network error. Please ensure you are subscribed to the newsletter.';
         errorEl.style.display = 'block';
-        if (btn) {
-            btn.disabled = false;
-            btn.style.opacity = '1';
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
         }
     }
 }
-
-
-
-
 
 
     
