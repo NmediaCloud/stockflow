@@ -494,19 +494,19 @@
       </a>
 
       <!-- Form – always visible, no toggle -->
-      <div class="claim-form" style="margin-top:10px;">
-          <input class="claim-input" id="rv-email" type="email" placeholder="Your Stockflow account email" required>
-    
-          <input class="claim-input" id="rv-link" type="url" placeholder="Paste your Google review link here" required>
-    
-          <p style="font-size:13px; color:#9CA3AF; margin:10px 0; text-align:center;">
-              Tip: After reviewing, tap Share → Copy Link in Google. Paste it above!
-          </p>
+      <div class="claim-form" id="form-review" style="display:block; margin-top:20px;">
+        <input class="claim-input" id="rv-email" type="email" placeholder="Your Stockflow account email" required>
+  
+        <input class="claim-input" id="rv-link" type="url" placeholder="Paste your Google review link here" required>
+  
+        <p style="font-size:13px; color:#9CA3AF; margin:10px 0; text-align:center;">
+          Tip: After reviewing, tap Share → Copy Link in Google. Paste it above!
+        </p>
 
-          <button class="popup-action action-blue" onclick="submitClaim('review')" style="width:100%;">
-            Submit Review Link for $10 Credit →
-          </button>
-     </div>
+        <button class="popup-action action-blue" onclick="submitClaim('review')" style="width:100%;">
+          Submit Review Link for $10 Credit →
+        </button>
+      </div>
         <!-- Helpful tip right below inputs -->
         <p style="font-size:13px; color:#9CA3AF; margin:10px 0; text-align:center;">
           Tip: After reviewing, tap Share → Copy Link in Google. Paste it above — we'll accept short links!
