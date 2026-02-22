@@ -1489,9 +1489,6 @@ document.addEventListener('DOMContentLoaded', loadOffers);
     }
   });
 async function submitClaim(type) {
-    console.log(`Submitting claim for: ${type}`);
-
-    // 1. HARDCODE your Apps Script URL here to prevent variable overwriting
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec"; 
 
     const popup = document.getElementById('overlay-' + type);
@@ -1504,21 +1501,19 @@ async function submitClaim(type) {
     successEl.style.display = 'none';
     errorEl.style.display = 'none';
 
-    let email = (document.getElementById(type === 'review' ? 'rv-email' : 'yt-email')?.value || '').trim();
-    let extra = (document.getElementById(type === 'review' ? 'rv-link' : 'yt-url')?.value || '').trim();
+    const email = (document.getElementById(type === 'review' ? 'rv-email' : 'yt-email')?.value || '').trim();
+    const extra = (document.getElementById(type === 'review' ? 'rv-link' : 'yt-url')?.value || '').trim();
 
-    // Basic Validation
     if (!email || !extra) {
-        errorEl.textContent = 'Please fill in all fields.';
+        errorEl.textContent = 'Please enter your email and the link.';
         errorEl.style.display = 'block';
         return;
     }
 
-    // UI Feedback
     if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.style.opacity = '0.6';
-        submitBtn.textContent = 'Sending...';
+        submitBtn.textContent = 'Submitting...';
     }
 
     try {
@@ -1529,33 +1524,34 @@ async function submitClaim(type) {
             extra: extra
         });
 
-        // 2. LOG THE ACTUAL DESTINATION TO VERIFY
-        console.log('🚀 Sending to Script:', SCRIPT_URL);
-
-        const res = await fetch(`${SCRIPT_URL}?${params.toString()}`, {
+        // Use a clean URL construction to avoid CORS and variable pollution
+        const finalApiUrl = `${SCRIPT_URL}?${params.toString()}`;
+        
+        const res = await fetch(finalApiUrl, {
             method: 'GET',
             mode: 'cors'
         });
 
         const result = await res.json();
-        console.log('📦 Response:', result);
 
         if (result.success) {
             successEl.textContent = result.message;
             successEl.style.display = 'block';
             if (submitBtn) submitBtn.style.display = 'none';
         } else {
-            errorEl.textContent = result.message || 'Submission failed.';
+            // Display the ACTUAL message from Apps Script
+            errorEl.textContent = result.message || 'Submission rejected by server.';
             errorEl.style.display = 'block';
             if (submitBtn) {
                 submitBtn.disabled = false;
                 submitBtn.style.opacity = '1';
-                submitBtn.textContent = 'Retry Submission';
+                submitBtn.textContent = 'Try Again';
             }
         }
     } catch (err) {
-        console.error('❌ Fetch Error:', err);
-        errorEl.textContent = 'Network error. Please ensure you are subscribed to the newsletter.';
+        console.error('❌ Network Error:', err);
+        // ⭐ REMOVED THE NEWSLETTER STRING HERE
+        errorEl.textContent = 'Connection error. Please check your internet or try again later.';
         errorEl.style.display = 'block';
         if (submitBtn) {
             submitBtn.disabled = false;
@@ -1564,7 +1560,7 @@ async function submitClaim(type) {
     }
 }
 
-
+    
     
 </script>
     
