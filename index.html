@@ -472,33 +472,33 @@
     <div class="popup-body">
       <div class="popup-reward-badge badge-blue">⭐ Free $10 Credit</div>
       <div class="popup-title">Write a Review.<br><span class="hi">Earn $10.</span></div>
+      
       <div class="popup-desc">
         Leave an honest review on Google — helps others find us and earns you wallet credit. One time per account.
       </div>
+
       <div class="popup-steps">
         <div class="popup-step"><div class="step-num blue">1</div><div>Click below to open our Google review page</div></div>
         <div class="popup-step"><div class="step-num blue">2</div><div>Leave your review (any rating is fine)</div></div>
         <div class="popup-step"><div class="step-num blue">3</div><div>Copy the link to your review and paste it here</div></div>
         <div class="popup-step"><div class="step-num blue">4</div><div>Enter your email and submit — we'll verify & credit $10</div></div>
       </div>
+
       <div class="popup-note">
         ✔ Honest reviews only. Short links like maps.app.goo.gl are accepted.
       </div>
 
-      <!-- Always-visible review link button -->
       <a href="https://g.page/r/CcaLxiFI_1IbEAE/review"
          target="_blank"
-         class="popup-action action-blue"
-         style="margin-bottom:20px; display:block; text-align:center;">
+         class="popup-link-btn"
+         style="margin-bottom:20px; display:block; text-align:center; padding: 14px; background: #3B82F6; color: white; border-radius: 8px; text-decoration: none; font-weight: 600;">
         ⭐ Open Google Review Page (new tab) →
       </a>
 
-      <!-- Form – always visible, no toggle -->
       <div class="claim-form" id="form-review" style="display:block; margin-top:20px;">
         <input class="claim-input" id="rv-email" type="email" placeholder="Your Stockflow account email" required>
-  
         <input class="claim-input" id="rv-link" type="url" placeholder="Paste your Google review link here" required>
-  
+        
         <p style="font-size:13px; color:#9CA3AF; margin:10px 0; text-align:center;">
           Tip: After reviewing, tap Share → Copy Link in Google. Paste it above!
         </p>
@@ -507,25 +507,13 @@
           Submit Review Link for $10 Credit →
         </button>
       </div>
-        <!-- Helpful tip right below inputs -->
-        <p style="font-size:13px; color:#9CA3AF; margin:10px 0; text-align:center;">
-          Tip: After reviewing, tap Share → Copy Link in Google. Paste it above — we'll accept short links!
-        </p>
 
-        <button class="popup-action action-blue" onclick="submitClaim('review')" style="width:100%;">
-          Submit Review Link for $10 Credit →
-        </button>
-      </div>
-
-      <!-- Feedback areas – always present -->
       <div class="claim-success" id="success-review" style="display:none; margin-top:16px; padding:14px; background:rgba(16,185,129,0.2); border:1px solid #10B981; border-radius:8px; color:#065F46; text-align:center; font-weight:500;">
         ✔ Submission received! We'll verify your review and credit $10 within 24-48 hours.
       </div>
-      <div class="claim-error" id="error-review" style="display:none; margin-top:16px; padding:14px; background:rgba(239,68,68,0.2); border:1px solid #EF4444; border-radius:8px; color:#991B1B; text-align:center; font-weight:500;">
-        <!-- Errors like "Not subscribed" or "Already submitted" appear here -->
-      </div>
+      <div class="claim-error" id="error-review" style="display:none; margin-top:16px; padding:14px; background:rgba(239,68,68,0.2); border:1px solid #EF4444; border-radius:8px; color:#991B1B; text-align:center; font-weight:500;"></div>
 
-      <button class="popup-action action-ghost" onclick="closeOffer('review')" style="margin-top:12px;">
+      <button class="popup-action action-ghost" onclick="closeOffer('review')" style="margin-top:12px; width: 100%;">
         Close
       </button>
     </div>
