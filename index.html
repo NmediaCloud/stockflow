@@ -462,91 +462,114 @@
 <!-- ══════════════════════════════════════════ -->
 <!-- POPUP 2 — GOOGLE REVIEW $10               -->
 <!-- ══════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════ -->
+<!-- POPUP 2 — GOOGLE REVIEW $10 -->
+<!-- ══════════════════════════════════════════ -->
 <div class="offer-overlay" id="overlay-review">
   <div class="offer-popup">
-    <button class="popup-close" onclick="closeOffer('review')">✕</button>
-    <div class="claim-success" id="review-success" style="display:none; margin-top:12px; padding:12px; background:rgba(16,185,129,0.1); border:1px solid #10B981; border-radius:8px; color:#065F46; text-align:center;">
-    Submission received! We'll verify your review and credit $10 soon.
-    </div>
-    <div class="claim-error" id="review-error" style="display:none; margin-top:12px; padding:12px; background:rgba(239,68,68,0.1); border:1px solid #EF4444; border-radius:8px; color:#991B1B; text-align:center;">
-    <!-- error message will appear here -->
-    </div>
-
-
-      
-    <div class="popup-accent rv"></div>
+    <button class="popup-close" onclick="closeOffer('review')">×</button>
+    <div class="popup-accent blue"></div>
     <div class="popup-body">
-      <div class="popup-badge badge-rv">⭐ FREE <span id="rv-badge-amt">$10</span> Wallet Credit</div>
-      <div class="popup-title">Write a Review.<br><span>Earn Credit.</span></div>
-      <div class="popup-desc">Leave an honest review on Google — helps others find us and earns you wallet credit. One time per account. Limited time offer, Aimimg for first 1000 reviews approx </div>
-
-      <div class="popup-steps">
-        <div class="popup-step"><div class="step-num step-rv">1</div><div>Click below to open our <strong style="color:#F3F4F6;">Google Business listing</strong></div></div>
-        <div class="popup-step"><div class="step-num step-rv">2</div><div>Leave an honest review and <strong style="color:#F3F4F6;">copy the link</strong> to your review</div></div>
-        <div class="popup-step"><div class="step-num step-rv">3</div><div>Paste it below — we verify and credit within 24h</div></div>
+      <div class="popup-reward-badge badge-blue">⭐ Free $10 Credit</div>
+      <div class="popup-title">Write a Review.<br><span class="hi">Earn $10.</span></div>
+      <div class="popup-desc">
+        Leave an honest review on Google Business. It helps others discover us and rewards you with <strong style="color:#F3F4F6;">$10 wallet credit</strong>. One time per account.
       </div>
-
-      <!-- Subscription disclaimer -->
-      <div class="sub-disclaimer">
-        <span class="sub-disclaimer-icon">📬</span>
-        <div class="sub-disclaimer-text">
-          <strong>Active subscription required.</strong> You must be subscribed to our newsletter to claim any reward. Unsubscribing voids all pending and future offers.
+      <div class="popup-steps">
+        <div class="popup-step">
+          <div class="step-num blue">1</div>
+          <div>Click below to open our <strong>Google Business listing</strong></div>
+        </div>
+        <div class="popup-step">
+          <div class="step-num blue">2</div>
+          <div>Leave an <strong>honest review</strong> — share your experience with Stockflow</div>
+        </div>
+        <div class="popup-step">
+          <div class="step-num blue">3</div>
+          <div>Submit your info below — we'll verify and credit <strong>$10 within 24 hours</strong></div>
         </div>
       </div>
-
-      <a href="https://g.page/r/CcaLxiFI_1IbEBM/review" target="_blank"
-         class="popup-action action-rv" style="color:white;text-decoration:none;display:block;text-align:center;">
-        ⭐ Open Google Review Page →
+      <div class="popup-note">
+        ✔ One review per account. Manual verification. Honest reviews only — any rating welcome.
+      </div>
+      <!-- TODO: Replace with your actual Google Business review link -->
+      <a href="https://g.page/r/YOUR_GOOGLE_BUSINESS_ID/review"
+         target="_blank"
+         class="popup-action action-blue"
+         onclick="showClaimForm('review'); return true;"
+         id="cta-review">
+        ⭐ Write Google Review →
       </a>
 
-      <input class="claim-input" id="rv-email" type="email" placeholder="Your Stockflow account email" style="margin-top:10px;">
-      <input class="claim-input" id="rv-link" type="url" placeholder="Paste your Google review link here">
-      <button class="popup-action action-rv" onclick="submitOffer('review')">Submit for <span id="rv-btn-amt">$10</span> Credit →</button>
-      <div class="claim-success" id="rv-success"></div>
-      <div class="claim-error" id="rv-error"></div>
-      <button class="popup-action action-ghost" onclick="closeOffer('review')">Got it</button>
+      <div id="form-review" class="claim-form">
+        <input class="claim-input" id="rv-email" type="email" placeholder="Your Stockflow account email" required>
+        <input class="claim-input" id="rv-name" type="text" placeholder="Name used in your Google review" required>
+        <button class="popup-action action-blue" onclick="submitClaim('review')">Submit for $10 Credit →</button>
+      </div>
+
+      <!-- SUCCESS & ERROR MESSAGES – placed here so JS can find them reliably -->
+      <div class="claim-success" id="success-review" style="display:none; margin-top:16px; padding:14px; background:rgba(16,185,129,0.2); border:1px solid #10B981; border-radius:8px; color:#065F46; text-align:center; font-weight:500;">
+        ✔ Claim received! We'll verify your review and credit $10 within 24 hours.
+      </div>
+      <div class="claim-error" id="error-review" style="display:none; margin-top:16px; padding:14px; background:rgba(239,68,68,0.2); border:1px solid #EF4444; border-radius:8px; color:#991B1B; text-align:center; font-weight:500;">
+        <!-- Error messages (e.g. "Invalid email", "Not subscribed") will appear here -->
+      </div>
+
+      <button class="popup-action action-ghost" onclick="closeOffer('review')">Maybe Later</button>
     </div>
   </div>
 </div>
 
 <!-- ══════════════════════════════════════════ -->
-<!-- POPUP 3 — YOUTUBE $50                     -->
+<!-- POPUP 3 — YOUTUBE $100 -->
 <!-- ══════════════════════════════════════════ -->
 <div class="offer-overlay" id="overlay-youtube">
   <div class="offer-popup">
-    <button class="popup-close" onclick="closeOffer('youtube')">✕</button>
-    <div class="popup-accent yt"></div>
+    <button class="popup-close" onclick="closeOffer('youtube')">×</button>
+    <div class="popup-accent orange"></div>
     <div class="popup-body">
-      <div class="popup-badge badge-yt">🎬 <span id="yt-badge-amt">$50</span> Wallet Credit</div>
-      <div class="popup-title">Feature Us on<br>YouTube. <span>Earn Big.</span></div>
-      <div class="popup-desc">Create a YouTube video featuring Stockflow.media with a clickable link in the description — review, tutorial, or footage showcase, This is limited time offer, for first 100 Reviews approx</div>
-
-      <div class="popup-steps">
-        <div class="popup-step"><div class="step-num step-yt">1</div><div>Create a public YouTube video mentioning <strong style="color:#F3F4F6;">Stockflow.media</strong></div></div>
-        <div class="popup-step"><div class="step-num step-yt">2</div><div>Add <strong style="color:#F3F4F6;">https://stockflow.media</strong> as a clickable link in the video description</div></div>
-        <div class="popup-step"><div class="step-num step-yt">3</div><div>Paste your video URL below, we wil review and update credits. </div></div>
+      <div class="popup-reward-badge badge-orange">🎬 $100 Credit</div>
+      <div class="popup-title">Feature Us on<br><span class="hi">YouTube. Earn $100.</span></div>
+      <div class="popup-desc">
+        Create a YouTube video featuring Stockflow.media — a review, tutorial, or showcase — with our link in the description. We'll reward you with <strong style="color:#F3F4F6;">$100 wallet credit</strong>.
       </div>
-
-      <div class="popup-note">✔️ Video must be public, with a clickable link to stockflow.media in description. One reward per creator.</div>
-
-      <!-- Subscription disclaimer -->
-      <div class="sub-disclaimer">
-        <span class="sub-disclaimer-icon">📬</span>
-        <div class="sub-disclaimer-text">
-          <strong>Active subscription required.</strong> You must remain subscribed to our newsletter to receive and keep this reward. Unsubscribing before we process your claim will void it.
+      <div class="popup-steps">
+        <div class="popup-step">
+          <div class="step-num orange">1</div>
+          <div>Create a YouTube video mentioning <strong>Stockflow.media</strong> (review, tutorial, or showcase)</div>
+        </div>
+        <div class="popup-step">
+          <div class="step-num orange">2</div>
+          <div>Include <strong>https://stockflow.media</strong> as a clickable link in description</div>
+        </div>
+        <div class="popup-step">
+          <div class="step-num orange">3</div>
+          <div>Submit below — we'll review and credit <strong>$100 within 48 hours</strong></div>
         </div>
       </div>
+      <div class="popup-note">
+        ✔ One reward per creator. Video must be public, 2+ minutes, with clickable link in description.
+      </div>
 
-      <input class="claim-input" id="yt-email" type="email" placeholder="Your Stockflow account email">
-      <input class="claim-input" id="yt-url" type="url" placeholder="Your YouTube video URL">
-      <button class="popup-action action-yt" onclick="submitOffer('youtube')">Submit for <span id="yt-btn-amt">$50</span> Credit →</button>
-      <div class="claim-success" id="yt-success"></div>
-      <div class="claim-error" id="yt-error"></div>
-      <button class="popup-action action-ghost" onclick="closeOffer('youtube')"> Got it! </button>
+      <div id="form-youtube" class="claim-form open">
+        <input class="claim-input" id="yt-email" type="email" placeholder="Your Stockflow account email" required>
+        <input class="claim-input" id="yt-url" type="url" placeholder="Your YouTube video URL" required>
+        <input class="claim-input" id="yt-channel" type="text" placeholder="Your channel name (optional)">
+        <button class="popup-action action-orange" onclick="submitClaim('youtube')">Submit for $100 Credit →</button>
+      </div>
+
+      <!-- SUCCESS & ERROR MESSAGES – placed here so JS can find them reliably -->
+      <div class="claim-success" id="success-youtube" style="display:none; margin-top:16px; padding:14px; background:rgba(16,185,129,0.2); border:1px solid #10B981; border-radius:8px; color:#065F46; text-align:center; font-weight:500;">
+        🎬 Submission received! We'll review your video and credit $100 within 48 hours.
+      </div>
+      <div class="claim-error" id="error-youtube" style="display:none; margin-top:16px; padding:14px; background:rgba(239,68,68,0.2); border:1px solid #EF4444; border-radius:8px; color:#991B1B; text-align:center; font-weight:500;">
+        <!-- Error messages (e.g. "Invalid email", "Not subscribed") will appear here -->
+      </div>
+
+      <button class="popup-action action-ghost" onclick="closeOffer('youtube')">Maybe Later</button>
     </div>
   </div>
 </div>
-
 <!-- SCRIPTS -->
 <script>
 // Default config (overridden by sheet on load)
