@@ -465,6 +465,15 @@
 <div class="offer-overlay" id="overlay-review">
   <div class="offer-popup">
     <button class="popup-close" onclick="closeOffer('review')">✕</button>
+    <div class="claim-success" id="review-success" style="display:none; margin-top:12px; padding:12px; background:rgba(16,185,129,0.1); border:1px solid #10B981; border-radius:8px; color:#065F46; text-align:center;">
+    Submission received! We'll verify your review and credit $10 soon.
+    </div>
+    <div class="claim-error" id="review-error" style="display:none; margin-top:12px; padding:12px; background:rgba(239,68,68,0.1); border:1px solid #EF4444; border-radius:8px; color:#991B1B; text-align:center;">
+    <!-- error message will appear here -->
+    </div>
+
+
+      
     <div class="popup-accent rv"></div>
     <div class="popup-body">
       <div class="popup-badge badge-rv">⭐ FREE <span id="rv-badge-amt">$10</span> Wallet Credit</div>
