@@ -1944,6 +1944,155 @@ document.addEventListener('DOMContentLoaded', loadOffers);
                 console.error('❌ init() function not found!');
             }
         });
+
+
+        // ================================================
+        //   STOCKFLOW PROMOTIONAL CLAIMS – CONNECTED TO APPS SCRIPT
+        //   Uses your live URL: https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec
+        // ================================================
+
+        const API_URL = "https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec";
+
+        // ── Popup open / close ──────────────────────────────────────────────
+        function openOffer(type) {
+            const overlay = document.getElementById('overlay-' + type);
+            if (overlay) {
+                overlay.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeOffer(type) {
+            const overlay = document.getElementById('overlay-' + type);
+            if (overlay) {
+                overlay.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Close popup when clicking outside or pressing ESC
+        document.querySelectorAll('.offer-overlay').forEach(overlay => {
+            overlay.addEventListener('click', e => {
+                if (e.target === overlay) {
+                    closeOffer(overlay.id.replace('overlay-', ''));
+                }
+            });
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.offer-overlay.open').forEach(o => {
+                    o.classList.remove('open');
+                    document.body.style.overflow = '';
+                });
+            }
+        });
+
+        // ── Submit claim (Google Review or YouTube) ─────────────────────────
+        async function submitClaim(type) {
+            const successEl = document.querySelector(`#overlay-${type} .claim-success`) || document.getElementById(type + '-success');
+            const errorEl   = document.querySelector(`#overlay-${type} .claim-error`)   || document.getElementById(type + '-error');
+
+            if (!successEl || !errorEl) {
+                console.error('❌ Success/error elements missing for: ' + type);
+                return;
+            }
+
+            successEl.style.display = 'none';
+            errorEl.style.display = 'none';
+
+            let email = '';
+            let extra = '';
+
+            if (type === 'review') {
+                email = (document.getElementById('rv-email')?.value || '').trim();
+                extra = (document.getElementById('rv-link')?.value || '').trim();
+            } else if (type === 'youtube') {
+                email = (document.getElementById('yt-email')?.value || '').trim();
+                extra = (document.getElementById('yt-url')?.value || '').trim();
+            }
+
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                errorEl.textContent = 'Please enter a valid email address.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (!extra) {
+                errorEl.textContent = type === 'review' 
+                    ? 'Please paste your Google review link.' 
+                    : 'Please paste your YouTube video URL.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            // Disable submit buttons
+            const buttons = document.querySelectorAll(`#overlay-${type} .popup-action:not(.action-ghost)`);
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                btn.style.opacity = '0.6';
+                btn.textContent = 'Sending...';
+            });
+
+            try {
+                const params = new URLSearchParams({
+                    action: 'submitClaim',
+                    claimType: type,
+                    email: email,
+                    extra: extra
+                });
+
+                const res = await fetch(API_URL + '?' + params, { method: 'GET', mode: 'cors' });
+                const result = await res.json();
+
+                if (result.success) {
+                    successEl.textContent = result.message || 'Submission received! We’ll verify soon.';
+                    successEl.style.display = 'block';
+                    buttons.forEach(btn => btn.style.display = 'none');
+                    console.log(`✅ ${type} claim submitted successfully`);
+                } else {
+                    errorEl.textContent = result.message || 'Submission failed. Try again.';
+                    if (result.subscriptionRequired) {
+                        errorEl.textContent = 'Active newsletter subscription required first.';
+                    }
+                    errorEl.style.display = 'block';
+                    console.error('❌ Claim failed:', result);
+                }
+            } catch (err) {
+                console.error('❌ Network error during claim:', err);
+                errorEl.textContent = 'Connection issue – please try again.';
+                errorEl.style.display = 'block';
+            } finally {
+                // Re-enable if failed
+                if (successEl.style.display !== 'block') {
+                    buttons.forEach(btn => {
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                        btn.textContent = type === 'review' ? 'Submit for $10 Credit →' : 'Submit for $50 Credit →';
+                    });
+                }
+            }
+        }
+
+        // ── Optional: Banner init (if you still use dynamic banner) ────────
+        function initPromotions() {
+            console.log('🎁 Promotional popups ready – connected to Apps Script');
+        }
+
+        // Initialize on page load (keep your existing init logic)
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🎬 DOM loaded, initializing...');
+            if (typeof init === 'function') {
+                init();
+            } else {
+                console.error('❌ init() function not found!');
+            }
+            // Also call our promo init
+            if (typeof initPromotions === 'function') {
+                initPromotions();
+            }
+        });
+
     </script>
 </body>
 </html>
