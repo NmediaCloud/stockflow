@@ -462,82 +462,102 @@
 <!-- ══════════════════════════════════════════ -->
 <!-- POPUP 2 — GOOGLE REVIEW $10               -->
 <!-- ══════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════ -->
+<!-- POPUP 2 — GOOGLE REVIEW $10 (ALL VISIBLE, FIXED UX) -->
+<!-- ══════════════════════════════════════════ -->
 <div class="offer-overlay" id="overlay-review">
   <div class="offer-popup">
-    <button class="popup-close" onclick="closeOffer('review')">✕</button>
-    <div class="popup-accent rv"></div>
+    <button class="popup-close" onclick="closeOffer('review')">×</button>
+    <div class="popup-accent blue"></div>
     <div class="popup-body">
-      <div class="popup-badge badge-rv">⭐ FREE <span id="rv-badge-amt">$10</span> Wallet Credit</div>
-      <div class="popup-title">Write a Review.<br><span>Earn Credit.</span></div>
-      <div class="popup-desc">Leave an honest review on Google — helps others find us and earns you wallet credit. One time per account. Limited time offer, Aimimg for first 1000 reviews approx </div>
+      <div class="popup-reward-badge badge-blue">⭐ Free $10 Credit</div>
+      <div class="popup-title">Write a Review.<br><span class="hi">Earn $10.</span></div>
+      
+      <div class="popup-desc">
+        Leave an honest review on Google — helps others find us and earns you wallet credit. One time per account.
+      </div>
 
       <div class="popup-steps">
-        <div class="popup-step"><div class="step-num step-rv">1</div><div>Click below to open our <strong style="color:#F3F4F6;">Google Business listing</strong></div></div>
-        <div class="popup-step"><div class="step-num step-rv">2</div><div>Leave an honest review and <strong style="color:#F3F4F6;">copy the link</strong> to your review</div></div>
-        <div class="popup-step"><div class="step-num step-rv">3</div><div>Paste it below — we verify and credit within 24h</div></div>
+        <div class="popup-step"><div class="step-num blue">1</div><div>Click below to open our review page</div></div>
+        <div class="popup-step"><div class="step-num blue">2</div><div>Leave your review (any rating is fine)</div></div>
+        <div class="popup-step"><div class="step-num blue">3</div><div>Copy the link to your review and paste it below</div></div>
+        <div class="popup-step"><div class="step-num blue">4</div><div>Submit — we'll verify & credit $10 within 48h</div></div>
       </div>
 
-      <!-- Subscription disclaimer -->
-      <div class="sub-disclaimer">
-        <span class="sub-disclaimer-icon">📬</span>
-        <div class="sub-disclaimer-text">
-          <strong>Active subscription required.</strong> You must be subscribed to our newsletter to claim any reward. Unsubscribing voids all pending and future offers.
-        </div>
-      </div>
-
-      <a href="https://g.page/r/CcaLxiFI_1IbEBM/review" target="_blank"
-         class="popup-action action-rv" style="color:white;text-decoration:none;display:block;text-align:center;">
-        ⭐ Open Google Review Page →
+      <a href="https://g.page/r/CcaLxiFI_1IbEAE/review" target="_blank" class="popup-link-action" style="margin-bottom:20px; display:block; text-align:center; padding: 14px; background: #3B82F6; color: white; border-radius: 8px; text-decoration: none; font-weight: 600;">
+        ⭐ Open Google Review Page (new tab) →
       </a>
 
-      <input class="claim-input" id="rv-email" type="email" placeholder="Your Stockflow account email" style="margin-top:10px;">
-      <input class="claim-input" id="rv-link" type="url" placeholder="Paste your Google review link here">
-      <button class="popup-action action-rv" onclick="submitOffer('review')">Submit for <span id="rv-btn-amt">$10</span> Credit →</button>
-      <div class="claim-success" id="rv-success"></div>
-      <div class="claim-error" id="rv-error"></div>
-      <button class="popup-action action-ghost" onclick="closeOffer('review')">Got it</button>
+      <div id="form-review" class="claim-form" style="display:block;">
+        <input class="claim-input" id="rv-email" type="email" placeholder="Your Stockflow account email" required>
+        <input class="claim-input" id="rv-link" type="url" placeholder="Paste your Google review link here" required>
+        
+        <p style="font-size:12px; color:#9CA3AF; margin:10px 0; text-align:center;">
+          Tip: Tap Share → Copy Link in Google. Short links are accepted!
+        </p>
+
+        <button id="submit-btn-review" class="popup-action action-blue" onclick="submitClaim('review')" style="width:100%;">
+          Submit for $10 Credit →
+        </button>
+      </div>
+
+      <div class="claim-success" id="success-review" style="display:none; margin-top:16px; padding:12px; background:rgba(16,185,129,0.1); border:1px solid #10B981; border-radius:8px; color:#10B981; text-align:center;"></div>
+      <div class="claim-error" id="error-review" style="display:none; margin-top:16px; padding:12px; background:rgba(239,68,68,0.1); border:1px solid #EF4444; border-radius:8px; color:#EF4444; text-align:center;"></div>
+
+      <button class="popup-action action-ghost" onclick="closeOffer('review')" style="margin-top:12px; width:100%;">Close</button>
     </div>
   </div>
 </div>
-
 <!-- ══════════════════════════════════════════ -->
-<!-- POPUP 3 — YOUTUBE $50                     -->
+<!-- POPUP 3 — YOUTUBE $100 -->
 <!-- ══════════════════════════════════════════ -->
 <div class="offer-overlay" id="overlay-youtube">
   <div class="offer-popup">
-    <button class="popup-close" onclick="closeOffer('youtube')">✕</button>
-    <div class="popup-accent yt"></div>
+    <button class="popup-close" onclick="closeOffer('youtube')">×</button>
+    <div class="popup-accent orange"></div>
     <div class="popup-body">
-      <div class="popup-badge badge-yt">🎬 <span id="yt-badge-amt">$50</span> Wallet Credit</div>
-      <div class="popup-title">Feature Us on<br>YouTube. <span>Earn Big.</span></div>
-      <div class="popup-desc">Create a YouTube video featuring Stockflow.media with a clickable link in the description — review, tutorial, or footage showcase, This is limited time offer, for first 100 Reviews approx</div>
-
-      <div class="popup-steps">
-        <div class="popup-step"><div class="step-num step-yt">1</div><div>Create a public YouTube video mentioning <strong style="color:#F3F4F6;">Stockflow.media</strong></div></div>
-        <div class="popup-step"><div class="step-num step-yt">2</div><div>Add <strong style="color:#F3F4F6;">https://stockflow.media</strong> as a clickable link in the video description</div></div>
-        <div class="popup-step"><div class="step-num step-yt">3</div><div>Paste your video URL below, we wil review and update credits. </div></div>
+      <div class="popup-reward-badge badge-orange">🎬 $100 Credit</div>
+      <div class="popup-title">Feature Us on<br><span class="hi">YouTube. Earn $100.</span></div>
+      <div class="popup-desc">
+        Create a YouTube video featuring Stockflow.media — a review, tutorial, or showcase — with our link in the description. We'll reward you with <strong style="color:#F3F4F6;">$100 wallet credit</strong>.
       </div>
-
-      <div class="popup-note">✔️ Video must be public, with a clickable link to stockflow.media in description. One reward per creator.</div>
-
-      <!-- Subscription disclaimer -->
-      <div class="sub-disclaimer">
-        <span class="sub-disclaimer-icon">📬</span>
-        <div class="sub-disclaimer-text">
-          <strong>Active subscription required.</strong> You must remain subscribed to our newsletter to receive and keep this reward. Unsubscribing before we process your claim will void it.
+      <div class="popup-steps">
+        <div class="popup-step">
+          <div class="step-num orange">1</div>
+          <div>Create a YouTube video mentioning <strong>Stockflow.media</strong> (review, tutorial, or showcase)</div>
+        </div>
+        <div class="popup-step">
+          <div class="step-num orange">2</div>
+          <div>Include <strong>https://stockflow.media</strong> as a clickable link in description</div>
+        </div>
+        <div class="popup-step">
+          <div class="step-num orange">3</div>
+          <div>Submit below — we'll review and credit <strong>$100 within 48 hours</strong></div>
         </div>
       </div>
+      <div class="popup-note">
+        ✔ One reward per creator. Video must be public, 2+ minutes, with clickable link in description.
+      </div>
 
-      <input class="claim-input" id="yt-email" type="email" placeholder="Your Stockflow account email">
-      <input class="claim-input" id="yt-url" type="url" placeholder="Your YouTube video URL">
-      <button class="popup-action action-yt" onclick="submitOffer('youtube')">Submit for <span id="yt-btn-amt">$50</span> Credit →</button>
-      <div class="claim-success" id="yt-success"></div>
-      <div class="claim-error" id="yt-error"></div>
-      <button class="popup-action action-ghost" onclick="closeOffer('youtube')"> Got it! </button>
+      <div id="form-youtube" class="claim-form open">
+        <input class="claim-input" id="yt-email" type="email" placeholder="Your Stockflow account email" required>
+        <input class="claim-input" id="yt-url" type="url" placeholder="Your YouTube video URL" required>
+        <input class="claim-input" id="yt-channel" type="text" placeholder="Your channel name (optional)">
+        <button class="popup-action action-orange" onclick="submitClaim('youtube')">Submit for $100 Credit →</button>
+      </div>
+
+      <!-- SUCCESS & ERROR MESSAGES – placed here so JS can find them reliably -->
+      <div class="claim-success" id="success-youtube" style="display:none; margin-top:16px; padding:14px; background:rgba(16,185,129,0.2); border:1px solid #10B981; border-radius:8px; color:#065F46; text-align:center; font-weight:500;">
+        🎬 Submission received! We'll review your video and credit $100 within 48 hours.
+      </div>
+      <div class="claim-error" id="error-youtube" style="display:none; margin-top:16px; padding:14px; background:rgba(239,68,68,0.2); border:1px solid #EF4444; border-radius:8px; color:#991B1B; text-align:center; font-weight:500;">
+        <!-- Error messages (e.g. "Invalid email", "Not subscribed") will appear here -->
+      </div>
+
+      <button class="popup-action action-ghost" onclick="closeOffer('youtube')">Maybe Later</button>
     </div>
   </div>
 </div>
-
 <!-- SCRIPTS -->
 <script>
 // Default config (overridden by sheet on load)
@@ -627,32 +647,6 @@ document.querySelectorAll('.offer-overlay').forEach(o => {
   });
 });
 
-async function submitOffer(type) {
-  let email = '', extra = '';
-  const pre = type.substring(0,2);
-
-  if (type === 'newsletter') {
-    email = document.getElementById('nl-email').value.trim();
-  } else if (type === 'review') {
-    email = document.getElementById('rv-email').value.trim();
-    extra = document.getElementById('rv-link').value.trim();
-  } else if (type === 'youtube') {
-    email = document.getElementById('yt-email').value.trim();
-    extra = document.getElementById('yt-url').value.trim();
-  }
-
-  const successEl = document.getElementById(pre + '-success');
-  const errorEl   = document.getElementById(pre + '-error');
-  successEl.style.display = 'none';
-  errorEl.style.display   = 'none';
-  errorEl.className       = 'claim-error';
-
-  if (!email) { errorEl.textContent = 'Please enter your account email.'; errorEl.style.display = 'block'; return; }
-  if ((type === 'review' || type === 'youtube') && !extra) {
-    errorEl.textContent = type === 'review' ? 'Please paste your Google review link.' : 'Please paste your YouTube video URL.';
-    errorEl.style.display = 'block';
-    return;
-  }
 
   // Disable button while submitting
   const btns = document.querySelectorAll(`#overlay-${type} button.popup-action:not(.action-ghost)`);
@@ -1327,6 +1321,9 @@ document.addEventListener('DOMContentLoaded', loadOffers);
 <!-- ══════════════════════════════════════════ -->
 <!-- POPUP 2 — GOOGLE REVIEW $10               -->
 <!-- ══════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════ -->
+<!-- POPUP 2 — GOOGLE REVIEW $10 -->
+<!-- ══════════════════════════════════════════ -->
 <div class="offer-overlay" id="overlay-review">
   <div class="offer-popup">
     <button class="popup-close" onclick="closeOffer('review')">×</button>
@@ -1354,7 +1351,6 @@ document.addEventListener('DOMContentLoaded', loadOffers);
       <div class="popup-note">
         ✔ One review per account. Manual verification. Honest reviews only — any rating welcome.
       </div>
-
       <!-- TODO: Replace with your actual Google Business review link -->
       <a href="https://g.page/r/YOUR_GOOGLE_BUSINESS_ID/review"
          target="_blank"
@@ -1368,9 +1364,14 @@ document.addEventListener('DOMContentLoaded', loadOffers);
         <input class="claim-input" id="rv-email" type="email" placeholder="Your Stockflow account email" required>
         <input class="claim-input" id="rv-name" type="text" placeholder="Name used in your Google review" required>
         <button class="popup-action action-blue" onclick="submitClaim('review')">Submit for $10 Credit →</button>
-        <div class="claim-success" id="success-review">
-          ✔ Claim received! We'll verify your review and credit $10 within 24 hours.
-        </div>
+      </div>
+
+      <!-- SUCCESS & ERROR MESSAGES – MOVED OUTSIDE FORM FOR RELIABLE ACCESS -->
+      <div class="claim-success" id="success-review" style="display:none; margin-top:16px; padding:14px; background:rgba(16,185,129,0.2); border:1px solid #10B981; border-radius:8px; color:#065F46; text-align:center; font-weight:500;">
+        ✔ Claim received! We'll verify your review and credit $10 within 24 hours.
+      </div>
+      <div class="claim-error" id="error-review" style="display:none; margin-top:16px; padding:14px; background:rgba(239,68,68,0.2); border:1px solid #EF4444; border-radius:8px; color:#991B1B; text-align:center; font-weight:500;">
+        <!-- Error messages appear here -->
       </div>
 
       <button class="popup-action action-ghost" onclick="closeOffer('review')">Maybe Later</button>
@@ -1379,7 +1380,7 @@ document.addEventListener('DOMContentLoaded', loadOffers);
 </div>
 
 <!-- ══════════════════════════════════════════ -->
-<!-- POPUP 3 — YOUTUBE $100                    -->
+<!-- POPUP 3 — YOUTUBE $100 -->
 <!-- ══════════════════════════════════════════ -->
 <div class="offer-overlay" id="overlay-youtube">
   <div class="offer-popup">
@@ -1414,16 +1415,23 @@ document.addEventListener('DOMContentLoaded', loadOffers);
         <input class="claim-input" id="yt-url" type="url" placeholder="Your YouTube video URL" required>
         <input class="claim-input" id="yt-channel" type="text" placeholder="Your channel name (optional)">
         <button class="popup-action action-orange" onclick="submitClaim('youtube')">Submit for $100 Credit →</button>
-        <div class="claim-success" id="success-youtube">
-          🎬 Submission received! We'll review your video and credit $100 within 48 hours.
-        </div>
+      </div>
+
+      <!-- SUCCESS & ERROR MESSAGES – MOVED OUTSIDE FORM FOR RELIABLE ACCESS -->
+      <div class="claim-success" id="success-youtube" style="display:none; margin-top:16px; padding:14px; background:rgba(16,185,129,0.2); border:1px solid #10B981; border-radius:8px; color:#065F46; text-align:center; font-weight:500;">
+        🎬 Submission received! We'll review your video and credit $100 within 48 hours.
+      </div>
+      <div class="claim-error" id="error-youtube" style="display:none; margin-top:16px; padding:14px; background:rgba(239,68,68,0.2); border:1px solid #EF4444; border-radius:8px; color:#991B1B; text-align:center; font-weight:500;">
+        <!-- Error messages appear here -->
       </div>
 
       <button class="popup-action action-ghost" onclick="closeOffer('youtube')">Maybe Later</button>
     </div>
   </div>
-</div>
+</div>    
 
+
+    
 <!-- ── BANNER SCRIPTS ── -->
 <script>
   // ── Banner Persistence ──
@@ -1480,60 +1488,85 @@ document.addEventListener('DOMContentLoaded', loadOffers);
       });
     }
   });
+async function submitClaim(type) {
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec"; 
 
-  function showClaimForm(type) {
-    const form = document.getElementById('form-' + type);
-    const cta = document.getElementById('cta-' + type);
-    if (form) form.classList.add('open');
-    if (cta) cta.style.display = 'none';
-  }
+    const popup = document.getElementById('overlay-' + type);
+    const successEl = popup?.querySelector('.claim-success');
+    const errorEl = popup?.querySelector('.claim-error');
+    const submitBtn = popup?.querySelector('.popup-action:not(.action-ghost)');
 
-  async function submitClaim(type) {
-    let email = '', extra = '', extra2 = '';
+    if (!successEl || !errorEl) return;
 
-    if (type === 'review') {
-      email = document.getElementById('rv-email')?.value.trim() || '';
-      extra = document.getElementById('rv-name')?.value.trim() || '';
-    } else if (type === 'youtube') {
-      email = document.getElementById('yt-email')?.value.trim() || '';
-      extra = document.getElementById('yt-url')?.value.trim() || '';
-      extra2 = document.getElementById('yt-channel')?.value.trim() || '';
+    successEl.style.display = 'none';
+    errorEl.style.display = 'none';
+
+    const email = (document.getElementById(type === 'review' ? 'rv-email' : 'yt-email')?.value || '').trim();
+    const extra = (document.getElementById(type === 'review' ? 'rv-link' : 'yt-url')?.value || '').trim();
+
+    if (!email || !extra) {
+        errorEl.textContent = 'Please enter your email and the link.';
+        errorEl.style.display = 'block';
+        return;
     }
 
-    if (!email) {
-      alert('Please enter your Stockflow account email.');
-      return;
-    }
-
-    if (type === 'review' && !extra) {
-      alert('Please enter the name you used in your Google review.');
-      return;
-    }
-
-    if (type === 'youtube' && !extra) {
-      alert('Please enter your YouTube video URL.');
-      return;
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.6';
+        submitBtn.textContent = 'Submitting...';
     }
 
     try {
-      const url = CONFIG.API_URL +
-        '?action=submitClaim' +
-        '&claimType=' + encodeURIComponent(type) +
-        '&email=' + encodeURIComponent(email) +
-        '&extra=' + encodeURIComponent(extra) +
-        '&extra2=' + encodeURIComponent(extra2);
+                const params = new URLSearchParams({
+                    action: 'submitClaim',
+                    claimType: type,
+                    email: email,
+                    extra: extra
+                });
 
-      await fetch(url, { method: 'GET' });
-    } catch (error) {
-      console.log('Claim submission (offline mode):', error);
-    }
+                const finalUrl = `${API_URL}?${params.toString()}`;
+                console.log('🚀 Destination:', finalUrl);
 
-    const submitBtn = document.querySelector(`#form-${type} button.popup-action:not(.action-ghost)`);
-    const successMsg = document.getElementById(`success-${type}`);
+                const res = await fetch(finalUrl, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+
+                const result = await res.json();
+
+                if (result.success) {
+                    successEl.textContent = result.message || 'Submission received!';
+                    successEl.style.display = 'block';
+                    buttons.forEach(btn => btn.style.display = 'none');
+                } else {
+                    // Display the ACTUAL error from the server, not the newsletter text
+                    errorEl.textContent = result.message || 'Submission failed.';
+                    errorEl.style.display = 'block';
+                    
+                    // Re-enable buttons so user can try again
+                    buttons.forEach(btn => {
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                        btn.textContent = type === 'review' ? 'Submit for $10 Credit →' : 'Submit for $50 Credit →';
+                    });
+                }
+            } catch (err) {
+                console.error('❌ Network/System Error:', err);
+                // General error message for actual connection failures
+                errorEl.textContent = 'Connection error. Please check your internet or try again later.';
+                errorEl.style.display = 'block';
+        
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.textContent = type === 'review' ? 'Submit for $10 Credit →' : 'Submit for $50 Credit →';
+                });
+            }    
+
+
     
-    if (submitBtn) submitBtn.style.display = 'none';
-    if (successMsg) successMsg.style.display = 'block';
-  }
+    
 </script>
     
 
@@ -1916,170 +1949,120 @@ document.addEventListener('DOMContentLoaded', loadOffers);
     <script src="js/modals.js"></script>
     <script src="js/videos.js"></script>
     <script src="js/wallet.js"></script>
-    <script>
-        // About Modal Functions
-        function showAboutModal() {
-            document.getElementById('aboutModal').style.display = 'block';
+  
+    
+   <script>
+    // 1. Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('🎬 DOM loaded, initializing...');
+        if (typeof init === 'function') init();
+        console.log('🎁 Promotional system ready – connected to Apps Script');
+    });
+
+    // 2. Open / Close Popups
+    function openOffer(type) {
+        const overlay = document.getElementById('overlay-' + type);
+        if (overlay) {
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
         }
-        
-        function closeAboutModal() {
-            document.getElementById('aboutModal').style.display = 'none';
+    }
+
+    function closeOffer(type) {
+        const overlay = document.getElementById('overlay-' + type);
+        if (overlay) {
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
         }
-        
-        // License Modal Functions
-        function showLicenseInfo() {
-            document.getElementById('licenseModal').style.display = 'block';
+    }
+
+    // 3. The Unified Submit Handler
+    async function submitClaim(type) {
+        console.log(`Submitting claim for: ${type}`);
+
+        // Safety: Hardcode destination to prevent variable pollution
+        const SCRIPT_DEST = "https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec";
+
+        const popup = document.getElementById('overlay-' + type);
+        const successEl = popup?.querySelector('.claim-success');
+        const errorEl = popup?.querySelector('.claim-error');
+        const submitBtn = popup?.querySelector('.popup-action:not(.action-ghost)');
+
+        if (!successEl || !errorEl) return;
+
+        successEl.style.display = 'none';
+        errorEl.style.display = 'none';
+
+        const email = (document.getElementById(type === 'review' ? 'rv-email' : 'yt-email')?.value || '').trim();
+        const extra = (document.getElementById(type === 'review' ? 'rv-link' : 'yt-url')?.value || '').trim();
+
+        if (!email || !extra) {
+            errorEl.textContent = 'Please fill in all required fields.';
+            errorEl.style.display = 'block';
+            return;
         }
-        
-        function closeLicenseModal() {
-            document.getElementById('licenseModal').style.display = 'none';
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.6';
+            submitBtn.textContent = 'Sending...';
         }
-        
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('🎬 DOM loaded, initializing...');
-            if (typeof init === 'function') {
-                init();
+
+        try {
+            const params = new URLSearchParams({
+                action: 'submitClaim',
+                claimType: type,
+                email: email,
+                extra: extra
+            });
+
+            const res = await fetch(`${SCRIPT_DEST}?${params.toString()}`, {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache'
+            });
+
+            const result = await res.json();
+
+            if (result.success) {
+                successEl.textContent = result.message || 'Submission received!';
+                successEl.style.display = 'block';
+                if (submitBtn) submitBtn.style.display = 'none';
             } else {
-                console.error('❌ init() function not found!');
-            }
-        });
-
-
-        // ================================================
-        //   STOCKFLOW PROMOTIONAL CLAIMS – CONNECTED TO APPS SCRIPT
-        //   Uses your live URL: https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec
-        // ================================================
-
-        const API_URL = "https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec";
-
-        // ── Popup open / close ──────────────────────────────────────────────
-        function openOffer(type) {
-            const overlay = document.getElementById('overlay-' + type);
-            if (overlay) {
-                overlay.classList.add('open');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        function closeOffer(type) {
-            const overlay = document.getElementById('overlay-' + type);
-            if (overlay) {
-                overlay.classList.remove('open');
-                document.body.style.overflow = '';
-            }
-        }
-
-        // Close popup when clicking outside or pressing ESC
-        document.querySelectorAll('.offer-overlay').forEach(overlay => {
-            overlay.addEventListener('click', e => {
-                if (e.target === overlay) {
-                    closeOffer(overlay.id.replace('overlay-', ''));
-                }
-            });
-        });
-
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') {
-                document.querySelectorAll('.offer-overlay.open').forEach(o => {
-                    o.classList.remove('open');
-                    document.body.style.overflow = '';
-                });
-            }
-        });
-
-        // ── Submit claim (Google Review or YouTube) ─────────────────────────
-        async function submitClaim(type) {
-            const successEl = document.querySelector(`#overlay-${type} .claim-success`) || document.getElementById(type + '-success');
-            const errorEl   = document.querySelector(`#overlay-${type} .claim-error`)   || document.getElementById(type + '-error');
-
-            if (!successEl || !errorEl) {
-                console.error('❌ Success/error elements missing for: ' + type);
-                return;
-            }
-
-            successEl.style.display = 'none';
-            errorEl.style.display = 'none';
-
-            let email = '';
-            let extra = '';
-
-            if (type === 'review') {
-                email = (document.getElementById('rv-email')?.value || '').trim();
-                extra = (document.getElementById('rv-link')?.value || '').trim();
-            } else if (type === 'youtube') {
-                email = (document.getElementById('yt-email')?.value || '').trim();
-                extra = (document.getElementById('yt-url')?.value || '').trim();
-            }
-
-            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                errorEl.textContent = 'Please enter a valid email address.';
+                // Show actual server error (no longer hardcoded to newsletter)
+                errorEl.textContent = result.message || 'Submission failed.';
                 errorEl.style.display = 'block';
-                return;
-            }
-
-            if (!extra) {
-                errorEl.textContent = type === 'review' 
-                    ? 'Please paste your Google review link.' 
-                    : 'Please paste your YouTube video URL.';
-                errorEl.style.display = 'block';
-                return;
-            }
-
-            // Disable submit buttons
-            const buttons = document.querySelectorAll(`#overlay-${type} .popup-action:not(.action-ghost)`);
-            buttons.forEach(btn => {
-                btn.disabled = true;
-                btn.style.opacity = '0.6';
-                btn.textContent = 'Sending...';
-            });
-
-            try {
-                const params = new URLSearchParams({
-                    action: 'submitClaim',
-                    claimType: type,
-                    email: email,
-                    extra: extra
-                });
-
-                const res = await fetch(API_URL + '?' + params, { method: 'GET', mode: 'cors' });
-                const result = await res.json();
-
-                if (result.success) {
-                    successEl.textContent = result.message || 'Submission received! We’ll verify soon.';
-                    successEl.style.display = 'block';
-                    buttons.forEach(btn => btn.style.display = 'none');
-                    console.log(`✅ ${type} claim submitted successfully`);
-                } else {
-                    errorEl.textContent = result.message || 'Submission failed. Try again.';
-                    if (result.subscriptionRequired) {
-                        errorEl.textContent = 'Active newsletter subscription required first.';
-                    }
-                    errorEl.style.display = 'block';
-                    console.error('❌ Claim failed:', result);
-                }
-            } catch (err) {
-                console.error('❌ Network error during claim:', err);
-                errorEl.textContent = 'Connection issue – please try again.';
-                errorEl.style.display = 'block';
-            } finally {
-                // Re-enable if failed
-                if (successEl.style.display !== 'block') {
-                    buttons.forEach(btn => {
-                        btn.disabled = false;
-                        btn.style.opacity = '1';
-                        btn.textContent = type === 'review' ? 'Submit for $10 Credit →' : 'Submit for $50 Credit →';
-                    });
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '1';
+                    submitBtn.textContent = 'Retry Submission';
                 }
             }
+        } catch (err) {
+            console.error('❌ Network Error:', err);
+            errorEl.textContent = 'Connection error. Please check your internet or console logs.';
+            errorEl.style.display = 'block';
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+                submitBtn.textContent = 'Try Again';
+            }
         }
+    }
 
-        // ── Optional: Banner init (if you still use dynamic banner) ────────
+    // Modal Close Helper
+    document.querySelectorAll('.offer-overlay').forEach(o => {
+        o.addEventListener('click', e => { if (e.target === o) closeOffer(o.id.replace('overlay-', '')); });
+    });
+</script>
+        // ── Submit Claim Handler ────────────────────────────────────────────
+        
+        // ── Optional promo init log ─────────────────────────────────────────
         function initPromotions() {
-            console.log('🎁 Promotional popups ready – connected to Apps Script');
+            console.log('🎁 Promotional system ready – connected to Apps Script');
         }
 
-        // Initialize on page load (keep your existing init logic)
+        // ── Final page initialization ───────────────────────────────────────
         document.addEventListener('DOMContentLoaded', () => {
             console.log('🎬 DOM loaded, initializing...');
             if (typeof init === 'function') {
@@ -2087,12 +2070,10 @@ document.addEventListener('DOMContentLoaded', loadOffers);
             } else {
                 console.error('❌ init() function not found!');
             }
-            // Also call our promo init
-            if (typeof initPromotions === 'function') {
-                initPromotions();
-            }
+            // Call promo init
+            initPromotions();
         });
-
     </script>
+
 </body>
 </html>
