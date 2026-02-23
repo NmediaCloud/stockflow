@@ -1876,181 +1876,120 @@ async function submitClaim(type) {
   
     
    <script>
-    // 1. Core Initialization - Only runs ONCE to prevent double products
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log('🎬 Initializing Stockflow Systems...');
-        if (typeof init === 'function') {
-            init(); 
-        }
-        console.log('🎁 Promotional System Active');
-    });
+  // 1. Core Initialization
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🎬 Initializing Stockflow Systems...');
+    if (typeof init === 'function') {
+        init(); 
+    }
+    console.log('🎁 Promotional System Active');
+});
 
-    // 2. Modular Popup Controls
-    function openOffer(type) {
-        const overlay = document.getElementById('overlay-' + type);
-        if (overlay) {
-            overlay.classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
+// 2. Modular Popup Controls (Banner Offers)
+function openOffer(type) {
+    const overlay = document.getElementById('overlay-' + type);
+    if (overlay) {
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeOffer(type) {
+    const overlay = document.getElementById('overlay-' + type);
+    if (overlay) {
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+}
+
+// 3. Unified Claim Handler (Independent for Review & YouTube)
+async function submitClaim(type) {
+    const SCRIPT_DEST = "https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec";
+
+    const popup = document.getElementById('overlay-' + type);
+    const successEl = popup?.querySelector('.claim-success');
+    const errorEl = popup?.querySelector('.claim-error');
+    const submitBtn = popup?.querySelector('.popup-action:not(.action-ghost)');
+
+    if (!successEl || !errorEl) return;
+
+    successEl.style.display = 'none';
+    errorEl.style.display = 'none';
+
+    const email = (document.getElementById(type === 'review' ? 'rv-email' : 'yt-email')?.value || '').trim();
+    const extra = (document.getElementById(type === 'review' ? 'rv-link' : 'yt-url')?.value || '').trim();
+
+    if (!email || !extra) {
+        errorEl.textContent = 'Please provide both email and the verification link.';
+        errorEl.style.display = 'block';
+        return;
     }
 
-    function closeOffer(type) {
-        const overlay = document.getElementById('overlay-' + type);
-        if (overlay) {
-            overlay.classList.remove('open');
-            document.body.style.overflow = '';
-        }
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.6';
+        submitBtn.textContent = 'Submitting...';
     }
 
-    // 3. Unified Claim Handler (Independent for Review & YouTube)
-    async function submitClaim(type) {
-        const SCRIPT_DEST = "https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec";
+    try {
+        const params = new URLSearchParams({
+            action: 'submitClaim',
+            claimType: type,
+            email: email,
+            extra: extra
+        });
 
-        const popup = document.getElementById('overlay-' + type);
-        const successEl = popup?.querySelector('.claim-success');
-        const errorEl = popup?.querySelector('.claim-error');
-        const submitBtn = popup?.querySelector('.popup-action:not(.action-ghost)');
+        const res = await fetch(`${SCRIPT_DEST}?${params.toString()}`, {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache'
+        });
 
-        if (!successEl || !errorEl) return;
+        const result = await res.json();
 
-        successEl.style.display = 'none';
-        errorEl.style.display = 'none';
-
-        // Detect inputs based on the specific popup type
-        const email = (document.getElementById(type === 'review' ? 'rv-email' : 'yt-email')?.value || '').trim();
-        const extra = (document.getElementById(type === 'review' ? 'rv-link' : 'yt-url')?.value || '').trim();
-
-        if (!email || !extra) {
-            errorEl.textContent = 'Please provide both email and the verification link.';
-            errorEl.style.display = 'block';
-            return;
-        }
-
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.style.opacity = '0.6';
-            submitBtn.textContent = 'Submitting...';
-        }
-
-        try {
-            const params = new URLSearchParams({
-                action: 'submitClaim',
-                claimType: type,
-                email: email,
-                extra: extra
-            });
-
-            const res = await fetch(`${SCRIPT_DEST}?${params.toString()}`, {
-                method: 'GET',
-                mode: 'cors',
-                cache: 'no-cache'
-            });
-
-            const result = await res.json();
-
-            if (result.success) {
-                successEl.textContent = result.message || 'Submission received! Verification takes 24-48h.';
-                successEl.style.display = 'block';
-                if (submitBtn) submitBtn.style.display = 'none';
-            } else {
-                errorEl.textContent = result.message || 'Submission failed.';
-                errorEl.style.display = 'block';
-                resetBtn(submitBtn, type);
-            }
-        } catch (err) {
-            console.error('❌ Error:', err);
-            errorEl.textContent = 'Connection error. Please try again.';
+        if (result.success) {
+            successEl.textContent = result.message || 'Submission received! Verification takes 24-48h.';
+            successEl.style.display = 'block';
+            if (submitBtn) submitBtn.style.display = 'none';
+        } else {
+            errorEl.textContent = result.message || 'Submission failed.';
             errorEl.style.display = 'block';
             resetBtn(submitBtn, type);
         }
+    } catch (err) {
+        console.error('❌ Error:', err);
+        errorEl.textContent = 'Connection error. Please try again.';
+        errorEl.style.display = 'block';
+        resetBtn(submitBtn, type);
     }
-// Reset
-    function resetBtn(btn, type) {
-        if (!btn) return;
-        btn.disabled = false;
-        btn.style.opacity = '1';
-        btn.textContent = type === 'review' ? 'Submit for $10 Credit →' : 'Submit for $50 Credit →';
-    }
+}
 
-    // Modal Close Helper (Click Outside)
-    document.querySelectorAll('.offer-overlay').forEach(o => {
-        o.addEventListener('click', e => { if (e.target === o) closeOffer(o.id.replace('overlay-', '')); });
-    });
+function resetBtn(btn, type) {
+    if (!btn) return;
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.textContent = type === 'review' ? 'Submit for $10 Credit →' : 'Submit for $50 Credit →';
+}
 
-// --- 4. PREVIEW MODAL LOGIC (Supports MP4, WebP, JPG, PNG) ---
-    function openModal(item) {
-        const modal = document.getElementById('previewModal');
-        const video = document.getElementById('modalVideo');
-        const image = document.getElementById('modalImage');
-
-        // Reset visibility and stop current video
-        video.classList.add('hidden');
-        image.classList.add('hidden');
-        video.pause();
-        video.src = "";
-        image.src = "";
-
-        // Identify media type based on URL extension
-        const url = item.previewUrl || "";
-        const isVideo = url.toLowerCase().endsWith('.mp4') || url.toLowerCase().endsWith('.webm');
-
-        if (isVideo) {
-            video.src = url;
-            video.classList.remove('hidden');
-            video.load();
-        } else {
-            // Handles .webp, .jpg, .png, etc.
-            image.src = url;
-            image.classList.remove('hidden');
-        }
-
-        // Populate Text Data
-        document.getElementById('modalTitle').textContent = item.title || 'Stock Footage';
-        document.getElementById('modalCategory').textContent = item.category || '';
-        document.getElementById('modalSubcategory').textContent = item.subcategory || '';
-        document.getElementById('modalSub').textContent = item.sub || '';
-        document.getElementById('modalFormat').textContent = item.format || '';
-        document.getElementById('modalResolution').textContent = item.resolution || '';
-        document.getElementById('modalPrice').textContent = item.price || '0.00';
-        document.getElementById('modalDescription').textContent = item.description || '';
-
-        // Show the Modal
-        modal.classList.remove('modal-hidden');
-        modal.classList.add('flex');
-        document.body.style.overflow = 'hidden'; // Prevent background scrolling
-    }
-
-    function closeModal() {
-        const modal = document.getElementById('previewModal');
-        const video = document.getElementById('modalVideo');
-
-        // Stop video playback and clear source to save bandwidth
-        video.pause();
-        video.src = "";
-        
-        // Hide modal
-        modal.classList.add('modal-hidden');
-        modal.classList.remove('flex');
-        document.body.style.overflow = ''; // Re-enable background scrolling
-    }
-
+// 4. --- UNIFIED PREVIEW MODAL LOGIC (FIXED) ---
 function openModal(item) {
-    console.log("🔍 Modal Opening with Data:", item); // Check your browser console (F12) for this!
-
+    console.log("🔍 Opening Modal with:", item);
     const modal = document.getElementById('previewModal');
     const video = document.getElementById('modalVideo');
     const image = document.getElementById('modalImage');
 
-    // Reset
+    // 1. Reset state
     video.classList.add('hidden');
     image.classList.add('hidden');
     video.pause();
+    video.src = "";
+    image.src = "";
 
-    // Use a fallback to find the URL in case the property name is different
+    // 2. Get URL (checking all possible property names)
     const url = item.previewUrl || item.url || item.videoUrl || "";
     
     if (!url) {
-        console.error("❌ No URL found in the item object!");
+        console.error("❌ No URL found in data!");
         return;
     }
 
@@ -2061,18 +2000,38 @@ function openModal(item) {
         video.classList.remove('hidden');
         video.load();
     } else {
+        // Correctly handles WebP, JPG, PNG
         image.src = url;
         image.classList.remove('hidden');
     }
 
-    // Populate text
-    document.getElementById('modalTitle').textContent = item.title || 'Product';
-    document.getElementById('modalPrice').textContent = item.price || '0.00';
-
-    modal.classList.remove('modal-hidden');
+    // 3. Populate Text Elements
+    // Use optional chaining or defaults to prevent errors if elements are missing
+    if(document.getElementById('modalTitle')) document.getElementById('modalTitle').textContent = item.title || 'Stock Footage';
+    if(document.getElementById('modalPriceDisplay')) document.getElementById('modalPriceDisplay').textContent = "$" + (item.price || '0.00');
+    if(document.getElementById('modalDescription')) document.getElementById('modalDescription').textContent = item.description || '';
+    
+    // 4. Force Display
+    modal.classList.remove('hidden');
+    modal.classList.remove('modal-hidden'); // Clear both possible hidden classes
     modal.classList.add('flex');
+    document.body.style.overflow = 'hidden'; 
+}
 
-       
+function closeModal() {
+    const modal = document.getElementById('previewModal');
+    const video = document.getElementById('modalVideo');
+    video.pause();
+    video.src = "";
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = ''; 
+}
+
+// 5. Modal Close Helper (Click Outside)
+document.querySelectorAll('.offer-overlay').forEach(o => {
+    o.addEventListener('click', e => { if (e.target === o) closeOffer(o.id.replace('overlay-', '')); });
+});
    </script>
     
 </body>
