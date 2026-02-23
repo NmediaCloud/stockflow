@@ -41,6 +41,10 @@ function applyHeroSettings() {
 
     if (SHOW_HERO_IMAGE && bgWrapper && header) {
         bgWrapper.classList.remove('hidden');
+        // Force the fade-in after a tiny delay
+        setTimeout(() => {
+            bgWrapper.classList.replace('opacity-0', 'opacity-100');
+        }, 50);
         header.classList.remove('bg-gradient-to-br', 'from-orange-500', 'to-orange-700');
         header.classList.add('bg-black');
     }
