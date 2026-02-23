@@ -1,5 +1,5 @@
 // ============================================
-// modals.js - Preview modal and UI utilities
+// modals.js - Updated with Image/Video Logic
 // ============================================
 
 // ---- PREVIEW MODAL ----
@@ -7,8 +7,10 @@
 function openModal(video) {
     currentVideo = video;
     const modal = document.getElementById('previewModal');
-    const videoPlayer = document.getElementById('modalVideo');
+    // Identify the container where we will inject the media
+    const container = document.getElementById('modalMediaContainer');
 
+    // Update Text Metadata
     document.getElementById('modalTitle').innerText       = video.title;
     document.getElementById('modalCategory').innerText    = video.category;
     document.getElementById('modalSubcategory').innerText = video.subcategory || 'N/A';
@@ -18,7 +20,7 @@ function openModal(video) {
     document.getElementById('modalPrice').innerText       = video.price;
     document.getElementById('modalDescription').innerText = video.description;
 
-    // Tags
+    // Update Tags
     const tagsContainer = document.getElementById('modalTags');
     tagsContainer.innerHTML = '';
     if (video.tags) {
@@ -30,10 +32,22 @@ function openModal(video) {
         });
     }
 
+    // Logic for handling File URL (MP4 vs Image)
     if (video.preview) {
-        videoPlayer.style.display = 'block';
-        videoPlayer.src = video.preview;
-        videoPlayer.play().catch(() => {});
+        const fileUrl = video.preview.toLowerCase();
+        
+        if (fileUrl.endsWith(".mp4") || fileUrl.endsWith(".webm") || fileUrl.endsWith(".mov")) {
+            // Inject Video Player
+            container.innerHTML = `
+                <video id="modalVideo" controls class="w-full h-full object-contain" autoplay>
+                    <source src="${video.preview}">
+                </video>`;
+        } else {
+            // Inject Image (WebP, JPG, etc.)
+            container.innerHTML = `
+                <img src="${video.preview}" alt="Preview" class="w-full h-full object-contain" />`;
+        }
+
         modal.classList.remove('modal-hidden');
         modal.classList.add('modal-visible');
     } else {
@@ -43,28 +57,18 @@ function openModal(video) {
 
 function closeModal() {
     const modal = document.getElementById('previewModal');
+    const container = document.getElementById('modalMediaContainer');
+    
+    // Safety check: if a video is playing, stop it before clearing
     const videoPlayer = document.getElementById('modalVideo');
-    videoPlayer.pause();
-    videoPlayer.src = '';
+    if (videoPlayer) {
+        videoPlayer.pause();
+        videoPlayer.src = "";
+    }
+
+    // Clear the container content
+    container.innerHTML = '';
+    
     modal.classList.remove('modal-visible');
     modal.classList.add('modal-hidden');
-}
-
-window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeModal();
-});
-
-// ---- NOTIFICATION TOAST ----
-
-function showNotification(message, type = 'info') {
-    const notification = document.getElementById('notification');
-    const messageEl = document.getElementById('notificationMessage');
-
-    messageEl.textContent = message;
-
-    const colors = { error: '#EF4444', success: '#10B981', info: '#14B8A6' };
-    notification.style.background = colors[type] || colors.info;
-    notification.style.display = 'block';
-
-    setTimeout(() => { notification.style.display = 'none'; }, 3000);
 }
