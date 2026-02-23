@@ -30,3 +30,25 @@ const CONFIG = {
 console.log('✅ Config loaded');
 console.log('📡 API URL:', CONFIG.API_URL);
 console.log('🔑 Stripe key:', CONFIG.STRIPE_PUBLISHABLE_KEY && CONFIG.STRIPE_PUBLISHABLE_KEY !== '__STRIPE_PUBLISHABLE_KEY__' ? 'Set ✅' : 'Missing ❌');
+
+
+// Banner image CONFIGURATION SWITCH
+const SHOW_HERO_IMAGE = true; // Set to 'false' to hide the PNG image
+
+function applyHeroSettings() {
+    const bgWrapper = document.getElementById('heroBgWrapper');
+    const header = document.getElementById('heroHeader');
+
+    if (SHOW_HERO_IMAGE) {
+        bgWrapper.classList.remove('hidden');
+        header.classList.remove('bg-gradient-to-br', 'from-orange-500', 'to-orange-700');
+        header.classList.add('bg-black'); // Solid base for the image
+    } else {
+        bgWrapper.classList.add('hidden');
+        // Restore your original orange gradient if image is OFF
+        header.classList.add('bg-gradient-to-br', 'from-orange-500', 'to-orange-700');
+    }
+}
+
+// Run on load
+document.addEventListener('DOMContentLoaded', applyHeroSettings);
