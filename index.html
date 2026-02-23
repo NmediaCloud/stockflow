@@ -1581,30 +1581,42 @@ async function submitClaim(type) {
     
 
     <!-- PREVIEW MODAL -->
-<div id="previewModal" class="hidden fixed inset-0 bg-black/90 z-[100] items-center justify-center p-4 backdrop-blur-md">
-    <div class="bg-white rounded-2xl overflow-hidden max-w-4xl w-full shadow-2xl relative">
-        
-        <button onclick="closeModal()" class="absolute top-4 right-4 z-[110] bg-black/50 text-white rounded-full p-2 hover:bg-black transition">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-        </button>
-
-        <div class="w-full bg-black flex items-center justify-center" style="min-height: 300px;">
-            <video id="modalVideo" controls class="hidden w-full max-h-[70vh]"></video>
-            <img id="modalImage" class="hidden w-full max-h-[70vh] object-contain" src="">
-        </div>
-
-        <div class="p-6">
-            <h3 id="modalTitle" class="text-xl font-bold mb-2 text-gray-800"></h3>
-            <p id="modalPriceDisplay" class="text-orange-600 font-bold text-2xl mb-4">$0.00</p>
-            <button onclick="handlePurchase()" class="w-full bg-orange-500 text-white py-3 rounded-xl font-bold hover:bg-orange-600 transition">
-                Buy Now
+    <div id="previewModal" class="modal-hidden fixed inset-0 bg-black/95 z-[60] items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl overflow-hidden max-w-5xl w-full shadow-2xl relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 z-50 bg-black/70 text-white rounded-full p-2.5 hover:bg-black transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
             </button>
+            <video id="modalVideo" controls class="w-full aspect-video bg-black" src=""></video>
+            <div class="p-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                    <div class="flex-1">
+                        <h3 id="modalTitle" class="text-2xl font-bold text-gray-900 mb-2"></h3>
+                        <div class="flex items-center gap-2 text-sm flex-wrap mb-2">
+                            <span id="modalCategory" class="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg font-medium"></span>
+                            <span id="modalSubcategory" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg font-medium"></span>
+                            <span id="modalSub" class="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg font-medium"></span>
+                            <span id="modalFormat" class="text-gray-600"></span>
+                            <span id="modalResolution" class="text-gray-600"></span>
+                        </div>
+                        <div id="modalTags" class="flex flex-wrap gap-1 mt-2"></div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="text-right">
+                            <p class="text-sm text-gray-500">License from</p>
+                            <p class="text-3xl font-bold text-gray-900">$<span id="modalPrice"></span></p>
+                        </div>
+                        <button onclick="handlePurchase()" class="bg-orange-500 text-white px-8 py-3 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg shadow-teal-200">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+                <p id="modalDescription" class="text-gray-600 text-sm"></p>
+            </div>
         </div>
     </div>
-</div>
-    
+
     <!-- LOGIN MODAL -->
     <div id="loginModal" class="modal">
       <div class="modal-content">
@@ -1876,162 +1888,106 @@ async function submitClaim(type) {
   
     
    <script>
-  // 1. Core Initialization
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('🎬 Initializing Stockflow Systems...');
-    if (typeof init === 'function') {
-        init(); 
-    }
-    console.log('🎁 Promotional System Active');
-});
+    // 1. Core Initialization - Only runs ONCE to prevent double products
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('🎬 Initializing Stockflow Systems...');
+        if (typeof init === 'function') {
+            init(); 
+        }
+        console.log('🎁 Promotional System Active');
+    });
 
-// 2. Modular Popup Controls (Banner Offers)
-function openOffer(type) {
-    const overlay = document.getElementById('overlay-' + type);
-    if (overlay) {
-        overlay.classList.add('open');
-        document.body.style.overflow = 'hidden';
-    }
-}
-
-function closeOffer(type) {
-    const overlay = document.getElementById('overlay-' + type);
-    if (overlay) {
-        overlay.classList.remove('open');
-        document.body.style.overflow = '';
-    }
-}
-
-// 3. Unified Claim Handler (Independent for Review & YouTube)
-async function submitClaim(type) {
-    const SCRIPT_DEST = "https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec";
-
-    const popup = document.getElementById('overlay-' + type);
-    const successEl = popup?.querySelector('.claim-success');
-    const errorEl = popup?.querySelector('.claim-error');
-    const submitBtn = popup?.querySelector('.popup-action:not(.action-ghost)');
-
-    if (!successEl || !errorEl) return;
-
-    successEl.style.display = 'none';
-    errorEl.style.display = 'none';
-
-    const email = (document.getElementById(type === 'review' ? 'rv-email' : 'yt-email')?.value || '').trim();
-    const extra = (document.getElementById(type === 'review' ? 'rv-link' : 'yt-url')?.value || '').trim();
-
-    if (!email || !extra) {
-        errorEl.textContent = 'Please provide both email and the verification link.';
-        errorEl.style.display = 'block';
-        return;
+    // 2. Modular Popup Controls
+    function openOffer(type) {
+        const overlay = document.getElementById('overlay-' + type);
+        if (overlay) {
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
     }
 
-    if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.style.opacity = '0.6';
-        submitBtn.textContent = 'Submitting...';
+    function closeOffer(type) {
+        const overlay = document.getElementById('overlay-' + type);
+        if (overlay) {
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
     }
 
-    try {
-        const params = new URLSearchParams({
-            action: 'submitClaim',
-            claimType: type,
-            email: email,
-            extra: extra
-        });
+    // 3. Unified Claim Handler (Independent for Review & YouTube)
+    async function submitClaim(type) {
+        const SCRIPT_DEST = "https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec";
 
-        const res = await fetch(`${SCRIPT_DEST}?${params.toString()}`, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache'
-        });
+        const popup = document.getElementById('overlay-' + type);
+        const successEl = popup?.querySelector('.claim-success');
+        const errorEl = popup?.querySelector('.claim-error');
+        const submitBtn = popup?.querySelector('.popup-action:not(.action-ghost)');
 
-        const result = await res.json();
+        if (!successEl || !errorEl) return;
 
-        if (result.success) {
-            successEl.textContent = result.message || 'Submission received! Verification takes 24-48h.';
-            successEl.style.display = 'block';
-            if (submitBtn) submitBtn.style.display = 'none';
-        } else {
-            errorEl.textContent = result.message || 'Submission failed.';
+        successEl.style.display = 'none';
+        errorEl.style.display = 'none';
+
+        // Detect inputs based on the specific popup type
+        const email = (document.getElementById(type === 'review' ? 'rv-email' : 'yt-email')?.value || '').trim();
+        const extra = (document.getElementById(type === 'review' ? 'rv-link' : 'yt-url')?.value || '').trim();
+
+        if (!email || !extra) {
+            errorEl.textContent = 'Please provide both email and the verification link.';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.6';
+            submitBtn.textContent = 'Submitting...';
+        }
+
+        try {
+            const params = new URLSearchParams({
+                action: 'submitClaim',
+                claimType: type,
+                email: email,
+                extra: extra
+            });
+
+            const res = await fetch(`${SCRIPT_DEST}?${params.toString()}`, {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache'
+            });
+
+            const result = await res.json();
+
+            if (result.success) {
+                successEl.textContent = result.message || 'Submission received! Verification takes 24-48h.';
+                successEl.style.display = 'block';
+                if (submitBtn) submitBtn.style.display = 'none';
+            } else {
+                errorEl.textContent = result.message || 'Submission failed.';
+                errorEl.style.display = 'block';
+                resetBtn(submitBtn, type);
+            }
+        } catch (err) {
+            console.error('❌ Error:', err);
+            errorEl.textContent = 'Connection error. Please try again.';
             errorEl.style.display = 'block';
             resetBtn(submitBtn, type);
         }
-    } catch (err) {
-        console.error('❌ Error:', err);
-        errorEl.textContent = 'Connection error. Please try again.';
-        errorEl.style.display = 'block';
-        resetBtn(submitBtn, type);
-    }
-}
-
-function resetBtn(btn, type) {
-    if (!btn) return;
-    btn.disabled = false;
-    btn.style.opacity = '1';
-    btn.textContent = type === 'review' ? 'Submit for $10 Credit →' : 'Submit for $50 Credit →';
-}
-
-// 4. --- UNIFIED PREVIEW MODAL LOGIC (FIXED) ---
-function openModal(item) {
-    console.log("🔍 Opening Modal with:", item);
-    const modal = document.getElementById('previewModal');
-    const video = document.getElementById('modalVideo');
-    const image = document.getElementById('modalImage');
-
-    // 1. Reset state
-    video.classList.add('hidden');
-    image.classList.add('hidden');
-    video.pause();
-    video.src = "";
-    image.src = "";
-
-    // 2. Get URL (checking all possible property names)
-    const url = item.previewUrl || item.url || item.videoUrl || "";
-    
-    if (!url) {
-        console.error("❌ No URL found in data!");
-        return;
     }
 
-    const isVideo = url.toLowerCase().endsWith('.mp4') || url.toLowerCase().endsWith('.webm');
-
-    if (isVideo) {
-        video.src = url;
-        video.classList.remove('hidden');
-        video.load();
-    } else {
-        // Correctly handles WebP, JPG, PNG
-        image.src = url;
-        image.classList.remove('hidden');
+    function resetBtn(btn, type) {
+        if (!btn) return;
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.textContent = type === 'review' ? 'Submit for $10 Credit →' : 'Submit for $50 Credit →';
     }
 
-    // 3. Populate Text Elements
-    // Use optional chaining or defaults to prevent errors if elements are missing
-    if(document.getElementById('modalTitle')) document.getElementById('modalTitle').textContent = item.title || 'Stock Footage';
-    if(document.getElementById('modalPriceDisplay')) document.getElementById('modalPriceDisplay').textContent = "$" + (item.price || '0.00');
-    if(document.getElementById('modalDescription')) document.getElementById('modalDescription').textContent = item.description || '';
-    
-    // 4. Force Display
-    modal.classList.remove('hidden');
-    modal.classList.remove('modal-hidden'); // Clear both possible hidden classes
-    modal.classList.add('flex');
-    document.body.style.overflow = 'hidden'; 
-}
-
-function closeModal() {
-    const modal = document.getElementById('previewModal');
-    const video = document.getElementById('modalVideo');
-    video.pause();
-    video.src = "";
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-    document.body.style.overflow = ''; 
-}
-
-// 5. Modal Close Helper (Click Outside)
-document.querySelectorAll('.offer-overlay').forEach(o => {
-    o.addEventListener('click', e => { if (e.target === o) closeOffer(o.id.replace('overlay-', '')); });
-});
+    // Modal Close Helper (Click Outside)
+    document.querySelectorAll('.offer-overlay').forEach(o => {
+        o.addEventListener('click', e => { if (e.target === o) closeOffer(o.id.replace('overlay-', '')); });
+    });
    </script>
     
 </body>
