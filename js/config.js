@@ -39,16 +39,10 @@ function applyHeroSettings() {
     const bgWrapper = document.getElementById('heroBgWrapper');
     const header = document.getElementById('heroHeader');
 
-    if (SHOW_HERO_IMAGE) {
+    if (SHOW_HERO_IMAGE && bgWrapper && header) {
         bgWrapper.classList.remove('hidden');
         header.classList.remove('bg-gradient-to-br', 'from-orange-500', 'to-orange-700');
-        header.classList.add('bg-black'); // Solid base for the image
-    } else {
-        bgWrapper.classList.add('hidden');
-        // Restore your original orange gradient if image is OFF
-        header.classList.add('bg-gradient-to-br', 'from-orange-500', 'to-orange-700');
+        header.classList.add('bg-black');
     }
 }
-
-// Run on load
 document.addEventListener('DOMContentLoaded', applyHeroSettings);
