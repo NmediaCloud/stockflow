@@ -1459,7 +1459,7 @@ async function submitClaim(type) {
                     extra: extra
                 });
 
-                const finalUrl = `${API_URL}?${params.toString()}`;
+                const finalUrl = `${SCRIPT_URL}?${params.toString()}`;
                 console.log('🚀 Destination:', finalUrl);
 
                 const res = await fetch(finalUrl, {
