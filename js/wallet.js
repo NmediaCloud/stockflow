@@ -319,42 +319,69 @@ window.closeLicenseModal = closeLicenseModal;
 // ============================================
 // FINAL CORRECTED BRIDGE
 // ============================================
+
+
 window.openModal = function(video) {
     console.log("💎 Bridge Active. Opening:", video.title);
-    
-    // 1. Sync the global variables
     window.currentVideo = video;
 
-    // 2. Locate the modal
     const modal = document.getElementById('previewModal');
-    
-    if (modal) {
-        // 3. Populate basic text fields so they aren't empty
-        const titleEl = document.getElementById('modalTitle');
-        const priceEl = document.getElementById('modalPrice'); // Note: modals.js uses modalPrice, not modalPriceDisplay
-        
-        if (titleEl) titleEl.innerText = video.title;
-        if (priceEl) priceEl.innerText = video.price;
+    if (!modal) return;
 
-        // 4. Trigger the visibility using YOUR custom classes
-        modal.classList.remove('modal-hidden');
-        modal.classList.add('modal-visible');
+    // 1. Update All Metadata Fields
+    const fields = {
+        'modalTitle': video.title,
+        'modalCategory': video.category,
+        'modalSubcategory': video.subcategory || 'N/A',
+        'modalSub': video.sub || 'N/A',
+        'modalFormat': video.format,
+        'modalResolution': video.resolution,
+        'modalPrice': video.price,
+        'modalDescription': video.description
+    };
 
-        // 5. Trigger the Media Injection from modals.js
-        // We use the code logic you already have in modals.js
-        const container = document.getElementById('modalMediaContainer');
-        if (container && video.preview) {
-            const fileUrl = video.preview.toLowerCase();
-            if (fileUrl.endsWith(".mp4") || fileUrl.endsWith(".webm") || fileUrl.endsWith(".mov")) {
-                container.innerHTML = `<video id="modalVideo" controls class="w-full h-full object-contain" autoplay><source src="${video.preview}"></video>`;
-            } else {
-                container.innerHTML = `<img src="${video.preview}" alt="Preview" class="w-full h-full object-contain" />`;
-            }
-        }
-    } else {
-        console.error("❌ Could not find 'previewModal' in HTML.");
+    // Loop through the fields and update the UI if the element exists
+    for (const [id, value] of Object.entries(fields)) {
+        const el = document.getElementById(id);
+        if (el) el.innerText = value;
     }
+
+    // 2. Handle Tags
+    const tagsContainer = document.getElementById('modalTags');
+    if (tagsContainer) {
+        tagsContainer.innerHTML = '';
+        if (video.tags) {
+            video.tags.split(',').map(t => t.trim()).filter(t => t).forEach(tag => {
+                const span = document.createElement('span');
+                span.className = 'px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs';
+                span.innerText = tag;
+                tagsContainer.appendChild(span);
+            });
+        }
+    }
+
+    // 3. Handle Media Injection (Video/Image)
+    const container = document.getElementById('modalMediaContainer');
+    if (container && video.preview) {
+        const fileUrl = video.preview.toLowerCase();
+        if (fileUrl.endsWith(".mp4") || fileUrl.endsWith(".webm") || fileUrl.endsWith(".mov")) {
+            container.innerHTML = `
+                <video id="modalVideo" controls class="w-full h-full object-contain" autoplay>
+                    <source src="${video.preview}">
+                </video>`;
+        } else {
+            container.innerHTML = `
+                <img src="${video.preview}" alt="Preview" class="w-full h-full object-contain" />`;
+        }
+    }
+
+    // 4. Show the Modal
+    modal.classList.remove('modal-hidden');
+    modal.classList.add('modal-visible');
 };
+
+
+
 /**
  * Simple Notification System (Required by purchaseVideo function)
  */
