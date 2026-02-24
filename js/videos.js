@@ -39,14 +39,19 @@ async function init() {
         filterVideos();
         // --- ADD THIS BLOCK HERE ---
         // Check if the URL has a shared video ID (e.g., ?v=123)
-        const urlParams = new URLSearchParams(window.location.search);
+       const urlParams = new URLSearchParams(window.location.search);
         const videoIdToOpen = urlParams.get('v');
+        
         if (videoIdToOpen) {
-            const videoToOpen = allVideos.find(v => v.id == videoIdToOpen);
-            if (videoToOpen) {
-                console.log("🔗 Shared link detected. Opening video:", videoIdToOpen);
-                // We use a small timeout to ensure the grid is rendered before popping the modal
-                setTimeout(() => openModal(videoToOpen), 500);
+            // Find the video in the master list
+            const targetVideo = allVideos.find(v => v.id == videoIdToOpen);
+            
+            if (targetVideo) {
+                console.log("🔗 Shared link detected. Auto-opening:", targetVideo.title);
+                // We use a small timeout to let the grid finish rendering first
+                setTimeout(() => {
+                    openModal(targetVideo);
+                }, 800); 
             }
         }
         // ---------------------------
