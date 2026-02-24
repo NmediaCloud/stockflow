@@ -198,12 +198,24 @@ async function purchaseVideo(videoId, videoTitle, price) {
 }
 
 // ---- Updated handle purchasce DOWNLOAD MODAL ----
+// ---- Updated handle purchase DOWNLOAD MODAL ----
 function handlePurchase() {
-    // currentVideo is the global variable set when you open the preview modal
-    if (!currentVideo) return;
+    // 1. Check if we have a video selected in the global 'window.currentVideo'
+    // This was set when you clicked the video card in openModal
+    if (!window.currentVideo) {
+        console.error("❌ No video selected. Logic stopped.");
+        return;
+    }
     
-    // This triggers the heavy lifting function below
-    purchaseVideo(currentVideo.id, currentVideo.title, parseFloat(currentVideo.price));
+    // 2. Safely extract the data
+    const videoId = window.currentVideo.id;
+    const videoTitle = window.currentVideo.title;
+    const priceValue = parseFloat(window.currentVideo.price);
+
+    console.log(`💰 Attempting purchase: ${videoTitle} for $${priceValue}`);
+
+    // 3. Trigger the heavy lifting function
+    purchaseVideo(videoId, videoTitle, priceValue);
 }
 // ---- DOWNLOAD MODAL ----
 
