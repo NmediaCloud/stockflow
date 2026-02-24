@@ -1564,13 +1564,13 @@ async function submitClaim(type) {
                 <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Format</p>
                 <div class="flex gap-2">
                     <button class="format-btn active px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-orange-500 hover:text-white transition"
-                            data-format="all" onclick="filterByFormat('all')">All</button>
+                            data-format="all" onclick="filterByFormat('all', event)">All</button>
                     <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-orange-500 hover:text-white transition"
-                            data-format="9:16" onclick="filterByFormat('9:16')">📱 9:16</button>
+                            data-format="9:16" onclick="filterByFormat('9:16', event)">📱 9:16</button>
                     <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-orange-500 hover:text-white transition"
-                            data-format="16:9" onclick="filterByFormat('16:9')">🖥️ 16:9</button>
+                            data-format="16:9" onclick="filterByFormat('16:9', event)">🖥️ 16:9</button>
                     <button class="format-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-700 hover:bg-orange-500 hover:text-white transition"
-                            data-format="1:1" onclick="filterByFormat('1:1')">⬜ 1:1</button>
+                            data-format="1:1" onclick="filterByFormat('1:1', event)">⬜ 1:1</button>
                 </div>
             </div>
         </div>
