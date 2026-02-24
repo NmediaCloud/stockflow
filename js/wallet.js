@@ -431,3 +431,28 @@ function showNotification(message, type = 'success') {
 // Make it global
 window.showNotification = showNotification;
 
+
+// --- SHARE SYSTEM (Safe Add-on) ---
+function copyShareLink() {
+    // Uses the same currentVideo variable we already know is working
+    if (!window.currentVideo) return;
+
+    // Create the link: yoursite.com/?v=123
+    const shareUrl = window.location.origin + window.location.pathname + "?v=" + window.currentVideo.id;
+
+    navigator.clipboard.writeText(shareUrl).then(() => {
+        const btnText = document.getElementById('shareBtnText');
+        if (btnText) {
+            btnText.innerText = "COPIED!";
+            setTimeout(() => { btnText.innerText = "SHARE"; }, 2000);
+        }
+        // Using the notification system we already built!
+        if (typeof showNotification === 'function') {
+            showNotification("Link copied! Share it with your team.", "success");
+        }
+    }).catch(err => {
+        console.error('Could not copy link: ', err);
+    });
+}
+// Expose it so the HTML can see it
+window.copyShareLink = copyShareLink;
