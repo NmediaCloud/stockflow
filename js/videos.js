@@ -206,24 +206,26 @@ function buildCategoryButtons() {
     
     if (featuredCount > 0) {
         const featuredBtn = document.createElement('button');
-        featuredBtn.className = 'category-btn active px-4 py-2 rounded-lg text-sm font-medium bg-teal-500 text-white hover:bg-teal-600 transition shadow-sm';
+        featuredBtn.className = 'category-btn active px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm';
         featuredBtn.innerHTML = '⭐ Featured';
-        featuredBtn.onclick = () => Category(null);
+        // Passing 'e' ensures the neon ring logic works
+        featuredBtn.onclick = (e) => selectCategory(null, e); 
         container.appendChild(featuredBtn);
     } else {
         const allBtn = document.createElement('button');
-        allBtn.className = 'category-btn active px-4 py-2 rounded-lg text-sm font-medium bg-teal-500 text-white hover:bg-teal-600 transition shadow-sm';
+        allBtn.className = 'category-btn active px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm';
         allBtn.textContent = 'All Videos';
-        allBtn.onclick = () => Category(null);
+        allBtn.onclick = (e) => selectCategory(null, e);
         container.appendChild(allBtn);
     }
     
     const sortedCategories = Array.from(categories).sort();
     sortedCategories.forEach(cat => {
         const btn = document.createElement('button');
-        btn.className = 'category-btn px-4 py-2 rounded-lg text-sm font-medium bg-white text-gray-700 hover:bg-teal-500 hover:text-white border border-gray-200 transition shadow-sm';
+        btn.className = 'category-btn px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm';
         btn.textContent = cat;
-        btn.onclick = () => Category(cat);
+        // Corrected function name to selectCategory and passed 'e'
+        btn.onclick = (e) => selectCategory(cat, e);
         
         container.appendChild(btn);
     });
@@ -231,23 +233,26 @@ function buildCategoryButtons() {
     // ============================================
 
 
-function selectCategory(category) {
+// Add 'e' here to capture the event object
+function selectCategory(category, e) {
     selectedCategory = category;
     selectedSubcategory = null;
     selectedSub = null;
 
-    // 1. Remove 'active' class from all category buttons
+    // 1. Remove 'active' class from all
     document.querySelectorAll('.category-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     
     // 2. Add 'active' class to the one we just clicked
-    // We use currentTarget to make sure we grab the button even if you click the text inside it
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
+    // Use 'e' (the passed event) or window.event as a fallback
+    const evt = e || window.event;
+    if (evt && (evt.currentTarget || evt.target)) {
+        const targetBtn = evt.currentTarget || evt.target;
+        targetBtn.classList.add('active');
     }
     
-    // 3. Handle Visibility of Sub-sections
+    // 3. Handle Visibility
     const subSection = document.getElementById('subcategorySection');
     const subSubSection = document.getElementById('subSection');
     
@@ -262,11 +267,8 @@ function selectCategory(category) {
     }
     
     subSubSection.classList.add('hidden');
-    
-    // 4. Update the results
     filterVideos();
 }
-
 
 
 
