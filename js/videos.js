@@ -37,7 +37,20 @@ async function init() {
         
         buildCategoryButtons();
         filterVideos();
-        
+        // --- ADD THIS BLOCK HERE ---
+        // Check if the URL has a shared video ID (e.g., ?v=123)
+        const urlParams = new URLSearchParams(window.location.search);
+        const videoIdToOpen = urlParams.get('v');
+        if (videoIdToOpen) {
+            const videoToOpen = allVideos.find(v => v.id == videoIdToOpen);
+            if (videoToOpen) {
+                console.log("🔗 Shared link detected. Opening video:", videoIdToOpen);
+                // We use a small timeout to ensure the grid is rendered before popping the modal
+                setTimeout(() => openModal(videoToOpen), 500);
+            }
+        }
+        // ---------------------------
+
         const featuredCount = allVideos.filter(v => v.featured).length;
         console.log(`✅ Loaded ${allVideos.length} videos (${featuredCount} featured)`);
         
