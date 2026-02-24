@@ -132,44 +132,57 @@ async function addFunds(amount) {
 // ---- PURCHASE ----
 
 async function purchaseVideo(videoId, videoTitle, price) {
+    // 1. GATEKEEPER: LOGIN CHECK
     if (!currentUser.isLoggedIn) {
-        closeModal();
+        closeModal(); // Closes the video preview
         showLoginModal();
-        showNotification('Please sign in to purchase');
+        showNotification('Please sign in to purchase', 'info');
         return;
     }
-
-    // ✔️ CHECK FOR DUPLICATE PURCHASE
-    const alreadyOwned = currentUser.purchases.find(p => p.videoId === videoId);
-    if (alreadyOwned) {
-        const purchaseDate = new Date(alreadyOwned.date).toLocaleDateString();
-        const confirmRepurchase = confirm(
-            `⚠️ You already purchased "${videoTitle}" on ${purchaseDate}.\n\n` +
-            `According to our licensing terms, you should purchase again if using in a new project.\n\n` +
-            `Do you want to purchase this video again?`
-        );
-        if (!confirmRepurchase) return;
-    }
-
-    if (currentUser.wallet < price) {
-        const shortage = (price - currentUser.wallet).toFixed(2);
-        showNotification(`Need $${shortage} more. Add funds?`, 'error');
-        closeModal();
-        showTopUpModal();
-        return;
-    }
-
-    //if (!confirm(`Purchase "${videoTitle}"?`)) return;
 
     try {
-        showNotification('Processing purchase...');
+        showNotification('Checking license status...', 'info');
+        
+        // 2. GATEKEEPER: DUPLICATE / LICENSE CHECK
+        // We refresh the list first to ensure we have the latest data
+        await loadUserPurchases(currentUser.email);
+        const alreadyOwned = currentUser.purchases.find(p => p.videoId === videoId);
+        
+        if (alreadyOwned) {
+            const purchaseDate = new Date(alreadyOwned.date).toLocaleDateString();
+            const confirmRepurchase = confirm(
+                `⚠️ You already purchased "${videoTitle}" on ${purchaseDate}.\n\n` +
+                `Each purchase is for ONE project. If this is for a NEW project, click OK to purchase another license.\n\n` +
+                `If you just need to re-download for the SAME project, click Cancel and go to "My Purchases".`
+            );
+            if (!confirmRepurchase) return;
+        }
+
+        // 3. GATEKEEPER: WALLET CHECK
+        // We refresh user data to get the absolute latest balance
+        await loadUserData(currentUser.email);
+        
+        if (currentUser.wallet < price) {
+            const shortage = (price - currentUser.wallet).toFixed(2);
+            showNotification(`Insufficient funds. You need $${shortage} more.`, 'error');
+            
+            // Auto-transition to Top-Up Modal
+            closeModal();
+            showTopUpModal();
+            return;
+        }
+
+        // 4. EXECUTION: INTERNAL WALLET DEDUCTION
+        // If we reach here, they are logged in, aware of the license, and have the money.
+        showNotification('Processing purchase...', 'info');
         const url = `${CONFIG.API_URL}?action=purchase&email=${encodeURIComponent(currentUser.email)}&videoId=${encodeURIComponent(videoId)}&videoTitle=${encodeURIComponent(videoTitle)}&amount=${price}`;
+        
         const response = await fetch(url);
         const result = await response.json();
 
         if (result.success) {
             currentUser.wallet = result.newBalance;
-            await loadUserPurchases(currentUser.email); // Refresh purchase list
+            await loadUserPurchases(currentUser.email); // Sync the local list
             updateWalletDisplay();
             closeModal();
             showNotification('✔️ Purchase successful!', 'success');
@@ -177,17 +190,21 @@ async function purchaseVideo(videoId, videoTitle, price) {
         } else {
             showNotification('Error: ' + (result.message || 'Purchase failed'), 'error');
         }
+
     } catch (error) {
-        console.error('Purchase error:', error);
-        showNotification('Error processing purchase', 'error');
+        console.error('Fulfillment Pipeline Error:', error);
+        showNotification('Error connecting to wallet system', 'error');
     }
 }
 
+// ---- Updated handle purchasce DOWNLOAD MODAL ----
 function handlePurchase() {
+    // currentVideo is the global variable set when you open the preview modal
     if (!currentVideo) return;
+    
+    // This triggers the heavy lifting function below
     purchaseVideo(currentVideo.id, currentVideo.title, parseFloat(currentVideo.price));
 }
-
 // ---- DOWNLOAD MODAL ----
 
 function showDownloadModal(videoTitle, downloadUrl) {
