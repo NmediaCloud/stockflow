@@ -208,13 +208,13 @@ function buildCategoryButtons() {
         const featuredBtn = document.createElement('button');
         featuredBtn.className = 'category-btn active px-4 py-2 rounded-lg text-sm font-medium bg-teal-500 text-white hover:bg-teal-600 transition shadow-sm';
         featuredBtn.innerHTML = '⭐ Featured';
-        featuredBtn.onclick = () => selectCategory(null);
+        featuredBtn.onclick = () => Category(null);
         container.appendChild(featuredBtn);
     } else {
         const allBtn = document.createElement('button');
         allBtn.className = 'category-btn active px-4 py-2 rounded-lg text-sm font-medium bg-teal-500 text-white hover:bg-teal-600 transition shadow-sm';
         allBtn.textContent = 'All Videos';
-        allBtn.onclick = () => selectCategory(null);
+        allBtn.onclick = () => Category(null);
         container.appendChild(allBtn);
     }
     
@@ -223,7 +223,7 @@ function buildCategoryButtons() {
         const btn = document.createElement('button');
         btn.className = 'category-btn px-4 py-2 rounded-lg text-sm font-medium bg-white text-gray-700 hover:bg-teal-500 hover:text-white border border-gray-200 transition shadow-sm';
         btn.textContent = cat;
-        btn.onclick = () => selectCategory(cat);
+        btn.onclick = () => Category(cat);
         
         container.appendChild(btn);
     });
@@ -293,17 +293,18 @@ function buildSubcategoryButtons(category) {
 function selectSubcategory(subcategory) {
     selectedSubcategory = subcategory;
     selectedSub = null;
+    
+    // 1. Clear 'active' from all buttons in this row
     document.querySelectorAll('.subcategory-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     
+    // 2. Apply neon ring (This lets the CSS take over!)
     if (event && event.currentTarget) {
         event.currentTarget.classList.add('active');
     }
     
-    event.target.classList.remove('bg-white', 'text-gray-700');
-    event.target.classList.add('bg-teal-500', 'text-white');
-    
+    // 3. Logic for the next row
     const catSubKey = `${selectedCategory}|${subcategory}`;
     const subSection = document.getElementById('subSection');
     
@@ -335,12 +336,12 @@ function buildSubButtons(catSubKey) {
 function selectSub(sub) {
     selectedSub = sub;
     
-   // 1. Clear 'active' from all Type buttons
+    // 1. Clear 'active' from all Type buttons
     document.querySelectorAll('.sub-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     
-    // 2. Apply neon ring
+    // 2. Apply neon ring (This lets the CSS take over!)
     if (event && event.currentTarget) {
         event.currentTarget.classList.add('active');
     }
