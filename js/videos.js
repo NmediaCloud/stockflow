@@ -443,3 +443,58 @@ window.init = init;
 window.filterVideos = filterVideos;
 window.filterByFormat = filterByFormat;
 window.loadMore = loadMore;
+
+
+
+// --- MODAL TRIGGER ---
+function openModal(video) {
+    // 1. Set the global variable for wallet.js to use
+    window.currentVideo = video;
+    
+    // 2. Call the modal display function (in your HTML/modals.js)
+    if (typeof window.showPreviewModal === 'function') {
+        window.showPreviewModal(video);
+    } else {
+        // Fallback if modals.js isn't separate
+        console.log("Opening modal for:", video.title);
+    }
+}
+
+// Expose to window so the HTML cards can click it
+window.openModal = openModal;
+
+// ---- NOTIFICATION SYSTEM ----
+function showNotification(message, type = 'success') {
+    const toast = document.getElementById('notification');
+    const msgEl = document.getElementById('notificationMessage');
+    
+    if (!toast || !msgEl) {
+        console.log(`Notification (${type}): ${message}`);
+        return;
+    }
+
+    // Update content and styling
+    msgEl.textContent = message;
+    
+    // Styling based on type
+    if (type === 'error') {
+        toast.style.backgroundColor = '#EF4444'; // Red
+    } else if (type === 'info') {
+        toast.style.backgroundColor = '#3B82F6'; // Blue
+    } else {
+        toast.style.backgroundColor = '#F97316'; // Your signature Orange
+    }
+
+    // Show the toast
+    toast.style.display = 'block';
+    toast.classList.remove('hidden');
+
+    // Auto-hide after 4 seconds
+    setTimeout(() => {
+        toast.style.display = 'none';
+        toast.classList.add('hidden');
+    }, 4000);
+}
+
+// Expose globally
+window.showNotification = showNotification;
