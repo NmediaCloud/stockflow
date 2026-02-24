@@ -279,29 +279,34 @@ function buildSubcategoryButtons(category) {
         const count = allVideos.filter(v => v.category === category && v.subcategory === sub).length;
         
         const btn = document.createElement('button');
-        btn.className = 'subcategory-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-white text-gray-700 hover:bg-teal-500 hover:text-white border border-gray-200 transition';
+        
+        // CLEANED CLASSNAME: Removed bg-white and teal colors
+        btn.className = 'subcategory-btn px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm';
+        
         btn.textContent = `${sub} (${count})`;
-        btn.onclick = () => selectSubcategory(sub);
+        
+        // Passing 'e' ensures the neon ring logic works
+        btn.onclick = (e) => selectSubcategory(sub, e);
         
         container.appendChild(btn);
     });
 }
 
-function selectSubcategory(subcategory) {
+function selectSubcategory(subcategory, e) {
     selectedSubcategory = subcategory;
     selectedSub = null;
+
+    // 1. Clear active states from this specific row
+    document.querySelectorAll('.subcategory-btn').forEach(btn => btn.classList.remove('active'));
     
-    // 1. Clear 'active' from all buttons in this row
-    document.querySelectorAll('.subcategory-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    // 2. Apply neon ring (This lets the CSS take over!)
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
+    // 2. Apply the Neon Ring
+    const evt = e || window.event;
+    if (evt && (evt.currentTarget || evt.target)) {
+        const targetBtn = evt.currentTarget || evt.target;
+        targetBtn.classList.add('active');
     }
     
-    // 3. Logic for the next row
+    // 3. Logic for the next row (Types)
     const catSubKey = `${selectedCategory}|${subcategory}`;
     const subSection = document.getElementById('subSection');
     
@@ -324,7 +329,7 @@ function buildSubButtons(catSubKey) {
         const btn = document.createElement('button');
         btn.className = 'sub-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-white text-gray-700 hover:bg-purple-500 hover:text-white border border-gray-200 transition';
         btn.textContent = sub;
-        btn.onclick = () => selectSub(sub);
+        btn.onclick = (e) => selectSub(sub, e);
         
         container.appendChild(btn);
     });
