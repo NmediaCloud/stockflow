@@ -348,7 +348,7 @@ window.openModal = function(video) {
         'modalSub': video.sub || 'N/A',
         'modalFormat': video.format,
         'modalResolution': video.resolution,
-        'modalPrice': video.price,
+        'modalPrice': parseFloat(video.price).toFixed(2),
         'modalDescription': video.description
     };
 
