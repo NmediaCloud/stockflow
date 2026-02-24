@@ -456,3 +456,24 @@ function copyShareLink() {
 }
 // Expose it so the HTML can see it
 window.copyShareLink = copyShareLink;
+
+// Add this to the bottom of js/wallet.js
+function showAboutModal() {
+    const modal = document.getElementById('aboutModal');
+    if (modal) {
+        modal.style.display = 'flex'; 
+    }
+}
+
+function closeAboutModal() {
+    const modal = document.getElementById('aboutModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Make sure the browser can see them
+window.showAboutModal = showAboutModal;
+window.closeAboutModal = closeAboutModal;
+
+
