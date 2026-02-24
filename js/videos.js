@@ -320,6 +320,9 @@ function selectSubcategory(subcategory, e) {
     filterVideos();
 }
 
+
+
+
 function buildSubButtons(catSubKey) {
     const container = document.getElementById('subButtons');
     container.innerHTML = '';
@@ -327,29 +330,36 @@ function buildSubButtons(catSubKey) {
     const sortedSubs = Array.from(subs[catSubKey]).sort();
     sortedSubs.forEach(sub => {
         const btn = document.createElement('button');
-        btn.className = 'sub-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-white text-gray-700 hover:bg-purple-500 hover:text-white border border-gray-200 transition';
+        // CLEANED: Removed old bg-white/teal classes
+        btn.className = 'sub-btn px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm';
         btn.textContent = sub;
+        
+        // Corrected: Passing 'e'
         btn.onclick = (e) => selectSub(sub, e);
         
         container.appendChild(btn);
     });
 }
 
-function selectSub(sub) {
+function selectSub(sub, e) {
     selectedSub = sub;
     
-    // 1. Clear 'active' from all Type buttons
+    // 1. Clear 'active' from all Type buttons in this row
     document.querySelectorAll('.sub-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     
-    // 2. Apply neon ring (This lets the CSS take over!)
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
+    // 2. Apply neon ring using the passed event
+    const evt = e || window.event;
+    if (evt && (evt.currentTarget || evt.target)) {
+        const targetBtn = evt.currentTarget || evt.target;
+        targetBtn.classList.add('active');
     }
     
     filterVideos();
 }
+
+
 
 function filterVideos() {
     const searchTerm = document.getElementById('searchInput')?.value?.toLowerCase() || '';
@@ -389,16 +399,21 @@ function filterVideos() {
     }
 }
 
-function filterByFormat(format) {
+function filterByFormat(format, e) {
     selectedFormat = format;
     
+    // 1. Clear active state from all format buttons
     document.querySelectorAll('.format-btn').forEach(btn => {
-        btn.classList.remove('active', 'bg-teal-500', 'text-white');
-        btn.classList.add('bg-gray-100', 'text-gray-700');
+        btn.classList.remove('active');
     });
     
-    event.target.classList.remove('bg-gray-100', 'text-gray-700');
-    event.target.classList.add('active', 'bg-teal-500', 'text-white');
+    // 2. Add active class to the clicked button
+    // Note: If called from HTML with onclick="filterByFormat('all', event)"
+    const evt = e || window.event;
+    if (evt && (evt.currentTarget || evt.target)) {
+        const targetBtn = evt.currentTarget || evt.target;
+        targetBtn.classList.add('active');
+    }
     
     filterVideos();
 }
