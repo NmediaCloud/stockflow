@@ -355,7 +355,11 @@ window.openModal = function(video) {
     // Loop through the fields and update the UI if the element exists
     for (const [id, value] of Object.entries(fields)) {
         const el = document.getElementById(id);
-        if (el) el.innerText = value;
+        if (el) {
+            // Force it to a string to ensure .00 stays visible
+            el.innerText = value.toString(); 
+        }
+        
     }
 
     // 2. Handle Tags
