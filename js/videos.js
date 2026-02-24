@@ -228,20 +228,26 @@ function buildCategoryButtons() {
         container.appendChild(btn);
     });
 }
+    // ============================================
+
 
 function selectCategory(category) {
     selectedCategory = category;
     selectedSubcategory = null;
     selectedSub = null;
-    
+
+    // 1. Remove 'active' class from all category buttons
     document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.classList.remove('active', 'bg-teal-500', 'text-white');
-        btn.classList.add('bg-white', 'text-gray-700');
+        btn.classList.remove('active');
     });
     
-    event.target.classList.remove('bg-white', 'text-gray-700');
-    event.target.classList.add('active', 'bg-teal-500', 'text-white');
+    // 2. Add 'active' class to the one we just clicked
+    // We use currentTarget to make sure we grab the button even if you click the text inside it
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+    }
     
+    // 3. Handle Visibility of Sub-sections
     const subSection = document.getElementById('subcategorySection');
     const subSubSection = document.getElementById('subSection');
     
@@ -256,8 +262,13 @@ function selectCategory(category) {
     }
     
     subSubSection.classList.add('hidden');
+    
+    // 4. Update the results
     filterVideos();
 }
+
+
+
 
 function buildSubcategoryButtons(category) {
     const container = document.getElementById('subcategoryButtons');
@@ -282,11 +293,13 @@ function buildSubcategoryButtons(category) {
 function selectSubcategory(subcategory) {
     selectedSubcategory = subcategory;
     selectedSub = null;
-    
     document.querySelectorAll('.subcategory-btn').forEach(btn => {
-        btn.classList.remove('bg-teal-500', 'text-white');
-        btn.classList.add('bg-white', 'text-gray-700');
+        btn.classList.remove('active');
     });
+    
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+    }
     
     event.target.classList.remove('bg-white', 'text-gray-700');
     event.target.classList.add('bg-teal-500', 'text-white');
