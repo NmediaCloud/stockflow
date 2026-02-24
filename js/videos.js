@@ -335,13 +335,15 @@ function buildSubButtons(catSubKey) {
 function selectSub(sub) {
     selectedSub = sub;
     
+   // 1. Clear 'active' from all Type buttons
     document.querySelectorAll('.sub-btn').forEach(btn => {
-        btn.classList.remove('bg-purple-500', 'text-white');
-        btn.classList.add('bg-white', 'text-gray-700');
+        btn.classList.remove('active');
     });
     
-    event.target.classList.remove('bg-white', 'text-gray-700');
-    event.target.classList.add('bg-purple-500', 'text-white');
+    // 2. Apply neon ring
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+    }
     
     filterVideos();
 }
