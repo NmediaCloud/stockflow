@@ -239,20 +239,17 @@ function selectCategory(category, e) {
     selectedSubcategory = null;
     selectedSub = null;
 
-    // 1. Remove 'active' class from all
-    document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
+    // 1. Clear active states
+    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
     
-    // 2. Add 'active' class to the one we just clicked
-    // Use 'e' (the passed event) or window.event as a fallback
+    // 2. The Fix: Use the passed event or the window event
     const evt = e || window.event;
     if (evt && (evt.currentTarget || evt.target)) {
         const targetBtn = evt.currentTarget || evt.target;
         targetBtn.classList.add('active');
     }
     
-    // 3. Handle Visibility
+    // 3. Visibility logic
     const subSection = document.getElementById('subcategorySection');
     const subSubSection = document.getElementById('subSection');
     
@@ -269,8 +266,6 @@ function selectCategory(category, e) {
     subSubSection.classList.add('hidden');
     filterVideos();
 }
-
-
 
 function buildSubcategoryButtons(category) {
     const container = document.getElementById('subcategoryButtons');
