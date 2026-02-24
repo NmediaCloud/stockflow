@@ -316,35 +316,45 @@ window.closeLicenseModal = closeLicenseModal;
  * Acts as the bridge between videos.js (the grid) and the UI.
  * This is triggered whenever a user clicks a video card.
  */
+// ============================================
+// FINAL CORRECTED BRIDGE
+// ============================================
 window.openModal = function(video) {
-    console.log("🎯 Bridge Triggered: Opening modal for", video.title);
+    console.log("💎 Bridge Active. Opening:", video.title);
     
-    // 1. Save the video to a global variable so the "Buy" button knows what to do
-    window.currentVideo = video; 
+    // 1. Sync the global variables
+    window.currentVideo = video;
 
-    // 2. Identify the modal elements
+    // 2. Locate the modal
     const modal = document.getElementById('previewModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalPrice = document.getElementById('modalPriceDisplay');
     
     if (modal) {
-        // 3. Manually populate basic data to avoid "blank" flickers
-        if (modalTitle) modalTitle.textContent = video.title;
-        if (modalPrice) modalPrice.textContent = `$${video.price.toFixed(2)}`;
+        // 3. Populate basic text fields so they aren't empty
+        const titleEl = document.getElementById('modalTitle');
+        const priceEl = document.getElementById('modalPrice'); // Note: modals.js uses modalPrice, not modalPriceDisplay
         
-        // 4. Force the modal to show (Overriding Tailwind 'hidden')
-        modal.classList.remove('hidden');
-        modal.style.display = 'flex'; 
+        if (titleEl) titleEl.innerText = video.title;
+        if (priceEl) priceEl.innerText = video.price;
 
-        // 5. Trigger your specialized formatting (loading the .mp4, etc.)
-        if (typeof window.showPreviewModal === 'function') {
-            window.showPreviewModal(video);
+        // 4. Trigger the visibility using YOUR custom classes
+        modal.classList.remove('modal-hidden');
+        modal.classList.add('modal-visible');
+
+        // 5. Trigger the Media Injection from modals.js
+        // We use the code logic you already have in modals.js
+        const container = document.getElementById('modalMediaContainer');
+        if (container && video.preview) {
+            const fileUrl = video.preview.toLowerCase();
+            if (fileUrl.endsWith(".mp4") || fileUrl.endsWith(".webm") || fileUrl.endsWith(".mov")) {
+                container.innerHTML = `<video id="modalVideo" controls class="w-full h-full object-contain" autoplay><source src="${video.preview}"></video>`;
+            } else {
+                container.innerHTML = `<img src="${video.preview}" alt="Preview" class="w-full h-full object-contain" />`;
+            }
         }
     } else {
-        console.error("❌ UI Error: Could not find 'previewModal' in the HTML.");
+        console.error("❌ Could not find 'previewModal' in HTML.");
     }
 };
-
 /**
  * Simple Notification System (Required by purchaseVideo function)
  */
