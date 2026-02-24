@@ -306,3 +306,75 @@ window.showPurchaseHistory = showPurchaseHistory;
 window.closeHistoryModal = closeHistoryModal;
 window.showLicenseInfo = showLicenseInfo;
 window.closeLicenseModal = closeLicenseModal;
+
+
+// ============================================
+// MODAL & UI BRIDGE
+// ============================================
+
+/**
+ * Acts as the bridge between videos.js (the grid) and the UI.
+ * This is triggered whenever a user clicks a video card.
+ */
+window.openModal = function(video) {
+    console.log("🎯 Bridge Triggered: Opening modal for", video.title);
+    
+    // 1. Save the video to a global variable so the "Buy" button knows what to do
+    window.currentVideo = video; 
+
+    // 2. Identify the modal elements
+    const modal = document.getElementById('previewModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalPrice = document.getElementById('modalPriceDisplay');
+    
+    if (modal) {
+        // 3. Manually populate basic data to avoid "blank" flickers
+        if (modalTitle) modalTitle.textContent = video.title;
+        if (modalPrice) modalPrice.textContent = `$${video.price.toFixed(2)}`;
+        
+        // 4. Force the modal to show (Overriding Tailwind 'hidden')
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex'; 
+
+        // 5. Trigger your specialized formatting (loading the .mp4, etc.)
+        if (typeof window.showPreviewModal === 'function') {
+            window.showPreviewModal(video);
+        }
+    } else {
+        console.error("❌ UI Error: Could not find 'previewModal' in the HTML.");
+    }
+};
+
+/**
+ * Simple Notification System (Required by purchaseVideo function)
+ */
+function showNotification(message, type = 'success') {
+    const toast = document.getElementById('notification');
+    const msgEl = document.getElementById('notificationMessage');
+    
+    if (!toast || !msgEl) {
+        console.log(`[${type.toUpperCase()}] ${message}`);
+        return;
+    }
+
+    msgEl.textContent = message;
+    
+    const colors = {
+        'error': '#EF4444', 
+        'info': '#3B82F6',  
+        'success': '#F97316' 
+    };
+    
+    toast.style.backgroundColor = colors[type] || colors.success;
+    toast.style.display = 'block';
+    toast.classList.remove('hidden');
+
+    setTimeout(() => {
+        toast.style.display = 'none';
+        toast.classList.add('hidden');
+    }, 4000);
+}
+
+// Make it global
+window.showNotification = showNotification;
+
