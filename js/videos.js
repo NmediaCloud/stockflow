@@ -395,8 +395,16 @@ function loadMore() {
 function createVideoCard(video) {
     const card = document.createElement('div');
     card.className = 'group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl rounded-xl overflow-hidden bg-white border border-gray-200';
-    card.setAttribute('onclick', "openModal(" + JSON.stringify(video).replace(/"/g, '&quot;') + ")");
+    //card.setAttribute('onclick', "openModal(" + JSON.stringify(video).replace(/"/g, '&quot;') + ")");
     //card.onclick = () => openModal(video);
+    card.onclick = () => {
+        if (typeof window.openModal === 'function') {
+            window.openModal(video);
+        } else {
+            console.error("openModal function not found!");
+        }
+    };
+   
     const formatBadge = {
         '9:16': '📱 9:16',
         '1:1': '⬜ 1:1',
