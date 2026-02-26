@@ -1,234 +1,35 @@
-/* --- FIXED HEADER SYSTEM --- */
-/* --- FIXED HEADER SYSTEM --- */
-/* --- FIXED HEADER SYSTEM: FINAL POLISH --- */
 
-/* 1. Main Navigation - Highest Priority Layer */
+/* --- MASTER CONSOLIDATED HEADER SYSTEM --- */
 
+/* 1. GLOBAL DEFAULTS (Desktop > 1141px) */
 nav {
     position: fixed !important;
-    top: 0; 
-    left: 0;
-    width: 100%;
-    height: 73px; 
-    z-index: 10005 !important; /* Highest Layer */
+    top: 0; left: 0; width: 100%;
+    height: 73px;
+    z-index: 10005;
     background-color: white !important;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-/* 2. Offer Banner - Perfectly Centered & Flush to Nav */
 #offerBanner {
     position: fixed !important;
-    top: 72px !important; /* Removed the +1px gap */
-    left: 0;
-    width: 100%;
-    height: 50px !important; /* Slightly tighter height for better centering */
-    z-index: 10004 !important; /* Below Nav, above Grid */
+    top: 73px;
+    left: 0; width: 100%;
+    height: 50px;
+    z-index: 10004;
     background: linear-gradient(90deg, #1F2933 0%, #2A2F36 50%, #1F2933 100%) !important;
-    
-    /* VERTICAL CENTERING FIX */
     display: flex !important;
-    align-items: center !important; 
-    justify-content: center !important;
-    padding: 0 !important;
-    border-radius: 0; /* Remove rounding to keep it flush with nav */
+    align-items: center;
+    justify-content: center;
 }
 
-/* 3. Browse Categories - Fix for the "Superseding" Overlap */
-/* This ensures the category bar slides BEHIND the banner, not over it */
-.bg-white.border-b.border-gray-200.sticky {
-    top: 123px !important; /* 73px (Nav) + 50px (Banner) = 123px */
-    z-index: 10003 !important; /* Lower than banner */
-}
+body { padding-top: 123px !important; }
 
-/* 4. The Body Offset - Total Height of the Fixed Stack */
-body {
-    /* 73px (Nav) + 50px (Banner) = 123px. 
-       Use 130px if you want a small gap below the banner before text starts */
-    padding-top: 123px !important; 
-}
-
-/* Navigation Search Anchor Styling */
-nav button:hover svg {
-    color: white;
-}
-
-/* Ensure the smooth scroll doesn't jitter */
-html {
-    scroll-behavior: smooth;
-}
-/* --- ADAPTIVE FROZEN HEADER LOGIC --- */
-/* --- SURGICAL FIX: 767px BREAKPOINT STABILITY --- */
-@media (max-width: 767px) {
-    /* 1. Force the Offer Banner to stay visible */
-    #offerBanner {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        top: 105px !important; /* Adjust based on your new stacked nav height */
-    }
-
-    /* 2. Compact the Navigation to fit the Search symbol and Logo */
-    nav > div {
-        padding: 5px 10px !important;
-        display: flex !important;
-        flex-wrap: wrap !important;
-        justify-content: space-between !important;
-    }
-
-    /* 3. Hide the email and "Wallet:" label to reclaim ~150px of space */
-    #userEmailDisplay, 
-    #walletDisplay span:first-child {
-        display: none !important;
-    }
-
-    /* 4. Proportional Shrink for Wallet & Purchases */
-    #walletAmount { font-size: 14px !important; }
-    
-    /* Change "My Purchases" to icon-only at this tight dimension */
-    button[onclick="showPurchaseHistory()"] {
-        font-size: 0 !important;
-        padding: 6px 8px !important;
-    }
-    button[onclick="showPurchaseHistory()"]::before {
-        content: '📜';
-        font-size: 14px;
-    }
-
-    /* 5. Sync the Body Offset to prevent text overlap */
-    body {
-        padding-top: 155px !important; /* Total height of Nav + Banner */
-    }
-}
-/* --- ADAPTIVE FROZEN HEADER LOGIC --- */
-
-/* 1. DESKTOP (Large Screens) */
-@media (min-width: 1024px) {
-    nav { height: 73px; }
-    #offerBanner { top: 73px; height: 50px; }
-    body { padding-top: 123px !important; }
-}
-
-/* 2. TABLET (Mid-size Screens) */
-/* --- HIGH-PRECISION RESPONSIVE HEADER --- */
-/* --- UNIVERSAL RESPONSIVE HEADER CLEANUP --- */
-/* --- SURGICAL FIX: 436px to 767px COMPACT MODE --- */
-@media (max-width: 767px) {
-    /* 1. Force Offer Banner Visibility */
-    #offerBanner {
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        /* Dynamic top based on the height of your new compact nav */
-        top: 102px !important; 
-        height: 44px !important;
-        z-index: 10002 !important;
-    }
-
-    /* 2. Shrink Nav & Enable Grid Stacking */
-    nav > div {
-        display: grid !important;
-        grid-template-columns: 1fr auto; /* Logo left | Search right */
-        row-gap: 8px;
-        padding: 8px 12px !important;
-    }
-
-    /* 3. WIDGET CLEANUP: My Purchases & Wallet */
-    #walletWidget {
-        grid-column: span 2;
-        display: flex !important;
-        justify-content: space-between !important;
-        gap: 5px !important;
-    }
-
-    /* Transform "My Purchases" to icon-only to save horizontal space */
-    button[onclick="showPurchaseHistory()"] {
-        font-size: 0 !important; /* Hides text label */
-        padding: 6px 10px !important;
-        min-width: 44px;
-    }
-    button[onclick="showPurchaseHistory()"]::before {
-        content: '📜'; /* Keeps only the icon */
-        font-size: 16px;
-    }
-
-    /* Show ONLY the dollar amount for the wallet */
-    #walletDisplay span:first-child, 
-    #userEmailDisplay {
-        display: none !important;
-    }
-
-    /* 4. Minimalist Offer Buttons */
-    .offer-label, .offer-pulse, .offer-divider {
-        display: none !important; /* Removes clutter text */
-    }
-    
-    .offer-btn {
-        font-size: 10px !important;
-        padding: 4px 8px !important;
-    }
-
-    /* 5. Coordinate Offset Fixes */
-    nav { height: 102px !important; }
-    body { padding-top: 146px !important; } /* 102px + 44px banner */
-}
-/* --- SURGICAL FIX: 767px VISIBILITY & WIDGET CLEANUP --- */
-@media (max-width: 767px) {
-    /* 1. Prevent the Offer Banner from vanishing at the mobile breakpoint */
-    #offerBanner {
-        display: flex !important; /* Forces it back to life */
-        visibility: visible !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        top: 108px !important; /* Positions it below the stacked mobile nav */
-        height: 46px !important;
-        z-index: 10004 !important;
-    }
-
-    /* 2. Remove "Limited Time" text to prevent button crowding on phones */
-    .offer-label, .offer-pulse, .offer-divider {
-        display: none !important;
-    }
-
-    /* 3. Compact the Navigation Bar to prevent overlapping */
-    nav {
-        height: 108px !important;
-    }
-
-    nav > div {
-        display: flex !important;
-        flex-wrap: wrap !important;
-        justify-content: space-between !important;
-        padding: 8px 12px !important;
-    }
-
-    /* 4. CLEANUP: Transform "My Purchases" into icon-only to save space */
-    button[onclick="showPurchaseHistory()"] {
-        font-size: 0 !important; /* Hides the text label */
-        padding: 8px !important;
-        min-width: 40px;
-    }
-    button[onclick="showPurchaseHistory()"]::before {
-        content: '📜'; /* Keeps only the icon emoji */
-        font-size: 16px;
-    }
-
-    /* 5. Minimalist Wallet & User Menu */
-    #walletDisplay span:first-child, #userEmailDisplay {
-        display: none !important;
-    }
-
-    /* 6. Update Body Offset for the new double-stack height */
-    body {
-        padding-top: 154px !important; /* 108px Nav + 46px Banner */
-    }
-}
-/* --- UNIVERSAL FLUID SCALING & ADAPTIVE REPAIR --- */
-
-/* 1. COMPACT DESKTOP & TABLET (Below 1140px) */
-@media (max-width: 1140px) {
+/* 2. COMPACT DESKTOP & TABLET (1280px down to 958px) */
+@media (max-width: 1280px) {
     nav h1 { font-size: clamp(14px, 1.5vw, 18px) !important; }
-    #walletDisplay span:first-child { display: none !important; } /* Removes "Wallet:" text */
+    nav img { height: clamp(26px, 3vw, 40px) !important; }
+    #walletDisplay span:first-child, #userEmailDisplay { display: none !important; }
     
     #walletWidget button, #userMenuButton, nav button {
         padding: 6px 1vw !important;
@@ -236,367 +37,116 @@ html {
     }
 }
 
-/* --- SURGICAL FIX: 944px STABILITY BLOCK --- */
-@media (min-width: 850px) and (max-width: 957px) {
-    /* 1. Force Nav to maintain a single row for Logo and Search */
-    nav > div {
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: space-between !important;
-        padding: 8px 15px !important;
-    }
-
-    /* 2. Shrink Search to just the icon next to the logo */
-    nav button[onclick="scrollToSearch()"] {
-        padding: 6px 10px !important;
-        margin-left: 10px;
-    }
-    nav button[onclick="scrollToSearch()"] span {
-        display: none !important; /* Removes "SEARCH" text */
-    }
-
-    /* 3. Minimalist Wallet Display ($56.00 only) */
-    #walletDisplay span:first-child, 
-    #userEmailDisplay { 
-        display: none !important; 
-    }
-
-    /* 4. OFFER BANNER: Remove text to prevent stacking at 944px */
-    .offer-label, 
-    .offer-pulse, 
-    .offer-divider { 
-        display: none !important; 
-    }
-
-    .offer-inner {
-        display: flex !important;
-        flex-direction: row !important; /* Force single line */
-        justify-content: center !important;
-        gap: 15px !important;
-    }
-
-    /* Ensure buttons stay side-by-side */
-    .offer-btn {
-        font-size: 11px !important;
-        padding: 5px 10px !important;
-        white-space: nowrap !important;
-    }
-
-    /* 5. Sync Heights */
-    nav { height: 73px !important; }
-    #offerBanner { top: 73px !important; height: 48px !important; }
-    body { padding-top: 121px !important; }
+/* 3. SURGICAL FIX: MID-RANGE STABILITY (957px down to 768px) */
+@media (max-width: 957px) {
+    .offer-label, .offer-pulse, .offer-divider { display: none !important; }
+    .offer-inner { gap: 15px !important; width: 100%; justify-content: center !important; }
+    .offer-btn { flex: 0 1 auto; min-width: 120px; font-size: 11px !important; }
 }
 
-/* --- SURGICAL FIX: 958px to 1015px RANGE --- */
-@media (min-width: 958px) and (max-width: 1015px) {
-    /* 1. Remove the "Limited Time Offer" text to save horizontal space */
-    .offer-label, 
-    #offerBanner .offer-pulse { 
-        display: none !important; 
-    }
-
-    /* 2. Remove the dot separators to clean up the look */
-    .offer-divider { 
-        display: none !important; 
-    }
-
-    /* 3. Distribute the 3 offer buttons equally */
-    .offer-inner {
-        display: flex !important;
-        justify-content: space-evenly !important; /* Spreads them out eveny */
-        width: 100%;
-        max-width: 900px;
-        margin: 0 auto;
-        gap: 10px;
-    }
-
-    /* 4. Ensure buttons don't shrink too much */
-    .offer-btn {
-        flex: 1; /* Makes all three boxes the same width */
-        max-width: 250px;
-        justify-content: center;
-        white-space: nowrap;
-        font-size: 12px !important;
-    }
-
-    /* 5. Minimalist Wallet - Removing "Wallet:" text as requested */
-    #walletDisplay span:first-child { 
-        display: none !important; 
-    }
-}
-/* --- SURGICAL FIX: 958px to 1015px HEADER RESTRUCTURING --- */
-@media (min-width: 958px) and (max-width: 1015px) {
-    /* 1. Set Nav to Grid for two-level organization */
+/* 4. MOBILE CONSOLIDATED (767px down to 430px) */
+/* This merges all your "disappearing banner" and "compact mode" fixes */
+@media (max-width: 767px) {
+    nav { height: 105px !important; }
+    
     nav > div {
         display: grid !important;
-        grid-template-columns: auto 1fr; /* Logo/Search left, space right */
-        align-items: center;
-        gap: 15px;
-        padding: 10px 20px !important;
+        grid-template-columns: auto 1fr auto; 
+        grid-template-rows: auto auto;
+        row-gap: 8px;
+        padding: 8px 12px !important;
     }
 
-    /* 2. Pair Logo and Search Symbol side-by-side */
-    .flex.items-center.gap-3 { 
-        grid-column: 1; 
-        display: flex !important;
-        align-items: center !important;
+    /* Logo & Search Row 1 */
+    .flex.items-center.gap-3 { grid-column: 1; grid-row: 1; }
+    nav button[onclick="scrollToSearch()"] { 
+        grid-column: 3; grid-row: 1; 
+        padding: 5px !important;
     }
+    nav button[onclick="scrollToSearch()"] span { display: none !important; }
 
-    /* Shrink search button to just the icon symbol */
-    nav button[onclick="scrollToSearch()"] {
-        padding: 8px !important;
-        background: transparent !important;
-        border: 1px solid #3A3F46 !important;
-    }
-    nav button[onclick="scrollToSearch()"] span { 
-        display: none !important; /* Removes "Search" text */
-    }
-
-    /* 3. Push Wallet, Purchases, and Add Funds to the second row */
-    #walletWidget {
-        grid-column: 1 / span 2; /* Spans across the bottom */
-        display: flex !important;
-        justify-content: flex-start !important;
-        gap: 10px !important;
-        padding-top: 8px;
-        border-top: 1px solid rgba(255,255,255,0.05);
-    }
-
-    /* 4. Minimalist Wallet Display ($56.00 only) */
-    #walletDisplay span:first-child, 
-    #userEmailDisplay { 
-        display: none !important; 
-    }
-    
-    #walletAmount { font-size: 16px !important; }
-
-    /* 5. Clean up the Offer Banner (Minimalist Boxes) */
-    .offer-label, .offer-pulse, .offer-divider { 
-        display: none !important; 
-    }
-    
-    .offer-inner {
-        display: flex !important;
-        justify-content: space-between !important;
-        width: 100%;
-        gap: 8px;
-    }
-
-    /* 6. Update heights to prevent overlapping */
-    nav { height: 110px !important; }
-    #offerBanner { top: 110px !important; height: 48px !important; }
-    body { padding-top: 158px !important; }
-}
-/* 2. MOBILE (Below 768px - Fixes image_d0f735) */
-@media (max-width: 768px) {
-    /* Hide long email string and unnecessary labels */
-    #userEmailDisplay, .offer-label { display: none !important; }
-
-    /* Shrink the Wallet to just the value */
-    #walletAmount { font-size: 15px !important; }
-    
-    /* Icon-only Purchases */
-    button[onclick="showPurchaseHistory()"] { font-size: 0 !important; padding: 8px !important; }
-    button[onclick="showPurchaseHistory()"]::before { content: '📜'; font-size: 16px; }
-
-    /* Minimalistic Offer Banner Boxes */
-    #offerBanner { height: auto !important; padding: 6px 0 !important; top: 62px !important; }
-    .offer-btn { font-size: 10px !important; padding: 4px 6px !important; }
-    .offer-btn .reward { padding: 1px 4px !important; font-size: 10px !important; }
-
-    body { padding-top: 105px !important; }
-}
-
-/* --- SURGICAL FIX: 438px to 1015px COMPACT HEADER --- */
-@media (min-width: 438px) and (max-width: 1015px) {
-    /* 1. Main Nav Container - Create two rows */
-    nav > div {
-        display: grid !important;
-        grid-template-columns: auto 1fr auto; /* Logo | Space | Search Icon */
-        grid-template-rows: auto auto; /* Two rows */
-        row-gap: 12px;
-        padding: 10px 15px !important;
-    }
-
-    /* 2. Top Row: Logo & Search side-by-side */
-    .flex.items-center.gap-3 { 
-        grid-column: 1; 
-        grid-row: 1;
-    }
-    
-    /* Search button: Icon-only and moved to top right */
-    nav button[onclick="scrollToSearch()"] {
-        grid-column: 3;
-        grid-row: 1;
-        padding: 6px !important;
-        background: transparent !important;
-        border: 1px solid #3A3F46 !important;
-        border-radius: 6px;
-    }
-    nav button[onclick="scrollToSearch()"] span { 
-        display: none !important; /* Hide "SEARCH" text */
-    }
-
-    /* 3. Bottom Row: Action Buttons ($56, Purchases, Add Funds) */
+    /* Buttons Row 2 */
     #walletWidget {
         grid-column: 1 / span 3;
         grid-row: 2;
         display: flex !important;
-        justify-content: space-between !important; /* Spreads buttons across width */
-        align-items: center;
-        gap: 8px !important;
-        border-top: 1px solid rgba(255,255,255,0.05);
-        padding-top: 8px;
-    }
-
-    /* 4. Minimalist Button Scaling */
-    #walletWidget button, #userMenuButton {
-        padding: 6px 10px !important;
-        font-size: 11px !important;
-        white-space: nowrap;
-    }
-    
-    /* Wallet: Only show the amount ($56.00) */
-    #walletDisplay span:first-child, #userEmailDisplay { 
-        display: none !important; 
-    }
-    #walletAmount { font-size: 15px !important; }
-
-    /* 5. Offer Banner Cleanup (Minimalist Boxes) */
-    .offer-label, .offer-pulse, .offer-divider { 
-        display: none !important; 
-    }
-    
-    .offer-inner {
-        display: flex !important;
-        justify-content: center !important;
-        gap: 8px;
-    }
-
-    /* 6. Dynamic Height Adjustments to prevent overlap */
-    nav { height: 115px !important; }
-    #offerBanner { 
-        top: 115px !important; 
-        height: 48px !important;
-        z-index: 10001 !important;
-    }
-    body { padding-top: 163px !important; }
-}
-
-/* 3. NARROW MOBILE (429px - Fixes image_89955f) */
-@media (max-width: 429px) {
-    /* Side-by-side Logo and Search */
-    nav > div { 
-        display: grid !important;
-        grid-template-columns: auto auto; 
         justify-content: space-between !important;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    /* Push buttons to a second row within the nav bar to keep it neat */
-    #walletWidget { 
-        grid-column: span 2; 
-        justify-content: center !important; 
+        border-top: 1px solid rgba(0,0,0,0.05);
         padding-top: 5px;
     }
 
-    #offerBanner { top: 100px !important; }
-    body { padding-top: 145px !important; }
+    /* My Purchases Icon-Only */
+    button[onclick="showPurchaseHistory()"] { font-size: 0 !important; padding: 6px 10px !important; }
+    button[onclick="showPurchaseHistory()"]::before { content: '📜'; font-size: 16px; }
+
+    /* Banner Placement */
+    #offerBanner {
+        top: 105px !important;
+        height: 44px !important;
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    body { padding-top: 149px !important; }
+    .bg-white.border-b.border-gray-200.sticky { top: 149px !important; }
 }
 
-/* 4. ULTRA-NARROW (274px - Fixes image_8994c3) */
-@media (max-width: 280px) {
-    nav h1 { display: none !important; } /* Hide text, keep only triangle icon */
-    #walletAmount { font-size: 13px !important; }
-    .offer-btn { font-size: 9px !important; }
+/* 5. ULTRA-NARROW MOBILE (Below 429px) */
+@media (max-width: 429px) {
+    nav h1 { display: none !important; } /* Only Logo Icon */
+    nav > div { grid-template-columns: auto auto; }
+    #walletWidget { justify-content: center !important; gap: 5px !important; }
     
-    /* Push banner lower for spacing */
-    #offerBanner { top: 95px !important; }
-    body { padding-top: 140px !important; }
+    #offerBanner { top: 100px !important; }
+    body { padding-top: 144px !important; }
 }
-/* 4. Fix for Modals */
-/* 4. Fix for Modals */
-/* Ensure the Category Filter stays below the frozen stack during scroll */
+
+/* 6. MODAL & STICKY OVERRIDES */
+.modal, #previewModal { z-index: 11000 !important; }
+
 .bg-white.border-b.border-gray-200.sticky {
     z-index: 40 !important;
 }
-
 @media (min-width: 1024px) {
     .bg-white.border-b.border-gray-200.sticky { top: 123px !important; }
 }
 
-@media (max-width: 767px) {
-    .bg-white.border-b.border-gray-200.sticky { top: 165px !important; }
-}
-
-/* --- HIGH-PRECISION RESPONSIVE HEADER CLEANUP --- */
 
 
-/* --- UNIVERSAL FLUID HEADER & WALLET REPAIR --- */
 
-/* 1. FLUID SCALING (Desktop to Tablet: 1280px down to 769px) */
-/* Targets the "Clustering" seen in image_d0fa3c and image_8a76f7 */
-@media (max-width: 1280px) {
-    nav h1 { font-size: clamp(14px, 1.5vw, 20px) !important; }
-    nav img { height: clamp(26px, 3vw, 40px) !important; }
-    
-    /* Proportional button shrinking based on viewport width */
-    #walletWidget button, #userMenuButton, nav button {
-        padding: 6px clamp(6px, 1vw, 14px) !important;
-        font-size: clamp(10px, 1vw, 13px) !important;
-        letter-spacing: -0.2px;
-    }
-}
 
-/* 2. THE "COMPACT" BREAKPOINT (Below 768px - Fixes image_d0f735) */
-/* This is where we hide long text strings to prevent overlapping */
-@media (max-width: 768px) {
-    /* Hide long email and labels to save ~200px of space */
-    #userEmailDisplay, 
-    #walletDisplay span:first-child { 
-        display: none !important; 
-    }
 
-    /* Shrink the Wallet amount to fit next to buttons */
-    #walletAmount { font-size: 15px !important; }
-
-    /* Transform "My Purchases" into icon-only to save horizontal width */
-    button[onclick="showPurchaseHistory()"] {
-        font-size: 0 !important;
-        padding: 8px !important;
-    }
-    button[onclick="showPurchaseHistory()"]::before {
-        content: '📜';
-        font-size: 16px;
-    }
-
-    /* Recalculate heights for the frozen stack */
-    #offerBanner { top: 60px !important; height: 42px !important; }
-    body { padding-top: 102px !important; }
-}
-
-/* 3. ULTRA-NARROW MODE (Below 480px - Fixes image_d08235 and image_8a75dc) */
-@media (max-width: 480px) {
-    /* Hide the text part of the logo, keeping only the icon */
-    nav h1 { display: none !important; }
-    
-    /* Ensure widgets stay on one line even at 300px */
-    nav > div { justify-content: space-between !important; padding: 0 8px !important; }
-    #walletDisplay > div { gap: 4px !important; }
-    
-    /* Shrink buttons to absolute minimum */
-    #walletWidget button, #userMenuButton {
-        padding: 4px 6px !important;
-        font-size: 9px !important;
-    }
-}
+/* --- ADAPTIVE FROZEN HEADER LOGIC --- */
 
 /* 4. Fix for Modals */
-/* 4. Fix for Modals */
-/* --- UNIVERSAL FLUID HEADER & WALLET REPAIR --- */
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 4. Fix for Modals */
 /* 1. FLUID SCALING (Desktop to Tablet: 1280px down to 769px) */
 /* Targets the "Clustering" seen in image_d0fa3c and image_8a76f7 */
 @media (max-width: 1280px) {
