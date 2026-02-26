@@ -1,33 +1,33 @@
 /* --- FIXED HEADER SYSTEM --- */
 
 /* 1. Top Navigation Bar (Highest Priority) */
+/* 1. Top Navigation Bar - Remains Fixed at the very top */
 nav {
     position: fixed !important;
     top: 0; 
     left: 0;
     width: 100%;
-    z-index: 10002; /* Keeps it above the offer banner */
-    background-color: white;
+    z-index: 10002; /* Stays on top of everything */
+    background-color: white; /* Keep this white as per your design */
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-/* 2. Promotional Offer Banner (Sits below Nav) */
+/* 2. Promotional Offer Banner - Now starts at 0 to sit behind Nav */
 #offerBanner {
     position: fixed !important;
-    top: 73px; /* Set this to match the actual height of your nav bar */
-   left: 0;
+    top: 0; /* Changed from 73px to 0 to remove the gap */
+    left: 0;
     width: 100%;
-    z-index: 10000; 
+    z-index: 10001; /* Higher than page content, but lower than nav */
     background: linear-gradient(90deg, #1F2933 0%, #2A2F36 50%, #1F2933 100%);
+    /* We add a margin-top so its text starts below the nav */
+    padding-top: 73px; 
 }
 
-/* 3. The Body Offset (The "Safety Buffer") */
+/* 3. The Body Offset - Start content immediately after the Nav height */
 body {
-    /* Fixed the syntax error (removed space between 120 and px) */
-    padding-top: 80px !important; 
+    padding-top: 73px !important; 
 }
-
-
 /* 4. Fix for Modals */
 /* Since Header is z-index 10000, modals must be higher to cover the header */
 .modal, #previewModal {
