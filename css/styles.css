@@ -68,67 +68,67 @@ html {
 
 /* 2. TABLET (Mid-size Screens) */
 /* --- HIGH-PRECISION RESPONSIVE HEADER --- */
+/* --- UNIVERSAL RESPONSIVE HEADER CLEANUP --- */
 
-/* 1. TABLET & SMALL LAPTOPS (Widths 768px to 1024px) */
-@media (max-width: 1024px) {
+/* 1. SMALL DESKTOP / TABLET (Below 1140px - Fixes image_d0fa3c) */
+@media (max-width: 1140px) {
+    nav .max-w-7xl { padding: 0 10px !important; }
     nav h1 { font-size: 16px !important; }
-    nav img { height: 30px !important; }
+    nav img { height: 32px !important; }
     
-    /* Shrink the buttons to prevent wrapping */
-    #walletWidget button, #userMenuButton {
+    /* Shrink the search anchor & wallet buttons */
+    #walletWidget button, #userMenuButton, nav button {
         padding: 6px 10px !important;
         font-size: 12px !important;
+        white-space: nowrap;
     }
-    
-    #offerBanner { top: 73px; height: 48px !important; }
-    body { padding-top: 121px !important; }
 }
 
-/* 2. MOBILE (Widths below 768px) */
-@media (max-width: 767px) {
-    /* Freeze the nav but let it be as slim as possible */
-    nav { padding: 8px 12px !important; }
+/* 2. PHABLET / MOBILE LANDSCAPE (Below 768px - Fixes image_d0f735) */
+@media (max-width: 768px) {
+    nav h1 { font-size: 14px !important; }
     
-    /* Shrink the logo and text further */
-    nav h1 { font-size: 13px !important; letter-spacing: -0.5px; }
-    nav img { height: 24px !important; }
-
-    /* COMPACT BUTTONS: Reduce padding and hide text to fit icons */
-    #walletWidget button, #userMenuButton {
-        padding: 5px 8px !important;
-        font-size: 11px !important;
-    }
+    /* Hide the email address and keep just the arrow/icon to save 100px */
+    #userEmailDisplay { display: none; } 
     
-    /* Hide the "Wallet:" label to save horizontal space */
-    #walletDisplay span:first-child { display: none; }
-    
-    /* SHRINK OFFER BANNER: Reduce font and button sizes */
-    #offerBanner {
-        top: 65px !important; /* Adjusted for slimmer nav */
-        height: 42px !important;
+    #offerBanner { 
+        top: 70px !important; 
+        height: 44px !important; 
     }
     
     .offer-btn {
-        font-size: 10px !important;
-        padding: 3px 6px !important;
+        font-size: 11px !important;
+        padding: 4px 8px !important;
     }
     
-    .offer-label { display: none; } /* Hide the text label on mobile */
-
-    /* ADJUST BODY OFFSET: Based on new slimmer mobile heights */
-    body { padding-top: 107px !important; }
+    body { padding-top: 114px !important; }
 }
 
-/* 3. ULTRA-NARROW (Widths below 400px - like image_d0f6d7) */
-@media (max-width: 400px) {
-    /* Final "Safe Mode" stack */
-    #walletWidget { gap: 4px !important; }
-    #userMenuButton { max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
+/* 3. SMALL MOBILE (Below 550px - Fixes image_d082d0) */
+@media (max-width: 550px) {
+    /* Stack Nav content to prevent horizontal overflow */
+    nav > div { flex-wrap: wrap; justify-content: center !important; gap: 8px !important; }
     
-    /* Pull the Hero Header up to save vertical space */
-    #heroHeader h2 { font-size: 28px !important; }
+    /* Shrink everything to minimum viable size */
+    nav h1 { font-size: 12px !important; }
+    #walletAmount { font-size: 14px !important; }
+    
+    /* Hide "My Purchases" text, keep only the scroll emoji icon */
+    button[onclick="showPurchaseHistory()"] { font-size: 0 !important; padding: 8px !important; }
+    button[onclick="showPurchaseHistory()"]::before { content: '📜'; font-size: 14px; }
+
+    #offerBanner { top: 100px !important; } /* Adjust for stacked nav */
+    body { padding-top: 145px !important; }
 }
 
+/* 4. ULTRA-NARROW (Below 375px - Fixes image_d08235) */
+@media (max-width: 375px) {
+    nav img { height: 20px !important; }
+    nav h1 { display: none; } /* Hide text logo, keep only triangle icon */
+    
+    .offer-btn { font-size: 10px !important; padding: 2px 5px !important; }
+    .offer-label { display: none; }
+}
 /* 4. Fix for Modals */
 /* 4. Fix for Modals */
 /* Ensure the Category Filter stays below the frozen stack during scroll */
