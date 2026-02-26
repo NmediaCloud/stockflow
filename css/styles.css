@@ -57,6 +57,49 @@ html {
     scroll-behavior: smooth;
 }
 
+/* --- ADAPTIVE FROZEN HEADER LOGIC --- */
+
+/* 1. DESKTOP (Large Screens) */
+@media (min-width: 1024px) {
+    nav { height: 73px; }
+    #offerBanner { top: 73px; height: 50px; }
+    body { padding-top: 123px !important; }
+}
+
+/* 2. TABLET (Mid-size Screens) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    /* If your nav wraps on tablets, we increase the offset */
+    nav { height: auto; min-height: 80px; }
+    #offerBanner { top: 80px; }
+    body { padding-top: 135px !important; }
+}
+
+/* 3. MOBILE (Small Screens) - The most "Cramped" area */
+@media (max-width: 767px) {
+    nav { 
+        position: fixed;
+        height: auto; /* Allow nav to grow if logo/wallet stack */
+        padding-bottom: 10px;
+    }
+    
+    /* We calculate the height: Nav (~110px) + Banner (~45px) */
+    #offerBanner { 
+        top: 110px !important; /* Push banner below stacked mobile nav */
+        height: auto !important;
+        padding: 8px 0 !important;
+    }
+    
+    body { 
+        padding-top: 165px !important; /* Large buffer for mobile */
+    }
+
+    /* Tighten the Hero text so it doesn't disappear on small screens */
+    #heroHeader {
+        padding-top: 20px !important;
+        padding-bottom: 20px !important;
+    }
+}
+
 
 
 
