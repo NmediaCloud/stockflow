@@ -205,6 +205,82 @@ html {
     body { padding-top: 105px !important; }
 }
 
+/* --- SURGICAL FIX: 438px to 1015px COMPACT HEADER --- */
+@media (min-width: 438px) and (max-width: 1015px) {
+    /* 1. Main Nav Container - Create two rows */
+    nav > div {
+        display: grid !important;
+        grid-template-columns: auto 1fr auto; /* Logo | Space | Search Icon */
+        grid-template-rows: auto auto; /* Two rows */
+        row-gap: 12px;
+        padding: 10px 15px !important;
+    }
+
+    /* 2. Top Row: Logo & Search side-by-side */
+    .flex.items-center.gap-3 { 
+        grid-column: 1; 
+        grid-row: 1;
+    }
+    
+    /* Search button: Icon-only and moved to top right */
+    nav button[onclick="scrollToSearch()"] {
+        grid-column: 3;
+        grid-row: 1;
+        padding: 6px !important;
+        background: transparent !important;
+        border: 1px solid #3A3F46 !important;
+        border-radius: 6px;
+    }
+    nav button[onclick="scrollToSearch()"] span { 
+        display: none !important; /* Hide "SEARCH" text */
+    }
+
+    /* 3. Bottom Row: Action Buttons ($56, Purchases, Add Funds) */
+    #walletWidget {
+        grid-column: 1 / span 3;
+        grid-row: 2;
+        display: flex !important;
+        justify-content: space-between !important; /* Spreads buttons across width */
+        align-items: center;
+        gap: 8px !important;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        padding-top: 8px;
+    }
+
+    /* 4. Minimalist Button Scaling */
+    #walletWidget button, #userMenuButton {
+        padding: 6px 10px !important;
+        font-size: 11px !important;
+        white-space: nowrap;
+    }
+    
+    /* Wallet: Only show the amount ($56.00) */
+    #walletDisplay span:first-child, #userEmailDisplay { 
+        display: none !important; 
+    }
+    #walletAmount { font-size: 15px !important; }
+
+    /* 5. Offer Banner Cleanup (Minimalist Boxes) */
+    .offer-label, .offer-pulse, .offer-divider { 
+        display: none !important; 
+    }
+    
+    .offer-inner {
+        display: flex !important;
+        justify-content: center !important;
+        gap: 8px;
+    }
+
+    /* 6. Dynamic Height Adjustments to prevent overlap */
+    nav { height: 115px !important; }
+    #offerBanner { 
+        top: 115px !important; 
+        height: 48px !important;
+        z-index: 10001 !important;
+    }
+    body { padding-top: 163px !important; }
+}
+
 /* 3. NARROW MOBILE (429px - Fixes image_89955f) */
 @media (max-width: 429px) {
     /* Side-by-side Logo and Search */
