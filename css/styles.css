@@ -1,152 +1,119 @@
 
 /* --- MASTER CONSOLIDATED HEADER SYSTEM --- */
 
-/* 1. GLOBAL DEFAULTS (Desktop > 1141px) */
-nav {
-    position: fixed !important;
-    top: 0; left: 0; width: 100%;
-    height: 73px;
-    z-index: 10005;
-    background-color: white !important;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-#offerBanner {
-    position: fixed !important;
-    top: 73px;
-    left: 0; width: 100%;
-    height: 50px;
-    z-index: 10004;
-    background: linear-gradient(90deg, #1F2933 0%, #2A2F36 50%, #1F2933 100%) !important;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-}
-
-body { padding-top: 123px !important; }
-
-/* 2. COMPACT DESKTOP & TABLET (1280px down to 958px) */
-@media (max-width: 1280px) {
-    nav h1 { font-size: clamp(14px, 1.5vw, 18px) !important; }
-    nav img { height: clamp(26px, 3vw, 40px) !important; }
-    #walletDisplay span:first-child, #userEmailDisplay { display: none !important; }
-    
-    #walletWidget button, #userMenuButton, nav button {
-        padding: 6px 1vw !important;
-        font-size: clamp(11px, 1vw, 13px) !important;
-    }
-}
-
-
-
-/* --- CONSOLIDATED ADAPTIVE HEADER SYSTEM --- */
-
-/* 1. DESKTOP & LARGE TABLET (Above 1016px) */
-@media (min-width: 1016px) {
-    nav { height: 73px !important; }
-    #offerBanner { top: 73px !important; height: 50px !important; display: flex !important; }
-    body { padding-top: 123px !important; }
-    .bg-white.border-b.border-gray-200.sticky { top: 123px !important; }
-}
-
-/* 2. MID-RANGE STABILITY (768px to 1015px) */
-/* Targets images: image_8a767c, image_892084, image_7e37f9 */
-@media (min-width: 768px) and (max-width: 1015px) {
-    /* Pair Logo and Search icon-only to save space */
-    nav button[onclick="scrollToSearch()"] span { display: none !important; }
-    #userEmailDisplay, #walletDisplay span:first-child { display: none !important; }
-    
-    /* Clean Offer Banner: Remove clutter text and dots */
-    .offer-label, .offer-pulse, .offer-divider { display: none !important; }
-    .offer-inner { gap: 12px !important; justify-content: center !important; }
-    
-    nav { height: 73px !important; }
-    #offerBanner { top: 73px !important; height: 50px !important; display: flex !important; visibility: visible !important; }
-    body { padding-top: 123px !important; }
-    .bg-white.border-b.border-gray-200.sticky { top: 123px !important; }
-}
-
-/* --- CONSOLIDATED MASTER FIX: 767px AND BELOW --- */
-@media (max-width: 767px) {
-    /* 1. Force the Offer Banner to remain visible and correctly positioned */
-    #offerBanner {
-        display: flex !important; /* Overrides the vanish trigger */
-        visibility: visible !important;
-        opacity: 1 !important;
-        position: fixed !important;
-        top: 104px !important; /* Below the 2-row mobile nav */
-        height: 44px !important;
-        z-index: 10002 !important;
-    }
-
-    /* 2. Remove clutter from the banner for mobile layout */
-    .offer-label, .offer-pulse, .offer-divider {
-        display: none !important;
-    }
-
-    /* 3. Compact Navigation: Logo & Search on top, Buttons below */
-    nav {
-        height: 104px !important;
-    }
-
-    nav > div {
-        display: grid !important;
-        grid-template-columns: 1fr auto; 
-        row-gap: 8px;
-        padding: 8px 12px !important;
-    }
-
-    /* 4. Widget Cleanup: Transform "My Purchases" into Icon-Only */
-    button[onclick="showPurchaseHistory()"] {
-        font-size: 0 !important; /* Hides text */
-        padding: 6px 10px !important;
-        min-width: 42px;
-    }
-    button[onclick="showPurchaseHistory()"]::before {
-        content: '📜'; /* Keeps only the icon emoji */
-        font-size: 16px;
-    }
-
-    /* 5. Minimalist Wallet: Just the amount ($56.00) */
-    #walletDisplay span:first-child, 
-    #userEmailDisplay {
-        display: none !important;
-    }
-    
-    #walletAmount { font-size: 15px !important; }
-
-    /* 6. Sync Body Offset: Nav (104) + Banner (44) = 148px */
-    body {
-        padding-top: 148px !important;
-    }
-    
-    /* Ensure category filter stays below the fixed stack */
-    .bg-white.border-b.border-gray-200.sticky {
-        top: 148px !important;
-    }
-}
-
-/* --- ULTRA-NARROW FIX: 436px AND BELOW --- */
-@media (max-width: 436px) {
-    nav h1 { font-size: 12px !important; }
-    nav img { height: 24px !important; }
-    #walletWidget { gap: 4px !important; }
-    .offer-btn { font-size: 9px !important; padding: 2px 6px !important; }
-}
-
-/* 4. ULTRA-NARROW (Below 380px) */
-@media (max-width: 380px) {
-    nav h1 { display: none !important; } /* Only icon logo */
-    #walletWidget { gap: 4px !important; justify-content: center !important; }
-    .offer-btn { font-size: 9px !important; padding: 3px 5px !important; }
-}
-
-/* --- ADAPTIVE FROZEN HEADER LOGIC --- */
 
 /* 4. Fix for Modals */
 
 
+/* --- 1. GLOBAL HEADER STABILITY (All Devices) --- */
+nav {
+    position: fixed !important;
+    top: 0; left: 0; width: 100%;
+    z-index: 10005;
+    background-color: white !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: height 0.2s ease;
+}
 
+#offerBanner {
+    position: fixed !important;
+    left: 0; width: 100%;
+    z-index: 10004;
+    background: linear-gradient(90deg, #1F2933 0%, #2A2F36 50%, #1F2933 100%) !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- 2. DESKTOP & LARGE TABLETS (1016px and Above) --- */
+@media (min-width: 1016px) {
+    nav { height: 73px; }
+    #offerBanner { top: 73px; height: 50px; }
+    body { padding-top: 123px !important; }
+    .bg-white.border-b.border-gray-200.sticky { top: 123px !important; }
+}
+
+/* --- 3. MID-RANGE CLEANUP (768px to 1015px) --- */
+/* Fixes "clustering" by removing labels and shrinking text */
+@media (min-width: 768px) and (max-width: 1015px) {
+    /* Hide Email and "Wallet:" label */
+    #userEmailDisplay, #walletDisplay span:first-child { display: none !important; }
+    
+    /* Icon-only Search symbol next to Logo */
+    nav button[onclick="scrollToSearch()"] span { display: none !important; }
+
+    /* Minimalist Offer Banner (No "Limited Time" text) */
+    .offer-label, .offer-pulse, .offer-divider { display: none !important; }
+    .offer-inner { gap: 15px !important; }
+
+    nav { height: 73px; }
+    #offerBanner { top: 73px; height: 50px; display: flex !important; }
+    body { padding-top: 123px !important; }
+}
+
+/* --- 4. MOBILE MASTER FIX (767px and Below) --- */
+/* Fixes the "Vanishing Banner" and "My Purchases" cluster */
+@media (max-width: 767px) {
+    nav { height: 105px !important; }
+    
+    /* 2-Row Grid: Logo/Search on Top | Wallet/Buttons on Bottom */
+    nav > div {
+        display: grid !important;
+        grid-template-columns: auto 1fr auto; 
+        grid-template-rows: auto auto;
+        row-gap: 8px;
+        padding: 8px 12px !important;
+    }
+
+    /* Logo (Row 1, Col 1) | Search (Row 1, Col 3) */
+    .flex.items-center.gap-3 { grid-column: 1; grid-row: 1; }
+    nav button[onclick="scrollToSearch()"] { 
+        grid-column: 3; grid-row: 1; 
+        padding: 5px !important;
+        background: transparent !important;
+    }
+    nav button[onclick="scrollToSearch()"] span { display: none !important; }
+
+    /* Action Row (Row 2) */
+    #walletWidget {
+        grid-column: 1 / span 3;
+        grid-row: 2;
+        display: flex !important;
+        justify-content: space-between !important;
+        border-top: 1px solid rgba(0,0,0,0.05);
+        padding-top: 6px;
+    }
+
+    /* Cleaned up My Purchases (Icon Only) */
+    button[onclick="showPurchaseHistory()"] { font-size: 0 !important; padding: 6px 10px !important; }
+    button[onclick="showPurchaseHistory()"]::before { content: '📜'; font-size: 16px; }
+
+    /* Wallet Cleanup ($56.00 Only) */
+    #walletDisplay span:first-child, #userEmailDisplay { display: none !important; }
+    #walletAmount { font-size: 15px !important; }
+
+    /* Offer Banner Stability */
+    #offerBanner {
+        display: flex !important;
+        top: 105px !important;
+        height: 44px !important;
+    }
+    .offer-label, .offer-pulse, .offer-divider { display: none !important; }
+    .offer-btn { font-size: 10px !important; padding: 4px 8px !important; }
+
+    /* Page Offset Sync */
+    body { padding-top: 149px !important; }
+    .bg-white.border-b.border-gray-200.sticky { top: 149px !important; }
+}
+
+/* --- 5. ULTRA-NARROW (Below 429px) --- */
+@media (max-width: 429px) {
+    nav h1 { display: none !important; } /* Icon-only Logo */
+    nav img { height: 28px !important; }
+    #walletWidget { justify-content: center !important; gap: 5px !important; }
+}
 
 
 
