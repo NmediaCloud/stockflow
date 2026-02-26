@@ -72,3 +72,28 @@ function closeModal() {
     modal.classList.remove('modal-visible');
     modal.classList.add('modal-hidden');
 }
+
+
+function scrollToSearch() {
+    const searchInput = document.getElementById('searchInput');
+    if (!searchInput) return;
+
+    // Calculate position: Element Top - Frozen Header Height (123px)
+    const headerHeight = 125; 
+    const elementPosition = searchInput.getBoundingClientRect().top + window.pageYOffset;
+    const offsetPosition = elementPosition - headerHeight - 20; // Extra 20px for breathing room
+
+    // 1. Smooth Scroll to the search bar
+    window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+    });
+
+    // 2. Focus the input after a short delay (once scrolling finishes)
+    setTimeout(() => {
+        searchInput.focus();
+        // Optional: give the search input a quick orange glow to highlight it
+        searchInput.classList.add('ring-4', 'ring-orange-500');
+        setTimeout(() => searchInput.classList.remove('ring-4', 'ring-orange-500'), 1500);
+    }, 800);
+}
