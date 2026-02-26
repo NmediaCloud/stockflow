@@ -29,76 +29,37 @@ nav {
     .bg-white.border-b.border-gray-200.sticky { top: 123px !important; }
 }
 
-/* --- 3. MID-RANGE CLEANUP (768px to 1015px) --- */
-/* Fixes clustering by removing labels and stabilizing banner */
-@media (min-width: 768px) and (max-width: 1015px) {
-    #userEmailDisplay, #walletDisplay span:first-child { display: none !important; }
-    nav button[onclick="scrollToSearch()"] span { display: none !important; }
-    .offer-label, .offer-pulse, .offer-divider { display: none !important; }
-    
-    nav { height: 73px; }
-    #offerBanner { top: 73px; height: 50px; display: flex !important; }
-    body { padding-top: 123px !important; }
-}
-
-/* --- 4. MOBILE MASTER FIX (767px and Below) --- */
-/* Fixes "Vanishing Banner" and "Double Icon" Glitch */
-@media (max-width: 767px) {
-    nav { height: 105px !important; }
-    
-    /* 2-Row Layout: Logo/Search Top | Wallet/Buttons Bottom */
-    nav > div {
-        display: grid !important;
-        grid-template-columns: auto 1fr auto; 
-        grid-template-rows: auto auto;
-        row-gap: 8px;
-        padding: 8px 12px !important;
-    }
-
-    /* Row 1 Positioning */
-    .flex.items-center.gap-3 { grid-column: 1; grid-row: 1; }
-    nav button[onclick="scrollToSearch()"] { 
-        grid-column: 3; grid-row: 1; 
-        padding: 5px !important;
-        background: transparent !important;
-    }
-    nav button[onclick="scrollToSearch()"] span { display: none !important; }
-
-    /* Row 2: Action Row Cleanup */
-    #walletWidget {
-        grid-column: 1 / span 3;
-        grid-row: 2;
-        display: flex !important;
-        justify-content: space-between !important;
-        border-top: 1px solid rgba(0,0,0,0.05);
-        padding-top: 6px;
-    }
-
-    /* FIXED: DOUBLE ICON GLITCH */
-    /* We hide the existing icon inside the button and use only the new emoji icon */
+/* --- THE ICON FIX --- */
+    /* 1. Hide the original text and ANY internal icons/SVGs */
     button[onclick="showPurchaseHistory()"] { 
         font-size: 0 !important; 
         padding: 6px 10px !important; 
     }
     button[onclick="showPurchaseHistory()"] i, 
     button[onclick="showPurchaseHistory()"] svg,
-    button[onclick="showPurchaseHistory()"] img { 
-        display: none !important; /* Hides original icons to prevent doubling */
+    button[onclick="showPurchaseHistory()"] img,
+    button[onclick="showPurchaseHistory()"] span { 
+        display: none !important; /* This removes the original icon completely */
     }
+    
+    /* 2. Insert ONLY the clean Emoji icon */
     button[onclick="showPurchaseHistory()"]::before { 
         content: '📜'; 
         font-size: 16px; 
+        display: inline-block !important;
     }
 
     /* Minimalist Wallet & User Settings */
     #walletDisplay span:first-child, #userEmailDisplay { display: none !important; }
     #walletAmount { font-size: 15px !important; }
 
-    /* Offer Banner Stability Override */
+    /* Offer Banner Stability (Prevents vanishing at 767px) */
     #offerBanner {
         display: flex !important;
         top: 105px !important;
         height: 44px !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
     .offer-label, .offer-pulse, .offer-divider { display: none !important; }
     .offer-btn { font-size: 10px !important; padding: 4px 8px !important; }
@@ -107,7 +68,6 @@ nav {
     body { padding-top: 149px !important; }
     .bg-white.border-b.border-gray-200.sticky { top: 149px !important; }
 }
-
 /* --- 5. ULTRA-NARROW (Below 429px) --- */
 @media (max-width: 429px) {
     nav h1 { display: none !important; } /* Icon-only Logo */
