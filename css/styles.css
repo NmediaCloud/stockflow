@@ -1,5 +1,5 @@
 /* ============================================
-   1. GLOBAL STABILITY & LAYOUT
+   1. GLOBAL HEADER STABILITY (All Devices)
    ============================================ */
 nav {
     position: fixed !important;
@@ -22,16 +22,16 @@ nav {
     justify-content: center;
 }
 
-/* Category Filter Persistence */
-.bg-white.border-b.border-gray-200.sticky {
-    z-index: 40 !important;
+/* Category Filter Persistence - Ensures scroll clarity */
+.bg-white.border-b.border-gray-200.sticky { 
+    z-index: 40 !important; 
 }
 
 /* ============================================
    2. ADAPTIVE RESPONSIVE RULES (Cascaded)
    ============================================ */
 
-/* --- A. DESKTOP & LARGE TABLETS (1016px+) --- */
+/* --- A. DESKTOP & LARGE TABLETS (1016px and Above) --- */
 @media (min-width: 1016px) {
     nav { height: 73px; }
     #offerBanner { top: 73px; height: 50px; }
@@ -39,15 +39,9 @@ nav {
     .bg-white.border-b.border-gray-200.sticky { top: 123px !important; }
 }
 
-/* --- B. MID-RANGE (768px to 1015px) --- */
+/* --- B. MID-RANGE CLEANUP (768px to 1015px) --- */
+/* Fixes "clustering" and stabilizes banner */
 @media (min-width: 768px) and (max-width: 1015px) {
-    /* Fluid scaling for buttons */
-    #walletWidget button, #userMenuButton, nav button {
-        padding: 6px clamp(6px, 1vw, 14px) !important;
-        font-size: clamp(10px, 1vw, 13px) !important;
-    }
-    
-    /* Clean up clutter */
     #userEmailDisplay, #walletDisplay span:first-child { display: none !important; }
     nav button[onclick="scrollToSearch()"] span { display: none !important; }
     .offer-label, .offer-pulse, .offer-divider { display: none !important; }
@@ -59,6 +53,7 @@ nav {
 }
 
 /* --- C. MOBILE MASTER FIX (767px and Below) --- */
+/* Fixes: Vanishing Banner and Double Icon Glitch */
 @media (max-width: 767px) {
     nav { height: 105px !important; }
     
@@ -71,7 +66,7 @@ nav {
         padding: 8px 12px !important;
     }
 
-    /* Row 1: Logo & Search Pairing */
+    /* Row 1: Logo & Search Pairing (Side-by-Side as requested) */
     .flex.items-center.gap-3 { grid-column: 1; grid-row: 1; }
     nav button[onclick="scrollToSearch()"] { 
         grid-column: 3; grid-row: 1; 
@@ -80,7 +75,7 @@ nav {
     }
     nav button[onclick="scrollToSearch()"] span { display: none !important; }
 
-    /* Row 2: Actions & Wallet Display */
+    /* Row 2: Action Row Cleanup */
     #walletWidget {
         grid-column: 1 / span 3;
         grid-row: 2;
@@ -90,14 +85,25 @@ nav {
         padding-top: 6px;
     }
 
-    /* FIXED: DOUBLE ICON GLITCH */
-    button[onclick="showPurchaseHistory()"] { font-size: 0 !important; padding: 6px 10px !important; }
+    /* FIXED: DOUBLE ICON GLITCH REPAIR */
+    button[onclick="showPurchaseHistory()"] { 
+        font-size: 0 !important; 
+        padding: 6px 10px !important; 
+    }
+    /* Explicitly hide original icons inside the button */
     button[onclick="showPurchaseHistory()"] i, 
     button[onclick="showPurchaseHistory()"] svg,
-    button[onclick="showPurchaseHistory()"] img { display: none !important; }
-    button[onclick="showPurchaseHistory()"]::before { content: '📜'; font-size: 16px; }
+    button[onclick="showPurchaseHistory()"] img { 
+        display: none !important; 
+    }
+    /* Display only the new Emoji icon */
+    button[onclick="showPurchaseHistory()"]::before { 
+        content: '📜'; 
+        font-size: 16px; 
+        display: inline-block !important;
+    }
 
-    /* Mobile Minimalist Displays */
+    /* Minimalist Displays */
     #walletDisplay span:first-child, #userEmailDisplay { display: none !important; }
     #walletAmount { font-size: 15px !important; }
 
@@ -110,51 +116,22 @@ nav {
     .offer-label, .offer-pulse, .offer-divider { display: none !important; }
     .offer-btn { font-size: 10px !important; padding: 4px 8px !important; }
 
-    /* Page Offset Sync */
+    /* Unified Page Offset */
     body { padding-top: 149px !important; }
     .bg-white.border-b.border-gray-200.sticky { top: 149px !important; }
 }
 
 /* --- D. ULTRA-NARROW (Below 429px) --- */
+/* Fixes image: image_d08235.png, image_8994c3.png */
 @media (max-width: 429px) {
-    nav h1 { display: none !important; } 
+    nav h1 { display: none !important; } /* Icon-only Logo */
     nav img { height: 28px !important; }
     #walletWidget { justify-content: center !important; gap: 5px !important; }
 }
 
 /* ============================================
-   3. MODALS, BUTTONS & ANIMATIONS
+   3. MODAL & PREVIEW OVERRIDES
    ============================================ */
 .modal, #previewModal {
-    z-index: 11000 !important;
-}
-
-.category-btn {
-    position: relative;
-    transition: all 0.3s ease;
-}
-
-.category-btn.active {
-    background: #14B8A6;
-    color: white;
-    box-shadow: 0 4px 6px -1px rgba(20, 184, 166, 0.3);
-}
-
-.topup-button {
-    background: white;
-    border: 2px solid #14B8A6;
-    padding: 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: all 0.3s;
-    width: 100%;
-}
-
-.topup-button:hover {
-    background: #14B8A6;
-    color: white;
-    transform: translateY(-2px);
+    z-index: 11000 !important; /* Higher than frozen header */
 }
