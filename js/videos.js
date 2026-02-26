@@ -135,6 +135,12 @@ async function loadVideosFromSheet() {
         
         for (let i = 1; i < rows.length; i++) {
             const row = rows[i];
+            // --- NEW SNIFFER LOGIC ---
+            // Get filename from Column M (Index 12)
+            const highResUrl = (row[12] || '').toString().trim();
+            // Matches anything between underscores right before the extension (e.g., _mp4_.)
+            const flexibleMatch = highResUrl.match(/_([^_]+)_\.[a-z0-9]+$/i);
+            const technicalExtension = flexibleMatch ? flexibleMatch[1].toUpperCase() : "";
             
             const video = {
                 id: (row[0] || '').toString().trim(),
@@ -150,7 +156,9 @@ async function loadVideosFromSheet() {
                 resolution: (row[10] || '').toString().trim(),
                 tags: (row[11] || '').toString().trim(),
                 highResUrl: (row[13] || '').toString().trim(),
-                featured: hasFeaturedColumn ? (row[14] === 'TRUE' || row[14] === 'true' || row[14] === true) : false
+                featured: hasFeaturedColumn ? (row[14] === 'TRUE' || row[14] === 'true' || row[14] === true) : false,
+                fileFormat: technicalExtension // Store the sniffer result
+                
             };
             
             if (video.id && video.title && video.thumbnail && video.preview) {
