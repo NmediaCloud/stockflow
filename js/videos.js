@@ -108,6 +108,9 @@ async function init() {
 async function loadVideosFromSheet() {
     allVideos = []; // ⭐ THE FIX: Clear the array before loading new data
     const csvUrl = CONFIG.SHEET_CSV_URL;
+  
+
+    
     console.log('📡 Fetching from:', csvUrl);
     
     try {
@@ -135,9 +138,11 @@ async function loadVideosFromSheet() {
         
         for (let i = 1; i < rows.length; i++) {
             const row = rows[i];
+            const highResUrl = (row[13] || '').toString().trim(); // Target Column N
+            const formatMatch = highResUrl.match(/_([^_]+)_\.[a-z0-9]+$/i);
             
             const video = {
-                id: (row[0] || '').toString().trim(),
+             id: (row[0] || '').toString().trim(),
                 title: (row[1] || '').toString().trim(),
                 category: (row[2] || '').toString().trim(),
                 subcategory: (row[3] || '').toString().trim(),
@@ -149,8 +154,9 @@ async function loadVideosFromSheet() {
                 format: (row[9] || '16:9').toString().trim(),
                 resolution: (row[10] || '').toString().trim(),
                 tags: (row[11] || '').toString().trim(),
-                highResUrl: (row[13] || '').toString().trim(),
-                featured: hasFeaturedColumn ? (row[14] === 'TRUE' || row[14] === 'true' || row[14] === true) : false
+                highResUrl: highResUrl,
+                featured: hasFeaturedColumn ? (row[14] === 'TRUE' || row[14] === 'true' || row[14] === true) : false,
+                fileFormat: formatMatch ? formatMatch[1].toUpperCase() : "" // The Sniffer result
             };
             
             if (video.id && video.title && video.thumbnail && video.preview) {
@@ -493,40 +499,27 @@ function loadMore() {
         `<span class="inline-block w-2 h-2 bg-teal-500 rounded-full mr-2"></span>${displayedVideos.length} of ${filteredVideos.length} videos loaded`;
 }
 
+
 function createVideoCard(video) {
     const card = document.createElement('div');
     card.className = 'group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl rounded-xl overflow-hidden bg-white border border-gray-200';
-    //card.setAttribute('onclick', "openModal(" + JSON.stringify(video).replace(/"/g, '&quot;') + ")");
     card.onclick = () => openModal(video);
-      //  card.onclick = () => {
-      //       if (typeof window.openModal === 'function') {
-      //          window.openModal(video);
-      //          } else {
-                //console.error("openModal function not found!");
-      //      }
-      //      };
-   
+
     const formatBadge = {
         '9:16': '📱 9:16',
         '1:1': '⬜ 1:1',
         '16:9': '🖥️ 16:9'
     }[video.format] || video.format;
-    
-    // ============================================
-    // PERFORMANCE OPTIMIZED:
-    // - Container: aspect-video (uniform 16:9 height)
-    // - Image: object-contain (preserves original aspect ratio)
-    // - NO video preview (removed for performance)
-    // - Play icon overlay (indicates video available)
-    // ============================================
-    
+
+    // Minimalistic extension tag logic
+    const extensionTag = video.fileFormat 
+        ? `<span class="ml-2 bg-teal-600/10 text-teal-600 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase border border-teal-500/20">${video.fileFormat}</span>`
+        : "";
+
     card.innerHTML = `
         <div class="relative overflow-hidden aspect-video bg-gray-900">
             <span class="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded-md text-xs font-medium">${formatBadge}</span>
-            <img src="${video.thumbnail}" 
-                 alt="${video.title}" 
-                 class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110" 
-                 loading="lazy">
+            <img src="${video.thumbnail}" alt="${video.title}" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110" loading="lazy">
             <div class="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div class="bg-white/95 p-4 rounded-full shadow-xl">
                     <svg class="w-8 h-8 text-teal-500 ml-1" fill="currentColor" viewBox="0 0 20 20">
@@ -540,11 +533,13 @@ function createVideoCard(video) {
             <p class="text-xs text-gray-500 mb-2">${video.category} • ${video.subcategory || ''}</p>
             <div class="flex items-center justify-between">
                 <span class="text-teal-600 font-bold text-lg">$${video.price}</span>
-                <span class="text-xs text-gray-400">${video.resolution || 'HD'}</span>
+                <div class="flex items-center">
+                    <span class="text-xs text-gray-400">${video.resolution || 'HD'}</span>
+                    ${extensionTag}
+                </div>
             </div>
         </div>
     `;
-    
     return card;
 }
 
