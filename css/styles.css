@@ -26,7 +26,7 @@ nav {
 
 /* 3. The Body Offset - Start content immediately after the Nav height */
 body {
-    padding-top: 73px !important; 
+    padding-top: 125px !important; 
 }
 /* 4. Fix for Modals */
 /* Since Header is z-index 10000, modals must be higher to cover the header */
