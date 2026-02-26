@@ -57,6 +57,48 @@ html {
     scroll-behavior: smooth;
 }
 /* --- ADAPTIVE FROZEN HEADER LOGIC --- */
+/* --- SURGICAL FIX: 767px BREAKPOINT STABILITY --- */
+@media (max-width: 767px) {
+    /* 1. Force the Offer Banner to stay visible */
+    #offerBanner {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        top: 105px !important; /* Adjust based on your new stacked nav height */
+    }
+
+    /* 2. Compact the Navigation to fit the Search symbol and Logo */
+    nav > div {
+        padding: 5px 10px !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: space-between !important;
+    }
+
+    /* 3. Hide the email and "Wallet:" label to reclaim ~150px of space */
+    #userEmailDisplay, 
+    #walletDisplay span:first-child {
+        display: none !important;
+    }
+
+    /* 4. Proportional Shrink for Wallet & Purchases */
+    #walletAmount { font-size: 14px !important; }
+    
+    /* Change "My Purchases" to icon-only at this tight dimension */
+    button[onclick="showPurchaseHistory()"] {
+        font-size: 0 !important;
+        padding: 6px 8px !important;
+    }
+    button[onclick="showPurchaseHistory()"]::before {
+        content: '📜';
+        font-size: 14px;
+    }
+
+    /* 5. Sync the Body Offset to prevent text overlap */
+    body {
+        padding-top: 155px !important; /* Total height of Nav + Banner */
+    }
+}
 /* --- ADAPTIVE FROZEN HEADER LOGIC --- */
 
 /* 1. DESKTOP (Large Screens) */
