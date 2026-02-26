@@ -111,6 +111,67 @@ html {
 /* 2. TABLET (Mid-size Screens) */
 /* --- HIGH-PRECISION RESPONSIVE HEADER --- */
 /* --- UNIVERSAL RESPONSIVE HEADER CLEANUP --- */
+/* --- SURGICAL FIX: 436px to 767px COMPACT MODE --- */
+@media (max-width: 767px) {
+    /* 1. Force Offer Banner Visibility */
+    #offerBanner {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        /* Dynamic top based on the height of your new compact nav */
+        top: 102px !important; 
+        height: 44px !important;
+        z-index: 10002 !important;
+    }
+
+    /* 2. Shrink Nav & Enable Grid Stacking */
+    nav > div {
+        display: grid !important;
+        grid-template-columns: 1fr auto; /* Logo left | Search right */
+        row-gap: 8px;
+        padding: 8px 12px !important;
+    }
+
+    /* 3. WIDGET CLEANUP: My Purchases & Wallet */
+    #walletWidget {
+        grid-column: span 2;
+        display: flex !important;
+        justify-content: space-between !important;
+        gap: 5px !important;
+    }
+
+    /* Transform "My Purchases" to icon-only to save horizontal space */
+    button[onclick="showPurchaseHistory()"] {
+        font-size: 0 !important; /* Hides text label */
+        padding: 6px 10px !important;
+        min-width: 44px;
+    }
+    button[onclick="showPurchaseHistory()"]::before {
+        content: '📜'; /* Keeps only the icon */
+        font-size: 16px;
+    }
+
+    /* Show ONLY the dollar amount for the wallet */
+    #walletDisplay span:first-child, 
+    #userEmailDisplay {
+        display: none !important;
+    }
+
+    /* 4. Minimalist Offer Buttons */
+    .offer-label, .offer-pulse, .offer-divider {
+        display: none !important; /* Removes clutter text */
+    }
+    
+    .offer-btn {
+        font-size: 10px !important;
+        padding: 4px 8px !important;
+    }
+
+    /* 5. Coordinate Offset Fixes */
+    nav { height: 102px !important; }
+    body { padding-top: 146px !important; } /* 102px + 44px banner */
+}
 /* --- SURGICAL FIX: 767px VISIBILITY & WIDGET CLEANUP --- */
 @media (max-width: 767px) {
     /* 1. Prevent the Offer Banner from vanishing at the mobile breakpoint */
