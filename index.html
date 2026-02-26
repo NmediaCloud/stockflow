@@ -656,9 +656,18 @@ document.addEventListener('DOMContentLoaded', loadOffers);
                             <span style="font-size:14px;color:#0369A1;">Wallet:</span>
                             <strong id="walletAmount" style="color:#F97316;font-size:18px;">$0.00</strong>
                         </div>
-                        
-                            <button onclick="showPurchaseHistory()" class="purchase-btn-cleanup">
+
+
+                        <!-- ============================================= -->
+                       <!-- <button onclick="showPurchaseHistory()" class="purchase-btn-cleanup">
                                 <i class="small-icon">📜</i> 
+                                <span class="btn-text">My Purchases</span>
+                            </button>
+                           --> 
+
+                        <!-- ============================================= -->
+                            <button onclick="showPurchaseHistory()" style="display: inline-flex; align-items: center; gap: 10px; padding: 12px 24px; font-size: 18px; font-weight: bold; border-radius: 8px; cursor: pointer;">
+                                <i class="small-icon" style="font-style: normal; font-size: 22px;">📜</i> 
                                 <span class="btn-text">My Purchases</span>
                             </button>
 
@@ -686,8 +695,8 @@ document.addEventListener('DOMContentLoaded', loadOffers);
         </div>
     </nav>
 
-<!-- ============================================
-     STOCKFLOW PROMOTIONAL BANNER - DARK ORANGE THEME
+<!-- ============================================= -->
+   <!--  STOCKFLOW PROMOTIONAL BANNER - DARK ORANGE THEME
      Place this RIGHT AFTER <nav> in index.html
      Matches your exact color scheme
      ============================================ -->
