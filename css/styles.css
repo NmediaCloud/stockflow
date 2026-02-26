@@ -56,7 +56,7 @@ nav button:hover svg {
 html {
     scroll-behavior: smooth;
 }
-
+/* --- ADAPTIVE FROZEN HEADER LOGIC --- */
 /* --- ADAPTIVE FROZEN HEADER LOGIC --- */
 
 /* 1. DESKTOP (Large Screens) */
@@ -67,42 +67,85 @@ html {
 }
 
 /* 2. TABLET (Mid-size Screens) */
-@media (min-width: 768px) and (max-width: 1023px) {
-    /* If your nav wraps on tablets, we increase the offset */
-    nav { height: auto; min-height: 80px; }
-    #offerBanner { top: 80px; }
-    body { padding-top: 135px !important; }
+/* --- HIGH-PRECISION RESPONSIVE HEADER --- */
+
+/* 1. TABLET & SMALL LAPTOPS (Widths 768px to 1024px) */
+@media (max-width: 1024px) {
+    nav h1 { font-size: 16px !important; }
+    nav img { height: 30px !important; }
+    
+    /* Shrink the buttons to prevent wrapping */
+    #walletWidget button, #userMenuButton {
+        padding: 6px 10px !important;
+        font-size: 12px !important;
+    }
+    
+    #offerBanner { top: 73px; height: 48px !important; }
+    body { padding-top: 121px !important; }
 }
 
-/* 3. MOBILE (Small Screens) - The most "Cramped" area */
+/* 2. MOBILE (Widths below 768px) */
 @media (max-width: 767px) {
-    nav { 
-        position: fixed;
-        height: auto; /* Allow nav to grow if logo/wallet stack */
-        padding-bottom: 10px;
-    }
+    /* Freeze the nav but let it be as slim as possible */
+    nav { padding: 8px 12px !important; }
     
-    /* We calculate the height: Nav (~110px) + Banner (~45px) */
-    #offerBanner { 
-        top: 110px !important; /* Push banner below stacked mobile nav */
-        height: auto !important;
-        padding: 8px 0 !important;
-    }
-    
-    body { 
-        padding-top: 165px !important; /* Large buffer for mobile */
-    }
+    /* Shrink the logo and text further */
+    nav h1 { font-size: 13px !important; letter-spacing: -0.5px; }
+    nav img { height: 24px !important; }
 
-    /* Tighten the Hero text so it doesn't disappear on small screens */
-    #heroHeader {
-        padding-top: 20px !important;
-        padding-bottom: 20px !important;
+    /* COMPACT BUTTONS: Reduce padding and hide text to fit icons */
+    #walletWidget button, #userMenuButton {
+        padding: 5px 8px !important;
+        font-size: 11px !important;
     }
+    
+    /* Hide the "Wallet:" label to save horizontal space */
+    #walletDisplay span:first-child { display: none; }
+    
+    /* SHRINK OFFER BANNER: Reduce font and button sizes */
+    #offerBanner {
+        top: 65px !important; /* Adjusted for slimmer nav */
+        height: 42px !important;
+    }
+    
+    .offer-btn {
+        font-size: 10px !important;
+        padding: 3px 6px !important;
+    }
+    
+    .offer-label { display: none; } /* Hide the text label on mobile */
+
+    /* ADJUST BODY OFFSET: Based on new slimmer mobile heights */
+    body { padding-top: 107px !important; }
+}
+
+/* 3. ULTRA-NARROW (Widths below 400px - like image_d0f6d7) */
+@media (max-width: 400px) {
+    /* Final "Safe Mode" stack */
+    #walletWidget { gap: 4px !important; }
+    #userMenuButton { max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
+    
+    /* Pull the Hero Header up to save vertical space */
+    #heroHeader h2 { font-size: 28px !important; }
+}
+
+/* 4. Fix for Modals */
+/* 4. Fix for Modals */
+/* Ensure the Category Filter stays below the frozen stack during scroll */
+.bg-white.border-b.border-gray-200.sticky {
+    z-index: 40 !important;
+}
+
+@media (min-width: 1024px) {
+    .bg-white.border-b.border-gray-200.sticky { top: 123px !important; }
+}
+
+@media (max-width: 767px) {
+    .bg-white.border-b.border-gray-200.sticky { top: 165px !important; }
 }
 
 
-
-
+/* 4. Fix for Modals */
 /* 4. Fix for Modals */
 /* Since Header is z-index 10000, modals must be higher to cover the header */
 .modal, #previewModal {
