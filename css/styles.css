@@ -2,19 +2,37 @@
    styles.css - All custom styles
    ============================================ */
 /* --- FIXED HEADER SYSTEM --- */
-header, .navbar { 
-    position: fixed;
+/* 1. The Promotional Banner */
+
+#offerBanner {
+    position: fixed !important;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 10000; /* Stays above everything */
-    background: #1F2933; /* Your charcoal theme */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    z-index: 10001; /* Higher than Nav */
+}
+
+/* 2. The Main Navigation */
+nav {
+    position: fixed !important;
+    top: 40px; /* Adjust this to match the height of your #offerBanner */
+    left: 0;
+    width: 100%;
+    z-index: 10000;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 body {
-    padding-top: 80px; /* Adjust this to match the height of your top bar */
+    padding-top: 120px; /* Adjust this to match the height of your top bar */
 }
+
+/* 4. Fix for Modals */
+/* Since Header is z-index 10000, modals must be higher to cover the header */
+.modal, #previewModal {
+    z-index: 11000 !important;
+}
+
 /* Video cards */
 .video-card:hover img { transform: scale(1.05); }
 .modal-hidden { display: none; }
