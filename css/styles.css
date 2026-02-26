@@ -1,11 +1,5 @@
 
 /* --- MASTER CONSOLIDATED HEADER SYSTEM --- */
-
-
-/* 4. Fix for Modals */
-
-
-
 /* --- 1. GLOBAL HEADER STABILITY (All Devices) --- */
 nav {
     position: fixed !important;
@@ -13,7 +7,6 @@ nav {
     z-index: 10005;
     background-color: white !important;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    transition: height 0.2s ease;
 }
 
 #offerBanner {
@@ -37,29 +30,23 @@ nav {
 }
 
 /* --- 3. MID-RANGE CLEANUP (768px to 1015px) --- */
-/* Fixes "clustering" by removing labels and shrinking text */
+/* Fixes clustering by removing labels and stabilizing banner */
 @media (min-width: 768px) and (max-width: 1015px) {
-    /* Hide Email and "Wallet:" label */
     #userEmailDisplay, #walletDisplay span:first-child { display: none !important; }
-    
-    /* Icon-only Search symbol next to Logo */
     nav button[onclick="scrollToSearch()"] span { display: none !important; }
-
-    /* Minimalist Offer Banner (No "Limited Time" text) */
     .offer-label, .offer-pulse, .offer-divider { display: none !important; }
-    .offer-inner { gap: 15px !important; }
-
+    
     nav { height: 73px; }
     #offerBanner { top: 73px; height: 50px; display: flex !important; }
     body { padding-top: 123px !important; }
 }
 
 /* --- 4. MOBILE MASTER FIX (767px and Below) --- */
-/* Fixes the "Vanishing Banner" and "My Purchases" cluster */
+/* Fixes "Vanishing Banner" and "Double Icon" Glitch */
 @media (max-width: 767px) {
     nav { height: 105px !important; }
     
-    /* 2-Row Grid: Logo/Search on Top | Wallet/Buttons on Bottom */
+    /* 2-Row Layout: Logo/Search Top | Wallet/Buttons Bottom */
     nav > div {
         display: grid !important;
         grid-template-columns: auto 1fr auto; 
@@ -68,7 +55,7 @@ nav {
         padding: 8px 12px !important;
     }
 
-    /* Logo (Row 1, Col 1) | Search (Row 1, Col 3) */
+    /* Row 1 Positioning */
     .flex.items-center.gap-3 { grid-column: 1; grid-row: 1; }
     nav button[onclick="scrollToSearch()"] { 
         grid-column: 3; grid-row: 1; 
@@ -77,7 +64,7 @@ nav {
     }
     nav button[onclick="scrollToSearch()"] span { display: none !important; }
 
-    /* Action Row (Row 2) */
+    /* Row 2: Action Row Cleanup */
     #walletWidget {
         grid-column: 1 / span 3;
         grid-row: 2;
@@ -87,15 +74,27 @@ nav {
         padding-top: 6px;
     }
 
-    /* Cleaned up My Purchases (Icon Only) */
-    button[onclick="showPurchaseHistory()"] { font-size: 0 !important; padding: 6px 10px !important; }
-    button[onclick="showPurchaseHistory()"]::before { content: '📜'; font-size: 16px; }
+    /* FIXED: DOUBLE ICON GLITCH */
+    /* We hide the existing icon inside the button and use only the new emoji icon */
+    button[onclick="showPurchaseHistory()"] { 
+        font-size: 0 !important; 
+        padding: 6px 10px !important; 
+    }
+    button[onclick="showPurchaseHistory()"] i, 
+    button[onclick="showPurchaseHistory()"] svg,
+    button[onclick="showPurchaseHistory()"] img { 
+        display: none !important; /* Hides original icons to prevent doubling */
+    }
+    button[onclick="showPurchaseHistory()"]::before { 
+        content: '📜'; 
+        font-size: 16px; 
+    }
 
-    /* Wallet Cleanup ($56.00 Only) */
+    /* Minimalist Wallet & User Settings */
     #walletDisplay span:first-child, #userEmailDisplay { display: none !important; }
     #walletAmount { font-size: 15px !important; }
 
-    /* Offer Banner Stability */
+    /* Offer Banner Stability Override */
     #offerBanner {
         display: flex !important;
         top: 105px !important;
@@ -104,7 +103,7 @@ nav {
     .offer-label, .offer-pulse, .offer-divider { display: none !important; }
     .offer-btn { font-size: 10px !important; padding: 4px 8px !important; }
 
-    /* Page Offset Sync */
+    /* Unified Offset Sync */
     body { padding-top: 149px !important; }
     .bg-white.border-b.border-gray-200.sticky { top: 149px !important; }
 }
@@ -115,8 +114,6 @@ nav {
     nav img { height: 28px !important; }
     #walletWidget { justify-content: center !important; gap: 5px !important; }
 }
-
-
 
 
 
