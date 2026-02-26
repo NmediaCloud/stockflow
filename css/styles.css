@@ -70,65 +70,7 @@ html {
 /* --- HIGH-PRECISION RESPONSIVE HEADER --- */
 /* --- UNIVERSAL RESPONSIVE HEADER CLEANUP --- */
 
-/* 1. SMALL DESKTOP / TABLET (Below 1140px - Fixes image_d0fa3c) */
-@media (max-width: 1140px) {
-    nav .max-w-7xl { padding: 0 10px !important; }
-    nav h1 { font-size: 16px !important; }
-    nav img { height: 32px !important; }
-    
-    /* Shrink the search anchor & wallet buttons */
-    #walletWidget button, #userMenuButton, nav button {
-        padding: 6px 10px !important;
-        font-size: 12px !important;
-        white-space: nowrap;
-    }
-}
 
-/* 2. PHABLET / MOBILE LANDSCAPE (Below 768px - Fixes image_d0f735) */
-@media (max-width: 768px) {
-    nav h1 { font-size: 14px !important; }
-    
-    /* Hide the email address and keep just the arrow/icon to save 100px */
-    #userEmailDisplay { display: none; } 
-    
-    #offerBanner { 
-        top: 70px !important; 
-        height: 44px !important; 
-    }
-    
-    .offer-btn {
-        font-size: 11px !important;
-        padding: 4px 8px !important;
-    }
-    
-    body { padding-top: 114px !important; }
-}
-
-/* 3. SMALL MOBILE (Below 550px - Fixes image_d082d0) */
-@media (max-width: 550px) {
-    /* Stack Nav content to prevent horizontal overflow */
-    nav > div { flex-wrap: wrap; justify-content: center !important; gap: 8px !important; }
-    
-    /* Shrink everything to minimum viable size */
-    nav h1 { font-size: 12px !important; }
-    #walletAmount { font-size: 14px !important; }
-    
-    /* Hide "My Purchases" text, keep only the scroll emoji icon */
-    button[onclick="showPurchaseHistory()"] { font-size: 0 !important; padding: 8px !important; }
-    button[onclick="showPurchaseHistory()"]::before { content: '📜'; font-size: 14px; }
-
-    #offerBanner { top: 100px !important; } /* Adjust for stacked nav */
-    body { padding-top: 145px !important; }
-}
-
-/* 4. ULTRA-NARROW (Below 375px - Fixes image_d08235) */
-@media (max-width: 375px) {
-    nav img { height: 20px !important; }
-    nav h1 { display: none; } /* Hide text logo, keep only triangle icon */
-    
-    .offer-btn { font-size: 10px !important; padding: 2px 5px !important; }
-    .offer-label { display: none; }
-}
 /* 4. Fix for Modals */
 /* 4. Fix for Modals */
 /* Ensure the Category Filter stays below the frozen stack during scroll */
@@ -144,7 +86,72 @@ html {
     .bg-white.border-b.border-gray-200.sticky { top: 165px !important; }
 }
 
+/* --- HIGH-PRECISION RESPONSIVE HEADER CLEANUP --- */
 
+/* 1. TABLET & SMALL LAPTOPS (Widths 768px to 1140px) */
+@media (max-width: 1140px) {
+    nav h1 { font-size: 16px !important; }
+    nav img { height: 32px !important; }
+    
+    /* Proportional Shrink for Buttons */
+    #walletWidget button, #userMenuButton, nav button {
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+        white-space: nowrap;
+    }
+}
+
+/* 2. MOBILE (Widths below 768px) */
+@media (max-width: 767px) {
+    /* Reduce Nav Padding */
+    nav > div { padding: 10px 12px !important; gap: 8px !important; }
+    
+    /* 1. SHRINK LOGO & TITLE */
+    nav h1 { font-size: 13px !important; letter-spacing: -0.2px; }
+    nav img { height: 26px !important; }
+
+    /* 2. HIDE TEXT LABELS (The most important fix) */
+    #userEmailDisplay { display: none; } /* Hide email address on mobile */
+    #walletDisplay span:first-child { display: none; } /* Hide "Wallet:" text */
+    
+    /* Change "My Purchases" to icon only */
+    button[onclick="showPurchaseHistory()"] {
+        font-size: 0 !important; /* Hides the text */
+        padding: 8px !important;
+    }
+    button[onclick="showPurchaseHistory()"]::before {
+        content: '📜'; /* Keeps only the icon */
+        font-size: 16px;
+    }
+
+    /* 3. REDUCE BUTTON SCALE */
+    #walletWidget button, #userMenuButton {
+        padding: 5px 8px !important;
+        font-size: 11px !important;
+    }
+    
+    #walletAmount { font-size: 15px !important; }
+
+    /* 4. SYNC OFFER BANNER & BODY */
+    #offerBanner { 
+        top: 65px !important; /* Adjusted for slimmer nav */
+        height: 44px !important; 
+    }
+    .offer-btn { font-size: 10px !important; padding: 4px 8px !important; }
+    .offer-label { display: none; }
+
+    body { padding-top: 109px !important; }
+}
+
+/* 3. ULTRA-NARROW (Widths below 400px) */
+@media (max-width: 400px) {
+    nav h1 { display: none; } /* Show only logo on tiny screens */
+    #walletDisplay > div { gap: 4px !important; }
+    
+    /* Reduce Hero Spacing to fit screen height */
+    #heroHeader { padding: 40px 15px !important; }
+    #heroHeader h2 { font-size: 26px !important; }
+}
 /* 4. Fix for Modals */
 /* 4. Fix for Modals */
 /* Since Header is z-index 10000, modals must be higher to cover the header */
