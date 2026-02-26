@@ -37,122 +37,79 @@ body { padding-top: 123px !important; }
     }
 }
 
-/* 3. SURGICAL FIX: MID-RANGE STABILITY (957px down to 768px) */
-@media (max-width: 957px) {
-    .offer-label, .offer-pulse, .offer-divider { display: none !important; }
-    .offer-inner { gap: 15px !important; width: 100%; justify-content: center !important; }
-    .offer-btn { flex: 0 1 auto; min-width: 120px; font-size: 11px !important; }
+
+
+/* --- CONSOLIDATED ADAPTIVE HEADER SYSTEM --- */
+
+/* 1. DESKTOP & LARGE TABLET (Above 1016px) */
+@media (min-width: 1016px) {
+    nav { height: 73px !important; }
+    #offerBanner { top: 73px !important; height: 50px !important; display: flex !important; }
+    body { padding-top: 123px !important; }
+    .bg-white.border-b.border-gray-200.sticky { top: 123px !important; }
 }
 
-/* 4. MOBILE CONSOLIDATED (767px down to 430px) */
-/* This merges all your "disappearing banner" and "compact mode" fixes */
-@media (max-width: 767px) {
-    nav { height: 105px !important; }
+/* 2. MID-RANGE STABILITY (768px to 1015px) */
+/* Targets images: image_8a767c, image_892084, image_7e37f9 */
+@media (min-width: 768px) and (max-width: 1015px) {
+    /* Pair Logo and Search icon-only to save space */
+    nav button[onclick="scrollToSearch()"] span { display: none !important; }
+    #userEmailDisplay, #walletDisplay span:first-child { display: none !important; }
     
+    /* Clean Offer Banner: Remove clutter text and dots */
+    .offer-label, .offer-pulse, .offer-divider { display: none !important; }
+    .offer-inner { gap: 12px !important; justify-content: center !important; }
+    
+    nav { height: 73px !important; }
+    #offerBanner { top: 73px !important; height: 50px !important; display: flex !important; visibility: visible !important; }
+    body { padding-top: 123px !important; }
+    .bg-white.border-b.border-gray-200.sticky { top: 123px !important; }
+}
+
+/* 3. MOBILE MASTER BLOCK (Everything 767px and Below) */
+/* Targets images: image_7ebe9c, image_7eb038, image_7eac18, image_d08235 */
+@media (max-width: 767px) {
+    /* STICKY VISIBILITY: Force the banner to remain on screen */
+    #offerBanner {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 102px !important; /* Adjusted for compact mobile nav */
+        height: 44px !important;
+        z-index: 10002 !important;
+    }
+
+    /* COMPACT NAV: Logo and Search on top, buttons below */
+    nav { height: 102px !important; }
     nav > div {
         display: grid !important;
-        grid-template-columns: auto 1fr auto; 
-        grid-template-rows: auto auto;
+        grid-template-columns: 1fr auto; 
         row-gap: 8px;
         padding: 8px 12px !important;
     }
 
-    /* Logo & Search Row 1 */
-    .flex.items-center.gap-3 { grid-column: 1; grid-row: 1; }
-    nav button[onclick="scrollToSearch()"] { 
-        grid-column: 3; grid-row: 1; 
-        padding: 5px !important;
-    }
-    nav button[onclick="scrollToSearch()"] span { display: none !important; }
-
-    /* Buttons Row 2 */
-    #walletWidget {
-        grid-column: 1 / span 3;
-        grid-row: 2;
-        display: flex !important;
-        justify-content: space-between !important;
-        border-top: 1px solid rgba(0,0,0,0.05);
-        padding-top: 5px;
-    }
-
-    /* My Purchases Icon-Only */
+    /* WIDGET CLEANUP: My Purchases icon-only & Minimal Wallet */
     button[onclick="showPurchaseHistory()"] { font-size: 0 !important; padding: 6px 10px !important; }
     button[onclick="showPurchaseHistory()"]::before { content: '📜'; font-size: 16px; }
+    #walletDisplay span:first-child, #userEmailDisplay { display: none !important; }
+    #walletAmount { font-size: 15px !important; }
 
-    /* Banner Placement */
-    #offerBanner {
-        top: 105px !important;
-        height: 44px !important;
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
+    /* OFFER BANNER CLEANUP: Minimalist reward boxes only */
+    .offer-label, .offer-pulse, .offer-divider { display: none !important; }
+    .offer-btn { font-size: 10px !important; padding: 4px 8px !important; }
 
-    body { padding-top: 149px !important; }
-    .bg-white.border-b.border-gray-200.sticky { top: 149px !important; }
+    /* COORDINATE SYNC: Ensure no white gaps or overlapping text */
+    body { padding-top: 146px !important; } /* 102px Nav + 44px Banner */
+    .bg-white.border-b.border-gray-200.sticky { top: 146px !important; }
 }
 
-/* 5. ULTRA-NARROW MOBILE (Below 429px) */
-@media (max-width: 429px) {
-    nav h1 { display: none !important; } /* Only Logo Icon */
-    nav > div { grid-template-columns: auto auto; }
-    #walletWidget { justify-content: center !important; gap: 5px !important; }
-    
-    #offerBanner { top: 100px !important; }
-    body { padding-top: 144px !important; }
+/* 4. ULTRA-NARROW (Below 380px) */
+@media (max-width: 380px) {
+    nav h1 { display: none !important; } /* Only icon logo */
+    #walletWidget { gap: 4px !important; justify-content: center !important; }
+    .offer-btn { font-size: 9px !important; padding: 3px 5px !important; }
 }
-
-/* 6. MODAL & STICKY OVERRIDES */
-.modal, #previewModal { z-index: 11000 !important; }
-
-.bg-white.border-b.border-gray-200.sticky {
-    z-index: 40 !important;
-}
-@media (min-width: 1024px) {
-    .bg-white.border-b.border-gray-200.sticky { top: 123px !important; }
-}
-
-
-/* --- SURGICAL FIX: 957px to 1030px BANNER STABILIZATION --- */
-@media (min-width: 957px) and (max-width: 1030px) {
-    /* 1. Remove the label and pulse to reclaim space immediately */
-    .offer-label, 
-    #offerBanner .offer-pulse, 
-    .offer-divider { 
-        display: none !important; 
-    }
-
-    /* 2. Stabilize the container for perfect centering */
-    .offer-inner {
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: center !important;
-        width: 100% !important;
-        gap: 15px !important;
-    }
-
-    /* 3. Ensure buttons remain consistent sizes */
-    .offer-btn {
-        flex: 0 1 auto !important;
-        min-width: 140px;
-        font-size: 11px !important;
-        padding: 5px 12px !important;
-        white-space: nowrap !important;
-    }
-
-    /* 4. Fix Nav Height overlap seen in image_7e37f9 */
-    nav { height: 73px !important; }
-    #offerBanner { 
-        top: 73px !important; 
-        height: 50px !important; 
-        display: flex !important; 
-    }
-    
-    /* 5. Sync Body Offset to match the 123px stack */
-    body { padding-top: 123px !important; }
-}
-
-
 
 /* --- ADAPTIVE FROZEN HEADER LOGIC --- */
 
