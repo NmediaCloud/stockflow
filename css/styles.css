@@ -3,14 +3,16 @@
    ============================================ */
 /* --- FIXED HEADER SYSTEM --- */
 /* 1. The Promotional Banner */
-
+/*
 #offerBanner {
     position: fixed !important;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 10001; /* Higher than Nav */
-}
+    z-index: 10001; 
+/* Higher than Nav */
+/* }
+*/
 
 /* 2. The Main Navigation */
 nav {
