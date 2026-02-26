@@ -105,8 +105,9 @@ async function init() {
     }
 }
 
+
 async function loadVideosFromSheet() {
-    allVideos = []; // ⭐ THE FIX: Clear the array before loading new data
+    allVideos = []; // Clear array before loading new data
     const csvUrl = CONFIG.SHEET_CSV_URL;
     console.log('📡 Fetching from:', csvUrl);
     
@@ -115,33 +116,23 @@ async function loadVideosFromSheet() {
         if (!response.ok) throw new Error('Failed to fetch sheet: HTTP ' + response.status);
         
         const csvText = await response.text();
-        console.log('📄 CSV received, length:', csvText.length);
-        
-        if (!csvText || csvText.trim().length === 0) {
-            throw new Error('Sheet returned empty data');
-        }
-        
         const rows = parseCSV(csvText);
-        console.log('📊 Parsed rows:', rows.length);
         
-        if (rows.length < 2) {
-            throw new Error('Sheet has no data rows');
-        }
-        
-        console.log('📋 Column count:', rows[0].length);
+        if (rows.length < 2) throw new Error('Sheet has no data rows');
         
         const hasFeaturedColumn = rows[0].length >= 15;
-        console.log('⭐ Has Featured column:', hasFeaturedColumn);
         
+        // --- DATA SNIFFER & MAPPING LOOP ---
         for (let i = 1; i < rows.length; i++) {
             const row = rows[i];
-            // --- NEW SNIFFER LOGIC ---
-            // Get filename from Column M (Index 12)
-            const highResUrl = (row[12] || '').toString().trim();
-            // Matches anything between underscores right before the extension (e.g., _mp4_.)
+            
+            // 1. Target Column N (Index 13) for the High Res URL source
+            const highResUrl = (row[13] || '').toString().trim();
+            
+            // 2. Sniffer: Extract characters between underscores specifically at the end of the filename
             const flexibleMatch = highResUrl.match(/_([^_]+)_\.[a-z0-9]+$/i);
             const technicalExtension = flexibleMatch ? flexibleMatch[1].toUpperCase() : "";
-            
+
             const video = {
                 id: (row[0] || '').toString().trim(),
                 title: (row[1] || '').toString().trim(),
@@ -155,12 +146,48 @@ async function loadVideosFromSheet() {
                 format: (row[9] || '16:9').toString().trim(),
                 resolution: (row[10] || '').toString().trim(),
                 tags: (row[11] || '').toString().trim(),
-                highResUrl: (row[13] || '').toString().trim(),
+                highResUrl: highResUrl, // Synced source
                 featured: hasFeaturedColumn ? (row[14] === 'TRUE' || row[14] === 'true' || row[14] === true) : false,
-                fileFormat: technicalExtension // Store the sniffer result
-                
+                fileFormat: technicalExtension 
             };
-            
+
+            // 3. Validation and Metadata Collection
+            if (video.id && video.title && video.thumbnail && video.preview) {
+                allVideos.push(video);
+                
+                if (video.category) {
+                    categories.add(video.category);
+                    if (!subcategories[video.category]) {
+                        subcategories[video.category] = new Set();
+                    }
+                    if (video.subcategory) {
+                        subcategories[video.category].add(video.subcategory);
+                    }
+                    
+                    const catSubKey = `${video.category}|${video.subcategory}`;
+                    if (!subs[catSubKey]) {
+                        subs[catSubKey] = new Set();
+                    }
+                    if (video.sub) {
+                        subs[catSubKey].add(video.sub);
+                    }
+                }
+            }
+        }
+        
+        console.log(`✅ Successfully loaded ${allVideos.length} videos`);
+        
+    } catch (error) {
+        console.error('❌ Error loading videos:', error);
+        throw error;
+    }
+}
+    
+
+        
+
+            // ... your remaining logic (if video.id && video.title...)
+                 // --- NEW SNIFFER LOGIC ---
             if (video.id && video.title && video.thumbnail && video.preview) {
                 allVideos.push(video);
                 
@@ -506,19 +533,18 @@ function createVideoCard(video) {
     card.className = 'group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl rounded-xl overflow-hidden bg-white border border-gray-200';
     //card.setAttribute('onclick', "openModal(" + JSON.stringify(video).replace(/"/g, '&quot;') + ")");
     card.onclick = () => openModal(video);
-      //  card.onclick = () => {
-      //       if (typeof window.openModal === 'function') {
-      //          window.openModal(video);
-      //          } else {
-                //console.error("openModal function not found!");
-      //      }
-      //      };
-   
+    
     const formatBadge = {
         '9:16': '📱 9:16',
         '1:1': '⬜ 1:1',
         '16:9': '🖥️ 16:9'
     }[video.format] || video.format;
+
+    // --- SURGICAL ADDITION: Create the extension badge string ---
+    // If video.fileFormat exists, create the tag; otherwise, empty string.
+    const extensionTag = video.fileFormat 
+        ? `<span class="ml-2 bg-teal-600/10 text-teal-600 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase border border-teal-500/20">${video.fileFormat}</span>`
+        : "";
     
     // ============================================
     // PERFORMANCE OPTIMIZED:
@@ -528,7 +554,7 @@ function createVideoCard(video) {
     // - Play icon overlay (indicates video available)
     // ============================================
     
-    card.innerHTML = `
+  card.innerHTML = `
         <div class="relative overflow-hidden aspect-video bg-gray-900">
             <span class="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded-md text-xs font-medium">${formatBadge}</span>
             <img src="${video.thumbnail}" 
@@ -548,11 +574,13 @@ function createVideoCard(video) {
             <p class="text-xs text-gray-500 mb-2">${video.category} • ${video.subcategory || ''}</p>
             <div class="flex items-center justify-between">
                 <span class="text-teal-600 font-bold text-lg">$${video.price}</span>
-                <span class="text-xs text-gray-400">${video.resolution || 'HD'}</span>
+                <div class="flex items-center">
+                    <span class="text-xs text-gray-400">${video.resolution || 'HD'}</span>
+                    ${extensionTag}
+                </div>
             </div>
         </div>
     `;
-    
     return card;
 }
 
@@ -560,6 +588,8 @@ window.init = init;
 window.filterVideos = filterVideos;
 window.filterByFormat = filterByFormat;
 window.loadMore = loadMore;
+window.openModal = openModal;
+window.showNotification = showNotification;
 
 
 // --- MODAL TRIGGER ---
