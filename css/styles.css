@@ -19,7 +19,7 @@ nav {
     top: 73px !important; /* Start AFTER the Nav ends */
     left: 0;
     width: 100%;
-    height: 52px; /* Standard height for your banner */
+    height: 57px; /* Standard height for your banner */
     z-index: 10001; 
     background: linear-gradient(90deg, #1F2933 0%, #2A2F36 50%, #1F2933 100%) !important;
     padding-top: 0 !important; /* Reset the padding we added earlier */
@@ -30,7 +30,7 @@ nav {
 body {
     /* 73px (Nav) + 52px (Banner) = 125px */
     /* If it still looks cut off, try 140px */
-    padding-top: 125px !important; 
+    padding-top: 130px !important; 
 }
 /* 4. Fix for Modals */
 /* Since Header is z-index 10000, modals must be higher to cover the header */
