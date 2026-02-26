@@ -113,7 +113,44 @@ body { padding-top: 123px !important; }
 }
 
 
+/* --- SURGICAL FIX: 957px to 1030px BANNER STABILIZATION --- */
+@media (min-width: 957px) and (max-width: 1030px) {
+    /* 1. Remove the label and pulse to reclaim space immediately */
+    .offer-label, 
+    #offerBanner .offer-pulse, 
+    .offer-divider { 
+        display: none !important; 
+    }
 
+    /* 2. Stabilize the container for perfect centering */
+    .offer-inner {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        width: 100% !important;
+        gap: 15px !important;
+    }
+
+    /* 3. Ensure buttons remain consistent sizes */
+    .offer-btn {
+        flex: 0 1 auto !important;
+        min-width: 140px;
+        font-size: 11px !important;
+        padding: 5px 12px !important;
+        white-space: nowrap !important;
+    }
+
+    /* 4. Fix Nav Height overlap seen in image_7e37f9 */
+    nav { height: 73px !important; }
+    #offerBanner { 
+        top: 73px !important; 
+        height: 50px !important; 
+        display: flex !important; 
+    }
+    
+    /* 5. Sync Body Offset to match the 123px stack */
+    body { padding-top: 123px !important; }
+}
 
 
 
