@@ -3,27 +3,27 @@
    ============================================ */
 /* --- FIXED HEADER SYSTEM --- */
 /* 1. The Promotional Banner */
-/*
-#offerBanner {
-    position: fixed !important;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 10001; 
-/* Higher than Nav */
-/* }
-*/
-
-/* 2. The Main Navigation */
 nav {
     position: fixed !important;
     top: 40px; /* Adjust this to match the height of your #offerBanner */
     left: 0;
     width: 100%;
-    z-index: 10000;
+    z-index: 10001;
     background-color: white;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
+
+#offerBanner {
+    position: fixed !important;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    z-index: 10000; 
+/* Higher than Nav */
+ }
+
+
+/* 2. The Main Navigation */
 
 body {
     padding-top: 120px; /* Adjust this to match the height of your top bar */
