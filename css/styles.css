@@ -133,6 +133,21 @@ nav {
 /* ============================================
    3. MODAL & PREVIEW OVERRIDES
    ============================================ */
-.modal, #previewModal {
-    z-index: 11000 !important; /* Higher than frozen header */
+/* ============================================
+   3. MODAL & PREVIEW OVERRIDES
+   ============================================ */
+
+/* Only apply the high z-index and display flex when the modal is ACTIVE */
+.modal.modal-visible, 
+#previewModal.modal-visible,
+.modal:not(.modal-hidden) {
+    display: flex !important;
+    z-index: 11000 !important; 
+}
+
+/* Ensure it stays hidden and "behind" everything when not in use */
+.modal.modal-hidden, 
+#previewModal.modal-hidden {
+    display: none !important;
+    z-index: -1 !important;
 }
