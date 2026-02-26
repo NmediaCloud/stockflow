@@ -122,7 +122,69 @@ html {
         display: none !important; 
     }
 }
+/* --- SURGICAL FIX: 958px to 1015px HEADER RESTRUCTURING --- */
+@media (min-width: 958px) and (max-width: 1015px) {
+    /* 1. Set Nav to Grid for two-level organization */
+    nav > div {
+        display: grid !important;
+        grid-template-columns: auto 1fr; /* Logo/Search left, space right */
+        align-items: center;
+        gap: 15px;
+        padding: 10px 20px !important;
+    }
 
+    /* 2. Pair Logo and Search Symbol side-by-side */
+    .flex.items-center.gap-3 { 
+        grid-column: 1; 
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    /* Shrink search button to just the icon symbol */
+    nav button[onclick="scrollToSearch()"] {
+        padding: 8px !important;
+        background: transparent !important;
+        border: 1px solid #3A3F46 !important;
+    }
+    nav button[onclick="scrollToSearch()"] span { 
+        display: none !important; /* Removes "Search" text */
+    }
+
+    /* 3. Push Wallet, Purchases, and Add Funds to the second row */
+    #walletWidget {
+        grid-column: 1 / span 2; /* Spans across the bottom */
+        display: flex !important;
+        justify-content: flex-start !important;
+        gap: 10px !important;
+        padding-top: 8px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* 4. Minimalist Wallet Display ($56.00 only) */
+    #walletDisplay span:first-child, 
+    #userEmailDisplay { 
+        display: none !important; 
+    }
+    
+    #walletAmount { font-size: 16px !important; }
+
+    /* 5. Clean up the Offer Banner (Minimalist Boxes) */
+    .offer-label, .offer-pulse, .offer-divider { 
+        display: none !important; 
+    }
+    
+    .offer-inner {
+        display: flex !important;
+        justify-content: space-between !important;
+        width: 100%;
+        gap: 8px;
+    }
+
+    /* 6. Update heights to prevent overlapping */
+    nav { height: 110px !important; }
+    #offerBanner { top: 110px !important; height: 48px !important; }
+    body { padding-top: 158px !important; }
+}
 /* 2. MOBILE (Below 768px - Fixes image_d0f735) */
 @media (max-width: 768px) {
     /* Hide long email string and unnecessary labels */
