@@ -1719,6 +1719,23 @@ async function submitClaim(type) {
                     </button>`;
                 });
             });
+
+                // Help Modal Functions
+            function showHelpModal() {
+                document.getElementById('helpModal').style.display = 'flex';
+            }
+
+            function closeHelpModal() {
+                const modal = document.getElementById('helpModal');
+                modal.style.display = 'none';
+    
+                // Stop the video from playing in the background
+                const iframe = document.getElementById('helpVideo');
+                const url = iframe.src;
+                iframe.src = '';
+                iframe.src = url;
+            }
+              
             </script>
             <p style="font-size:12px;color:#999;margin-top:15px;text-align:center;">Secure payment powered by Stripe</p>
         </div>
