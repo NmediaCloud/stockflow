@@ -70,7 +70,71 @@ html {
 /* --- HIGH-PRECISION RESPONSIVE HEADER --- */
 /* --- UNIVERSAL RESPONSIVE HEADER CLEANUP --- */
 
+/* --- UNIVERSAL FLUID SCALING & ADAPTIVE REPAIR --- */
 
+/* 1. COMPACT DESKTOP & TABLET (Below 1140px) */
+@media (max-width: 1140px) {
+    nav h1 { font-size: clamp(14px, 1.5vw, 18px) !important; }
+    #walletDisplay span:first-child { display: none !important; } /* Removes "Wallet:" text */
+    
+    #walletWidget button, #userMenuButton, nav button {
+        padding: 6px 1vw !important;
+        font-size: clamp(11px, 1vw, 13px) !important;
+    }
+}
+
+/* 2. MOBILE (Below 768px - Fixes image_d0f735) */
+@media (max-width: 768px) {
+    /* Hide long email string and unnecessary labels */
+    #userEmailDisplay, .offer-label { display: none !important; }
+
+    /* Shrink the Wallet to just the value */
+    #walletAmount { font-size: 15px !important; }
+    
+    /* Icon-only Purchases */
+    button[onclick="showPurchaseHistory()"] { font-size: 0 !important; padding: 8px !important; }
+    button[onclick="showPurchaseHistory()"]::before { content: '📜'; font-size: 16px; }
+
+    /* Minimalistic Offer Banner Boxes */
+    #offerBanner { height: auto !important; padding: 6px 0 !important; top: 62px !important; }
+    .offer-btn { font-size: 10px !important; padding: 4px 6px !important; }
+    .offer-btn .reward { padding: 1px 4px !important; font-size: 10px !important; }
+
+    body { padding-top: 105px !important; }
+}
+
+/* 3. NARROW MOBILE (429px - Fixes image_89955f) */
+@media (max-width: 429px) {
+    /* Side-by-side Logo and Search */
+    nav > div { 
+        display: grid !important;
+        grid-template-columns: auto auto; 
+        justify-content: space-between !important;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    /* Push buttons to a second row within the nav bar to keep it neat */
+    #walletWidget { 
+        grid-column: span 2; 
+        justify-content: center !important; 
+        padding-top: 5px;
+    }
+
+    #offerBanner { top: 100px !important; }
+    body { padding-top: 145px !important; }
+}
+
+/* 4. ULTRA-NARROW (274px - Fixes image_8994c3) */
+@media (max-width: 280px) {
+    nav h1 { display: none !important; } /* Hide text, keep only triangle icon */
+    #walletAmount { font-size: 13px !important; }
+    .offer-btn { font-size: 9px !important; }
+    
+    /* Push banner lower for spacing */
+    #offerBanner { top: 95px !important; }
+    body { padding-top: 140px !important; }
+}
 /* 4. Fix for Modals */
 /* 4. Fix for Modals */
 /* Ensure the Category Filter stays below the frozen stack during scroll */
