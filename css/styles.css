@@ -47,6 +47,18 @@ body {
     padding-top: 123px !important; 
 }
 
+/* Navigation Search Anchor Styling */
+nav button:hover svg {
+    color: white;
+}
+
+/* Ensure the smooth scroll doesn't jitter */
+html {
+    scroll-behavior: smooth;
+}
+
+
+
 
 /* 4. Fix for Modals */
 /* Since Header is z-index 10000, modals must be higher to cover the header */
