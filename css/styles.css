@@ -89,83 +89,129 @@ html {
 /* --- HIGH-PRECISION RESPONSIVE HEADER CLEANUP --- */
 
 
+/* --- UNIVERSAL FLUID HEADER & WALLET REPAIR --- */
 
-/* --- UNIVERSAL RESPONSIVE HEADER REPAIR --- */
-
-/* 1. TABLET & SMALL LAPTOPS (1140px down to 768px) */
-@media (max-width: 1140px) {
-    nav h1 { font-size: clamp(14px, 2vw, 18px) !important; }
-    nav img { height: clamp(28px, 3.5vw, 36px) !important; }
+/* 1. FLUID SCALING (Desktop to Tablet: 1280px down to 769px) */
+/* Targets the "Clustering" seen in image_d0fa3c and image_8a76f7 */
+@media (max-width: 1280px) {
+    nav h1 { font-size: clamp(14px, 1.5vw, 20px) !important; }
+    nav img { height: clamp(26px, 3vw, 40px) !important; }
     
-    /* Proportional button scaling */
+    /* Proportional button shrinking based on viewport width */
     #walletWidget button, #userMenuButton, nav button {
-        padding: 6px 1.2vw !important;
-        font-size: clamp(11px, 1.1vw, 13px) !important;
-        white-space: nowrap;
+        padding: 6px clamp(6px, 1vw, 14px) !important;
+        font-size: clamp(10px, 1vw, 13px) !important;
+        letter-spacing: -0.2px;
     }
 }
 
-/* 2. MOBILE (Widths below 768px - Fixes image_d0f735 and image_8a765b) */
+/* 2. THE "COMPACT" BREAKPOINT (Below 768px - Fixes image_d0f735) */
+/* This is where we hide long text strings to prevent overlapping */
 @media (max-width: 768px) {
-    /* Reduce container padding to gain horizontal space */
-    nav > div { padding: 8px 10px !important; gap: 6px !important; }
-    
-    /* Shrink the logo to the minimum visible size */
-    nav h1 { font-size: 13px !important; }
-    nav img { height: 26px !important; }
+    /* Hide long email and labels to save ~200px of space */
+    #userEmailDisplay, 
+    #walletDisplay span:first-child { 
+        display: none !important; 
+    }
 
-    /* HIDE LABELS TO SAVE SPACE (The most effective fix) */
-    #userEmailDisplay { display: none; } /* Hide email address string */
-    #walletDisplay span:first-child { display: none; } /* Hide "Wallet:" label */
-    
-    /* Change "My Purchases" to an icon-only button */
+    /* Shrink the Wallet amount to fit next to buttons */
+    #walletAmount { font-size: 15px !important; }
+
+    /* Transform "My Purchases" into icon-only to save horizontal width */
     button[onclick="showPurchaseHistory()"] {
-        font-size: 0 !important; /* Hides text */
+        font-size: 0 !important;
         padding: 8px !important;
     }
     button[onclick="showPurchaseHistory()"]::before {
-        content: '📜'; /* Keeps icon visible */
+        content: '📜';
         font-size: 16px;
     }
 
-    /* Shrink Wallet & Add Funds buttons */
+    /* Recalculate heights for the frozen stack */
+    #offerBanner { top: 60px !important; height: 42px !important; }
+    body { padding-top: 102px !important; }
+}
+
+/* 3. ULTRA-NARROW MODE (Below 480px - Fixes image_d08235 and image_8a75dc) */
+@media (max-width: 480px) {
+    /* Hide the text part of the logo, keeping only the icon */
+    nav h1 { display: none !important; }
+    
+    /* Ensure widgets stay on one line even at 300px */
+    nav > div { justify-content: space-between !important; padding: 0 8px !important; }
+    #walletDisplay > div { gap: 4px !important; }
+    
+    /* Shrink buttons to absolute minimum */
     #walletWidget button, #userMenuButton {
-        padding: 5px 8px !important;
-        font-size: 11px !important;
+        padding: 4px 6px !important;
+        font-size: 9px !important;
     }
-    
-    /* Adjust Offer Banner to stay flush with the slimmer Nav */
-    #offerBanner { 
-        top: 62px !important; 
-        height: 44px !important; 
-    }
-    .offer-btn { font-size: 10px !important; padding: 4px 6px !important; }
-    .offer-label { display: none; }
-
-    /* Sync Body Offset */
-    body { padding-top: 106px !important; }
 }
 
-/* 3. ULTRA-NARROW MOBILE (Below 450px - Fixes image_d08235 and image_8a75dc) */
-@media (max-width: 450px) {
-    /* Hide the text portion of the logo to leave only the icon */
-    nav h1 { display: none; }
-    
-    /* Stack the nav elements slightly to avoid overlap */
-    nav > div { justify-content: space-between !important; }
-    
-    /* Push search button to the left if it's too cramped */
-    nav button[onclick="scrollToSearch()"] { order: -1; }
+/* 4. Fix for Modals */
+/* 4. Fix for Modals */
+/* --- UNIVERSAL FLUID HEADER & WALLET REPAIR --- */
 
-    /* Recalculate hero padding to prevent content overlap */
-    #heroHeader { padding: 40px 15px !important; }
-    #heroHeader h2 { font-size: 24px !important; }
+/* 1. FLUID SCALING (Desktop to Tablet: 1280px down to 769px) */
+/* Targets the "Clustering" seen in image_d0fa3c and image_8a76f7 */
+@media (max-width: 1280px) {
+    nav h1 { font-size: clamp(14px, 1.5vw, 20px) !important; }
+    nav img { height: clamp(26px, 3vw, 40px) !important; }
+    
+    /* Proportional button shrinking based on viewport width */
+    #walletWidget button, #userMenuButton, nav button {
+        padding: 6px clamp(6px, 1vw, 14px) !important;
+        font-size: clamp(10px, 1vw, 13px) !important;
+        letter-spacing: -0.2px;
+    }
+}
+
+/* 2. THE "COMPACT" BREAKPOINT (Below 768px - Fixes image_d0f735) */
+/* This is where we hide long text strings to prevent overlapping */
+@media (max-width: 768px) {
+    /* Hide long email and labels to save ~200px of space */
+    #userEmailDisplay, 
+    #walletDisplay span:first-child { 
+        display: none !important; 
+    }
+
+    /* Shrink the Wallet amount to fit next to buttons */
+    #walletAmount { font-size: 15px !important; }
+
+    /* Transform "My Purchases" into icon-only to save horizontal width */
+    button[onclick="showPurchaseHistory()"] {
+        font-size: 0 !important;
+        padding: 8px !important;
+    }
+    button[onclick="showPurchaseHistory()"]::before {
+        content: '📜';
+        font-size: 16px;
+    }
+
+    /* Recalculate heights for the frozen stack */
+    #offerBanner { top: 60px !important; height: 42px !important; }
+    body { padding-top: 102px !important; }
+}
+
+/* 3. ULTRA-NARROW MODE (Below 480px - Fixes image_d08235 and image_8a75dc) */
+@media (max-width: 480px) {
+    /* Hide the text part of the logo, keeping only the icon */
+    nav h1 { display: none !important; }
+    
+    /* Ensure widgets stay on one line even at 300px */
+    nav > div { justify-content: space-between !important; padding: 0 8px !important; }
+    #walletDisplay > div { gap: 4px !important; }
+    
+    /* Shrink buttons to absolute minimum */
+    #walletWidget button, #userMenuButton {
+        padding: 4px 6px !important;
+        font-size: 9px !important;
+    }
 }
 
 
-
-
-
+/* 4. Fix for Modals */
+/* 4. Fix for Modals */
 
 
 
