@@ -83,6 +83,46 @@ html {
     }
 }
 
+
+
+/* --- SURGICAL FIX: 958px to 1015px RANGE --- */
+@media (min-width: 958px) and (max-width: 1015px) {
+    /* 1. Remove the "Limited Time Offer" text to save horizontal space */
+    .offer-label, 
+    #offerBanner .offer-pulse { 
+        display: none !important; 
+    }
+
+    /* 2. Remove the dot separators to clean up the look */
+    .offer-divider { 
+        display: none !important; 
+    }
+
+    /* 3. Distribute the 3 offer buttons equally */
+    .offer-inner {
+        display: flex !important;
+        justify-content: space-evenly !important; /* Spreads them out eveny */
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+        gap: 10px;
+    }
+
+    /* 4. Ensure buttons don't shrink too much */
+    .offer-btn {
+        flex: 1; /* Makes all three boxes the same width */
+        max-width: 250px;
+        justify-content: center;
+        white-space: nowrap;
+        font-size: 12px !important;
+    }
+
+    /* 5. Minimalist Wallet - Removing "Wallet:" text as requested */
+    #walletDisplay span:first-child { 
+        display: none !important; 
+    }
+}
+
 /* 2. MOBILE (Below 768px - Fixes image_d0f735) */
 @media (max-width: 768px) {
     /* Hide long email string and unnecessary labels */
