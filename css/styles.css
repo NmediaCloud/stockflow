@@ -11,16 +11,16 @@ nav {
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-/* 2. Promotional Offer Banner (Sits below Nav) */
+/* 2. Promotional Offer Banner (Sits below Nav) 
 #offerBanner {
     position: fixed !important;
     top: 73px; /* Set this to match the actual height of your nav bar */
-    left: 0;
+ /*   left: 0;
     width: 100%;
-    z-index: 10001; 
+    z-index: 10000; 
     background: linear-gradient(90deg, #1F2933 0%, #2A2F36 50%, #1F2933 100%);
 }
-
+*/
 /* 3. The Body Offset (The "Safety Buffer") */
 body {
     /* Fixed the syntax error (removed space between 120 and px) */
