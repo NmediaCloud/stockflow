@@ -5,7 +5,7 @@
 /* 1. The Promotional Banner */
 nav {
     position: fixed !important;
-    top: 40px; /* Adjust this to match the height of your #offerBanner */
+    top: 0; /* Adjust this to match the height of your #offerBanner */
     left: 0;
     width: 100%;
     z-index: 10001;
