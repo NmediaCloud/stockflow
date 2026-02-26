@@ -3,6 +3,7 @@
 /* --- FIXED HEADER SYSTEM: FINAL POLISH --- */
 
 /* 1. Main Navigation - Highest Priority Layer */
+
 nav {
     position: fixed !important;
     top: 0; 
