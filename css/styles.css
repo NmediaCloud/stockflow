@@ -88,71 +88,87 @@ html {
 
 /* --- HIGH-PRECISION RESPONSIVE HEADER CLEANUP --- */
 
-/* 1. TABLET & SMALL LAPTOPS (Widths 768px to 1140px) */
+
+
+/* --- UNIVERSAL RESPONSIVE HEADER REPAIR --- */
+
+/* 1. TABLET & SMALL LAPTOPS (1140px down to 768px) */
 @media (max-width: 1140px) {
-    nav h1 { font-size: 16px !important; }
-    nav img { height: 32px !important; }
+    nav h1 { font-size: clamp(14px, 2vw, 18px) !important; }
+    nav img { height: clamp(28px, 3.5vw, 36px) !important; }
     
-    /* Proportional Shrink for Buttons */
+    /* Proportional button scaling */
     #walletWidget button, #userMenuButton, nav button {
-        padding: 6px 12px !important;
-        font-size: 12px !important;
+        padding: 6px 1.2vw !important;
+        font-size: clamp(11px, 1.1vw, 13px) !important;
         white-space: nowrap;
     }
 }
 
-/* 2. MOBILE (Widths below 768px) */
-@media (max-width: 767px) {
-    /* Reduce Nav Padding */
-    nav > div { padding: 10px 12px !important; gap: 8px !important; }
+/* 2. MOBILE (Widths below 768px - Fixes image_d0f735 and image_8a765b) */
+@media (max-width: 768px) {
+    /* Reduce container padding to gain horizontal space */
+    nav > div { padding: 8px 10px !important; gap: 6px !important; }
     
-    /* 1. SHRINK LOGO & TITLE */
-    nav h1 { font-size: 13px !important; letter-spacing: -0.2px; }
+    /* Shrink the logo to the minimum visible size */
+    nav h1 { font-size: 13px !important; }
     nav img { height: 26px !important; }
 
-    /* 2. HIDE TEXT LABELS (The most important fix) */
-    #userEmailDisplay { display: none; } /* Hide email address on mobile */
-    #walletDisplay span:first-child { display: none; } /* Hide "Wallet:" text */
+    /* HIDE LABELS TO SAVE SPACE (The most effective fix) */
+    #userEmailDisplay { display: none; } /* Hide email address string */
+    #walletDisplay span:first-child { display: none; } /* Hide "Wallet:" label */
     
-    /* Change "My Purchases" to icon only */
+    /* Change "My Purchases" to an icon-only button */
     button[onclick="showPurchaseHistory()"] {
-        font-size: 0 !important; /* Hides the text */
+        font-size: 0 !important; /* Hides text */
         padding: 8px !important;
     }
     button[onclick="showPurchaseHistory()"]::before {
-        content: '📜'; /* Keeps only the icon */
+        content: '📜'; /* Keeps icon visible */
         font-size: 16px;
     }
 
-    /* 3. REDUCE BUTTON SCALE */
+    /* Shrink Wallet & Add Funds buttons */
     #walletWidget button, #userMenuButton {
         padding: 5px 8px !important;
         font-size: 11px !important;
     }
     
-    #walletAmount { font-size: 15px !important; }
-
-    /* 4. SYNC OFFER BANNER & BODY */
+    /* Adjust Offer Banner to stay flush with the slimmer Nav */
     #offerBanner { 
-        top: 65px !important; /* Adjusted for slimmer nav */
+        top: 62px !important; 
         height: 44px !important; 
     }
-    .offer-btn { font-size: 10px !important; padding: 4px 8px !important; }
+    .offer-btn { font-size: 10px !important; padding: 4px 6px !important; }
     .offer-label { display: none; }
 
-    body { padding-top: 109px !important; }
+    /* Sync Body Offset */
+    body { padding-top: 106px !important; }
 }
 
-/* 3. ULTRA-NARROW (Widths below 400px) */
-@media (max-width: 400px) {
-    nav h1 { display: none; } /* Show only logo on tiny screens */
-    #walletDisplay > div { gap: 4px !important; }
+/* 3. ULTRA-NARROW MOBILE (Below 450px - Fixes image_d08235 and image_8a75dc) */
+@media (max-width: 450px) {
+    /* Hide the text portion of the logo to leave only the icon */
+    nav h1 { display: none; }
     
-    /* Reduce Hero Spacing to fit screen height */
+    /* Stack the nav elements slightly to avoid overlap */
+    nav > div { justify-content: space-between !important; }
+    
+    /* Push search button to the left if it's too cramped */
+    nav button[onclick="scrollToSearch()"] { order: -1; }
+
+    /* Recalculate hero padding to prevent content overlap */
     #heroHeader { padding: 40px 15px !important; }
-    #heroHeader h2 { font-size: 26px !important; }
+    #heroHeader h2 { font-size: 24px !important; }
 }
-/* 4. Fix for Modals */
+
+
+
+
+
+
+
+
 /* 4. Fix for Modals */
 /* Since Header is z-index 10000, modals must be higher to cover the header */
 .modal, #previewModal {
