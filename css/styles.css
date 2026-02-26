@@ -24,7 +24,7 @@ nav {
 /* 3. The Body Offset (The "Safety Buffer") */
 body {
     /* Fixed the syntax error (removed space between 120 and px) */
-    padding-top: 100px !important; 
+    padding-top: 80px !important; 
 }
 
 
