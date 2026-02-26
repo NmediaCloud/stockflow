@@ -266,36 +266,32 @@ function buildCategoryButtons() {
 
 
 // Add 'e' here to capture the event object
-function selectCategory(category, e)
-// Update URL for sharing
+// Add 'e' here to capture the event object
+function selectCategory(category, e) {
+    // --- PART 1: Update URL (INTERNALIZED) ---
     const newUrl = new URL(window.location.href);
     if (category) {
         newUrl.searchParams.set('cat', category);
-        newUrl.searchParams.delete('sub'); // Clear sub when changing main cat
+        newUrl.searchParams.delete('sub');
     } else {
         newUrl.searchParams.delete('cat');
         newUrl.searchParams.delete('sub');
     }
     window.history.pushState({}, '', newUrl);
 
-
-
-
+    // --- PART 2: Logic Execution ---
     selectedCategory = category;
     selectedSubcategory = null;
     selectedSub = null;
 
-    // 1. Clear active states
     document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
     
-    // 2. The Fix: Use the passed event or the window event
     const evt = e || window.event;
     if (evt && (evt.currentTarget || evt.target)) {
         const targetBtn = evt.currentTarget || evt.target;
         targetBtn.classList.add('active');
     }
     
-    // 3. Visibility logic
     const subSection = document.getElementById('subcategorySection');
     const subSubSection = document.getElementById('subSection');
     
@@ -310,9 +306,12 @@ function selectCategory(category, e)
     }
     
     subSubSection.classList.add('hidden');
-    filterVideos();
+    filterVideos(); 
 }
 
+
+
+    // ============================================
 function buildSubcategoryButtons(category) {
     const container = document.getElementById('subcategoryButtons');
     const title = document.getElementById('subcategoryTitle');
