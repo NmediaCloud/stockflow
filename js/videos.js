@@ -38,7 +38,39 @@ async function init() {
         buildCategoryButtons();
         filterVideos();
         // --- ADD THIS BLOCK HERE ---
-        // Check if the URL has a shared video ID (e.g., ?v=123)
+        // --- DEEP LINKING: CATEGORIES & VIDEOS ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const catToOpen = urlParams.get('cat');
+        const subToOpen = urlParams.get('sub');
+        const videoIdToOpen = urlParams.get('v');
+        
+        // 1. Handle Category/Subcategory Deep Links
+        if (catToOpen) {
+            console.log("🔗 Category Deep Link:", catToOpen);
+            selectedCategory = catToOpen;
+            if (subToOpen) selectedSubcategory = subToOpen;
+            
+            // Re-build buttons to show the correct sub-row
+            buildCategoryButtons();
+            
+            // Manually trigger the category logic to show sub-buttons
+            const fakeEvent = { currentTarget: Array.from(document.querySelectorAll('.category-btn')).find(b => b.textContent === catToOpen) };
+            selectCategory(catToOpen, fakeEvent);
+        }
+
+        // 2. Handle Individual Video Deep Links
+        if (videoIdToOpen) {
+            const targetVideo = allVideos.find(v => v.id == videoIdToOpen);
+            if (targetVideo) {
+                console.log("🔗 Video Deep Link: Auto-opening", targetVideo.title);
+                setTimeout(() => openModal(targetVideo), 800); 
+            }
+        }
+
+
+
+        
+        /* / Check if the URL has a shared video ID (e.g., ?v=123)
        const urlParams = new URLSearchParams(window.location.search);
         const videoIdToOpen = urlParams.get('v');
         
@@ -54,7 +86,7 @@ async function init() {
                 }, 800); 
             }
         }
-        // ---------------------------
+        / ---------------------------*/
 
         const featuredCount = allVideos.filter(v => v.featured).length;
         console.log(`✅ Loaded ${allVideos.length} videos (${featuredCount} featured)`);
@@ -234,7 +266,21 @@ function buildCategoryButtons() {
 
 
 // Add 'e' here to capture the event object
-function selectCategory(category, e) {
+function selectCategory(category, e)
+// Update URL for sharing
+    const newUrl = new URL(window.location.href);
+    if (category) {
+        newUrl.searchParams.set('cat', category);
+        newUrl.searchParams.delete('sub'); // Clear sub when changing main cat
+    } else {
+        newUrl.searchParams.delete('cat');
+        newUrl.searchParams.delete('sub');
+    }
+    window.history.pushState({}, '', newUrl);
+
+
+
+
     selectedCategory = category;
     selectedSubcategory = null;
     selectedSub = null;
@@ -293,6 +339,11 @@ function buildSubcategoryButtons(category) {
 }
 
 function selectSubcategory(subcategory, e) {
+    // Update URL for sharing subcategory
+    const newUrl = new URL(window.location.href);
+    newUrl.searchParams.set('sub', subcategory);
+    window.history.pushState({}, '', newUrl);
+    
     selectedSubcategory = subcategory;
     selectedSub = null;
 
