@@ -1,8 +1,3 @@
-/* ============================================
-   styles.css - All custom styles
-   ============================================ */
-/* --- FIXED HEADER SYSTEM --- */
-/* 1. The Promotional Banner */
 /* --- FIXED HEADER SYSTEM --- */
 
 /* 1. Top Navigation Bar (Highest Priority) */
@@ -31,6 +26,8 @@ body {
     /* Fixed the syntax error (removed space between 120 and px) */
     padding-top: 125px !important; 
 }
+
+
 /* 4. Fix for Modals */
 /* Since Header is z-index 10000, modals must be higher to cover the header */
 .modal, #previewModal {
