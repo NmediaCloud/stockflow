@@ -111,7 +111,57 @@ html {
 /* 2. TABLET (Mid-size Screens) */
 /* --- HIGH-PRECISION RESPONSIVE HEADER --- */
 /* --- UNIVERSAL RESPONSIVE HEADER CLEANUP --- */
+/* --- SURGICAL FIX: 767px VISIBILITY & WIDGET CLEANUP --- */
+@media (max-width: 767px) {
+    /* 1. Prevent the Offer Banner from vanishing at the mobile breakpoint */
+    #offerBanner {
+        display: flex !important; /* Forces it back to life */
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 108px !important; /* Positions it below the stacked mobile nav */
+        height: 46px !important;
+        z-index: 10004 !important;
+    }
 
+    /* 2. Remove "Limited Time" text to prevent button crowding on phones */
+    .offer-label, .offer-pulse, .offer-divider {
+        display: none !important;
+    }
+
+    /* 3. Compact the Navigation Bar to prevent overlapping */
+    nav {
+        height: 108px !important;
+    }
+
+    nav > div {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: space-between !important;
+        padding: 8px 12px !important;
+    }
+
+    /* 4. CLEANUP: Transform "My Purchases" into icon-only to save space */
+    button[onclick="showPurchaseHistory()"] {
+        font-size: 0 !important; /* Hides the text label */
+        padding: 8px !important;
+        min-width: 40px;
+    }
+    button[onclick="showPurchaseHistory()"]::before {
+        content: '📜'; /* Keeps only the icon emoji */
+        font-size: 16px;
+    }
+
+    /* 5. Minimalist Wallet & User Menu */
+    #walletDisplay span:first-child, #userEmailDisplay {
+        display: none !important;
+    }
+
+    /* 6. Update Body Offset for the new double-stack height */
+    body {
+        padding-top: 154px !important; /* 108px Nav + 46px Banner */
+    }
+}
 /* --- UNIVERSAL FLUID SCALING & ADAPTIVE REPAIR --- */
 
 /* 1. COMPACT DESKTOP & TABLET (Below 1140px) */
