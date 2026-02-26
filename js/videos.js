@@ -105,15 +105,13 @@ async function init() {
     }
 }
 
-
 async function loadVideosFromSheet() {
-    allVideos = []; // Clear array before loading new data
+    allVideos = []; 
     const csvUrl = CONFIG.SHEET_CSV_URL;
-    console.log('📡 Fetching from:', csvUrl);
     
     try {
         const response = await fetch(csvUrl);
-        if (!response.ok) throw new Error('Failed to fetch sheet: HTTP ' + response.status);
+        if (!response.ok) throw new Error('Failed to fetch sheet');
         
         const csvText = await response.text();
         const rows = parseCSV(csvText);
@@ -122,14 +120,10 @@ async function loadVideosFromSheet() {
         
         const hasFeaturedColumn = rows[0].length >= 15;
         
-        // --- DATA SNIFFER & MAPPING LOOP ---
+        // --- SINGLE MAPPING LOOP ---
         for (let i = 1; i < rows.length; i++) {
             const row = rows[i];
-            
-            // 1. Target Column N (Index 13) for the High Res URL source
-            const highResUrl = (row[13] || '').toString().trim();
-            
-            // 2. Sniffer: Extract characters between underscores specifically at the end of the filename
+            const highResUrl = (row[13] || '').toString().trim(); // Column N / Index 13
             const flexibleMatch = highResUrl.match(/_([^_]+)_\.[a-z0-9]+$/i);
             const technicalExtension = flexibleMatch ? flexibleMatch[1].toUpperCase() : "";
 
@@ -146,42 +140,33 @@ async function loadVideosFromSheet() {
                 format: (row[9] || '16:9').toString().trim(),
                 resolution: (row[10] || '').toString().trim(),
                 tags: (row[11] || '').toString().trim(),
-                highResUrl: highResUrl, // Synced source
+                highResUrl: highResUrl,
                 featured: hasFeaturedColumn ? (row[14] === 'TRUE' || row[14] === 'true' || row[14] === true) : false,
                 fileFormat: technicalExtension 
             };
 
-            // 3. Validation and Metadata Collection
+            // VALIDATION & METADATA COLLECTION
             if (video.id && video.title && video.thumbnail && video.preview) {
                 allVideos.push(video);
                 
                 if (video.category) {
                     categories.add(video.category);
-                    if (!subcategories[video.category]) {
-                        subcategories[video.category] = new Set();
-                    }
-                    if (video.subcategory) {
-                        subcategories[video.category].add(video.subcategory);
-                    }
+                    if (!subcategories[video.category]) subcategories[video.category] = new Set();
+                    if (video.subcategory) subcategories[video.category].add(video.subcategory);
                     
                     const catSubKey = `${video.category}|${video.subcategory}`;
-                    if (!subs[catSubKey]) {
-                        subs[catSubKey] = new Set();
-                    }
-                    if (video.sub) {
-                        subs[catSubKey].add(video.sub);
-                    }
+                    if (!subs[catSubKey]) subs[catSubKey] = new Set();
+                    if (video.sub) subs[catSubKey].add(video.sub);
                 }
             }
         }
-        
-        console.log(`✅ Successfully loaded ${allVideos.length} videos`);
-        
+        console.log(`✅ Loaded ${allVideos.length} videos`);
     } catch (error) {
-        console.error('❌ Error loading videos:', error);
+        console.error('❌ Error:', error);
         throw error;
     }
 }
+
     
 
         
