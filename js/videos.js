@@ -216,7 +216,8 @@ async function loadVideosFromSheet() {
                 tags: (row[11] || '').toString().trim(),
                 highResUrl: (row[13] || '').toString().trim(), 
                 featured: hasFeaturedColumn ? (row[14] === 'TRUE' || row[14] === 'true' || row[14] === true) : false,
-                fileFormat: technicalExtension 
+                fileFormat: technicalExtension,
+                assetFormat: (row[20] || '').toString().trim() // <-- THE FIX: PULLS FROM COLUMN U
             };
             
             if (video.id && video.title && video.thumbnail && video.preview) {
