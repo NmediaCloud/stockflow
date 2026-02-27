@@ -21,15 +21,17 @@ function openModal(video) {
     document.getElementById('modalDescription').innerText = video.description;
     // --- AREA 2 MOUNT: FILE FORMAT DISPLAY ---
     // --- Area 2: File Format Mount ---
+// --- Area 2 Mount: File Format Display ---
     const fileFormatEl = document.getElementById('modalFileFormat');
     if (fileFormatEl) {
         if (video.fileFormat) {
-            fileFormatEl.innerText = `.${video.fileFormat.toLowerCase()}`;
+            // Displays your exact text, with a dot in front
+            fileFormatEl.innerText = `.${video.fileFormat}`; 
             fileFormatEl.style.display = 'inline-block';
-       } else {
-           fileFormatEl.style.display = 'none'; // No info, no display
-       }
- }
+        } else {
+            fileFormatEl.style.display = 'none';
+        }
+    }
 
     // Update Tags
     const tagsContainer = document.getElementById('modalTags');
