@@ -58,6 +58,8 @@ function generateAssetFormatBar() {
     container.innerHTML = html;
 }
 // Handles the click and highlighting
+
+// Handles the click and highlighting
 function filterByAssetFormat(format) {
     currentAssetFormat = format;
     
@@ -71,13 +73,9 @@ function filterByAssetFormat(format) {
         }
     });
 
-    // Re-trigger your existing category filter logic
-    if (typeof filterByCategory === 'function') {
-        filterByCategory(typeof currentCategory !== 'undefined' ? currentCategory : 'All'); 
-    }
+    // CRITICAL FIX: Directly call your master rendering function!
+    filterVideos(); 
 }
-
-
 
 // ===============================
 
