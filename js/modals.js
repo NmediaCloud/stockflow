@@ -20,11 +20,16 @@ function openModal(video) {
     document.getElementById('modalPrice').innerText       = video.price;
     document.getElementById('modalDescription').innerText = video.description;
     // --- AREA 2 MOUNT: FILE FORMAT DISPLAY ---
+    // --- Area 2: File Format Mount ---
     const fileFormatEl = document.getElementById('modalFileFormat');
     if (fileFormatEl) {
-        fileFormatEl.innerText = video.fileFormat ? `.${video.fileFormat}` : "";
-        fileFormatEl.style.display = video.fileFormat ? 'inline-block' : 'none';
-    }
+        if (video.fileFormat) {
+            fileFormatEl.innerText = `.${video.fileFormat}`;
+            fileFormatEl.style.display = 'inline-block';
+       } else {
+           fileFormatEl.style.display = 'none'; // No info, no display
+       }
+ }
 
     // Update Tags
     const tagsContainer = document.getElementById('modalTags');
