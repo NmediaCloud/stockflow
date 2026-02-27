@@ -163,9 +163,9 @@ async function loadVideosFromSheet() {
                 format: (row[9] || '16:9').toString().trim(),
                 resolution: (row[10] || '').toString().trim(),
                 tags: (row[11] || '').toString().trim(),
-                highResUrl: highResUrl,
+                highResUrl: (row[13] || '').toString().trim(), // URL is at Index 13
                 featured: hasFeaturedColumn ? (row[14] === 'TRUE' || row[14] === 'true' || row[14] === true) : false,
-                fileFormat: formatMatch ? formatMatch[1].toUpperCase() : "" // The Sniffer result
+                fileFormat: technicalExtension // This stores "MP4", "PNG", etc.
             };
             
             if (video.id && video.title && video.thumbnail && video.preview) {
