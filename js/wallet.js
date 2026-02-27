@@ -130,23 +130,27 @@ async function addFunds(amount) {
 }
 
 // ---- PURCHASE ----
+// ---- PURCHASE ----
 
 async function purchaseVideo(videoId, videoTitle, price) {
+    const numPrice = parseFloat(price);
+
     // 1. GATEKEEPER: LOGIN CHECK
     if (!currentUser.isLoggedIn) {
-        closeModal(); // Closes the video preview
+        if (typeof window.closeModal === 'function') window.closeModal(); 
         showLoginModal();
-        showNotification('Please sign in to purchase', 'info');
+        window.showNotification('Please sign in to purchase', 'info');
         return;
     }
 
     try {
-        showNotification('Checking license status...', 'info');
+        window.showNotification('Checking license status...', 'info');
         
         // 2. GATEKEEPER: DUPLICATE / LICENSE CHECK
-        // We refresh the list first to ensure we have the latest data
         await loadUserPurchases(currentUser.email);
-        const alreadyOwned = currentUser.purchases.find(p => p.videoId === videoId);
+        
+        // Use '==' instead of '===' to prevent string/number mismatches!
+        const alreadyOwned = currentUser.purchases.find(p => p.videoId == videoId);
         
         if (alreadyOwned) {
             const purchaseDate = new Date(alreadyOwned.date).toLocaleDateString();
@@ -155,27 +159,25 @@ async function purchaseVideo(videoId, videoTitle, price) {
                 `Each purchase is for ONE project. If this is for a NEW project, click OK to purchase another license.\n\n` +
                 `If you just need to re-download for the SAME project, click Cancel and go to "My Purchases".`
             );
-            if (!confirmRepurchase) return;
+            if (!confirmRepurchase) return; // User canceled the duplicate purchase
         }
 
         // 3. GATEKEEPER: WALLET CHECK
-        // We refresh user data to get the absolute latest balance
         await loadUserData(currentUser.email);
         
-        if (currentUser.wallet < price) {
-            const shortage = (price - currentUser.wallet).toFixed(2);
-            showNotification(`Insufficient funds. You need $${shortage} more.`, 'error');
+        if (currentUser.wallet < numPrice) {
+            const shortage = (numPrice - currentUser.wallet).toFixed(2);
+            window.showNotification(`Insufficient funds. You need $${shortage} more.`, 'error');
             
             // Auto-transition to Top-Up Modal
-            closeModal();
+            if (typeof window.closeModal === 'function') window.closeModal();
             showTopUpModal();
             return;
         }
 
         // 4. EXECUTION: INTERNAL WALLET DEDUCTION
-        // If we reach here, they are logged in, aware of the license, and have the money.
-        showNotification('Processing purchase...', 'info');
-        const url = `${CONFIG.API_URL}?action=purchase&email=${encodeURIComponent(currentUser.email)}&videoId=${encodeURIComponent(videoId)}&videoTitle=${encodeURIComponent(videoTitle)}&amount=${price}`;
+        window.showNotification('Processing transaction...', 'info');
+        const url = `${CONFIG.API_URL}?action=purchase&email=${encodeURIComponent(currentUser.email)}&videoId=${encodeURIComponent(videoId)}&videoTitle=${encodeURIComponent(videoTitle)}&amount=${numPrice}`;
         
         const response = await fetch(url);
         const result = await response.json();
@@ -184,37 +186,33 @@ async function purchaseVideo(videoId, videoTitle, price) {
             currentUser.wallet = result.newBalance;
             await loadUserPurchases(currentUser.email); // Sync the local list
             updateWalletDisplay();
-            closeModal();
-            showNotification('✔️ Purchase successful!', 'success');
+            
+            if (typeof window.closeModal === 'function') window.closeModal();
+            window.showNotification('✔️ Purchase successful!', 'success');
             showDownloadModal(videoTitle, result.downloadLink);
         } else {
-            showNotification('Error: ' + (result.message || 'Purchase failed'), 'error');
+            window.showNotification('Error: ' + (result.message || 'Purchase failed'), 'error');
         }
 
     } catch (error) {
         console.error('Fulfillment Pipeline Error:', error);
-        showNotification('Error connecting to wallet system', 'error');
+        window.showNotification('Error connecting to wallet system', 'error');
     }
 }
 
-// ---- Updated handle purchasce DOWNLOAD MODAL ----
 // ---- Updated handle purchase DOWNLOAD MODAL ----
 function handlePurchase() {
-    // 1. Check if we have a video selected in the global 'window.currentVideo'
-    // This was set when you clicked the video card in openModal
     if (!window.currentVideo) {
         console.error("❌ No video selected. Logic stopped.");
+        window.showNotification("Error: No video selected.", "error");
         return;
     }
     
-    // 2. Safely extract the data
     const videoId = window.currentVideo.id;
     const videoTitle = window.currentVideo.title;
     const priceValue = parseFloat(window.currentVideo.price);
 
     console.log(`💰 Attempting purchase: ${videoTitle} for $${priceValue}`);
-
-    // 3. Trigger the heavy lifting function
     purchaseVideo(videoId, videoTitle, priceValue);
 }
 // ---- DOWNLOAD MODAL ----
@@ -332,130 +330,6 @@ window.closeLicenseModal = closeLicenseModal;
 // FINAL CORRECTED BRIDGE
 // ============================================
 
-
-window.openModal = function(video) {
-    console.log("💎 Bridge Active. Opening:", video.title);
-    window.currentVideo = video;
-
-    const modal = document.getElementById('previewModal');
-    if (!modal) return;
-
-    // 1. Update All Metadata Fields
-    const fields = {
-        'modalTitle': video.title,
-        'modalCategory': video.category,
-        'modalSubcategory': video.subcategory || 'N/A',
-        'modalSub': video.sub || 'N/A',
-        'modalFormat': video.format,
-        'modalResolution': video.resolution,
-        'modalPrice': parseFloat(video.price).toFixed(2),
-        'modalDescription': video.description
-    };
-
-    // Loop through the fields and update the UI if the element exists
-    for (const [id, value] of Object.entries(fields)) {
-        const el = document.getElementById(id);
-        if (el) {
-            // Force it to a string to ensure .00 stays visible
-            el.innerText = value.toString(); 
-        }
-        
-    }
-
-    // 2. Handle Tags
-    const tagsContainer = document.getElementById('modalTags');
-    if (tagsContainer) {
-        tagsContainer.innerHTML = '';
-        if (video.tags) {
-            video.tags.split(',').map(t => t.trim()).filter(t => t).forEach(tag => {
-                const span = document.createElement('span');
-                span.className = 'px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs';
-                span.innerText = tag;
-                tagsContainer.appendChild(span);
-            });
-        }
-    }
-
-    // 3. Handle Media Injection (Video/Image)
-    const container = document.getElementById('modalMediaContainer');
-    if (container && video.preview) {
-        const fileUrl = video.preview.toLowerCase();
-        if (fileUrl.endsWith(".mp4") || fileUrl.endsWith(".webm") || fileUrl.endsWith(".mov")) {
-            container.innerHTML = `
-                <video id="modalVideo" controls class="w-full h-full object-contain" autoplay>
-                    <source src="${video.preview}">
-                </video>`;
-        } else {
-            container.innerHTML = `
-                <img src="${video.preview}" alt="Preview" class="w-full h-full object-contain" />`;
-        }
-    }
-
-    // 4. Show the Modal
-    modal.classList.remove('modal-hidden');
-    modal.classList.add('modal-visible');
-};
-
-
-
-/**
- * Simple Notification System (Required by purchaseVideo function)
- */
-function showNotification(message, type = 'success') {
-    const toast = document.getElementById('notification');
-    const msgEl = document.getElementById('notificationMessage');
-    
-    if (!toast || !msgEl) {
-        console.log(`[${type.toUpperCase()}] ${message}`);
-        return;
-    }
-
-    msgEl.textContent = message;
-    
-    const colors = {
-        'error': '#EF4444', 
-        'info': '#3B82F6',  
-        'success': '#F97316' 
-    };
-    
-    toast.style.backgroundColor = colors[type] || colors.success;
-    toast.style.display = 'block';
-    toast.classList.remove('hidden');
-
-    setTimeout(() => {
-        toast.style.display = 'none';
-        toast.classList.add('hidden');
-    }, 4000);
-}
-
-// Make it global
-window.showNotification = showNotification;
-
-
-// --- SHARE SYSTEM (Safe Add-on) ---
-function copyShareLink() {
-    // Uses the same currentVideo variable we already know is working
-    if (!window.currentVideo) return;
-
-    // Create the link: yoursite.com/?v=123
-    const shareUrl = window.location.origin + window.location.pathname + "?v=" + window.currentVideo.id;
-
-    navigator.clipboard.writeText(shareUrl).then(() => {
-        const btnText = document.getElementById('shareBtnText');
-        if (btnText) {
-            btnText.innerText = "COPIED!";
-            setTimeout(() => { btnText.innerText = "SHARE"; }, 2000);
-        }
-        // Using the notification system we already built!
-        if (typeof showNotification === 'function') {
-            showNotification("Link copied! Share it with your team.", "success");
-        }
-    }).catch(err => {
-        console.error('Could not copy link: ', err);
-    });
-}
-// Expose it so the HTML can see it
-window.copyShareLink = copyShareLink;
 
 // Add this to the bottom of js/wallet.js
 function showAboutModal() {
