@@ -24,33 +24,39 @@ let selectedFormat = 'all';
 let currentAssetFormat = 'All';
 
 // Automatically builds the buttons based on your Google Sheet Data
+// Automatically builds the buttons based on your Google Sheet Data
 function generateAssetFormatBar() {
     const container = document.getElementById('assetsFormatBar');
     if (!container) return;
 
-  // 1. Extract unique formats from your loaded database
-    const formats = new Set();
+    // 1. Extract unique formats, preserving EXACT sheet casing
+    const formatsMap = new Map();
     allVideos.forEach(video => {
         if (video.assetFormat && video.assetFormat.trim() !== "") {
-            formats.add(video.assetFormat.trim().toUpperCase());
+            const rawString = video.assetFormat.trim();
+            const lowerKey = rawString.toLowerCase();
+            
+            // This prevents duplicate buttons (Mp4 vs mp4) but keeps your exact casing
+            if (!formatsMap.has(lowerKey)) {
+                formatsMap.set(lowerKey, rawString); 
+            }
         }
     });
 
-    // 2. Convert to array and sort alphabetically (01 Mp4, 02 Jpg, etc.)
-    const sortedFormats = Array.from(formats).sort();
+    // 2. Convert to array and sort alphabetically
+    const sortedFormats = Array.from(formatsMap.values()).sort();
 
-    // 3. Build the HTML string, starting with the default "ALL ASSETS"
-    let html = `<button onclick="filterByAssetFormat('All')" data-format="All" class="asset-format-btn active border border-orange-500 text-orange-500 bg-black/40 px-4 py-2 rounded transition-colors cursor-pointer">ALL ASSETS</button>`;
+    // 3. Build the HTML string
+    let html = `<button onclick="filterByAssetFormat('All')" data-format="All" class="asset-format-btn active border border-orange-500 text-orange-500 bg-black/40 px-4 py-2 rounded transition-colors cursor-pointer">All Assets</button>`;
 
     // 4. Add the dynamic buttons exactly as they appear in the sheet
     sortedFormats.forEach(fmt => {
-        html += `<button onclick="filterByAssetFormat('${fmt}')" data-format="${fmt}" class="asset-format-btn border border-gray-700 text-gray-400 bg-black/40 px-4 py-2 rounded hover:text-white transition-colors cursor-pointer">${fmt}</button>`;
+        html += `<button onclick="filterByAssetFormat('${fmt}')" data-format="${fmt}" class="asset-format-btn border border-gray-700 text-gray-400 bg-black/40 px-4 py-2 rounded hover:text-white hover:border-gray-500 transition-colors cursor-pointer">${fmt}</button>`;
     });
 
     // 5. Inject into the page
     container.innerHTML = html;
 }
-
 // Handles the click and highlighting
 function filterByAssetFormat(format) {
     currentAssetFormat = format;
