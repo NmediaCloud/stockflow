@@ -1,13 +1,11 @@
 // ============================================
-// modals.js - Updated with Image/Video Logic
+// modals.js - Master UI & Notification Controller
 // ============================================
 
 // ---- PREVIEW MODAL ----
-
 function openModal(video) {
     window.currentVideo = video; // 'window.' makes it accessible to wallet.js!
     const modal = document.getElementById('previewModal');
-    // Identify the container where we will inject the media
     const container = document.getElementById('modalMediaContainer');
 
     // Update Text Metadata
@@ -19,13 +17,11 @@ function openModal(video) {
     document.getElementById('modalResolution').innerText  = video.resolution;
     document.getElementById('modalPrice').innerText       = video.price;
     document.getElementById('modalDescription').innerText = video.description;
-    // --- AREA 2 MOUNT: FILE FORMAT DISPLAY ---
-    // --- Area 2: File Format Mount ---
-// --- Area 2 Mount: File Format Display ---
+
+    // --- Area 2 Mount: File Format Display (Raw String from Sheet) ---
     const fileFormatEl = document.getElementById('modalFileFormat');
     if (fileFormatEl) {
         if (video.fileFormat) {
-            // Displays your exact text, with a dot in front
             fileFormatEl.innerText = `.${video.fileFormat}`; 
             fileFormatEl.style.display = 'inline-block';
         } else {
@@ -50,13 +46,11 @@ function openModal(video) {
         const fileUrl = video.preview.toLowerCase();
         
         if (fileUrl.endsWith(".mp4") || fileUrl.endsWith(".webm") || fileUrl.endsWith(".mov")) {
-            // Inject Video Player
             container.innerHTML = `
                 <video id="modalVideo" controls class="w-full h-full object-contain" autoplay>
                     <source src="${video.preview}">
                 </video>`;
         } else {
-            // Inject Image (WebP, JPG, etc.)
             container.innerHTML = `
                 <img src="${video.preview}" alt="Preview" class="w-full h-full object-contain" />`;
         }
@@ -79,39 +73,29 @@ function closeModal() {
         videoPlayer.src = "";
     }
 
-    // Clear the container content
     container.innerHTML = '';
-    
     modal.classList.remove('modal-visible');
     modal.classList.add('modal-hidden');
 }
-
 
 function scrollToSearch() {
     const searchInput = document.getElementById('searchInput');
     if (!searchInput) return;
 
-    // Calculate position: Element Top - Frozen Header Height (123px)
     const headerHeight = 125; 
     const elementPosition = searchInput.getBoundingClientRect().top + window.pageYOffset;
-    const offsetPosition = elementPosition - headerHeight - 20; // Extra 20px for breathing room
+    const offsetPosition = elementPosition - headerHeight - 20;
 
-    // 1. Smooth Scroll to the search bar
-    window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth"
-    });
+    window.scrollTo({ top: offsetPosition, behavior: "smooth" });
 
-    // 2. Focus the input after a short delay (once scrolling finishes)
     setTimeout(() => {
         searchInput.focus();
-        // Optional: give the search input a quick orange glow to highlight it
         searchInput.classList.add('ring-4', 'ring-orange-500');
         setTimeout(() => searchInput.classList.remove('ring-4', 'ring-orange-500'), 1500);
     }, 800);
 }
 
-// Copies the deep link to the specific video and shows a Toast Notification
+// --- SHARE SYSTEM ---
 function copyShareLink() {
     const activeVideo = window.currentVideo;
     if (!activeVideo) {
@@ -122,12 +106,10 @@ function copyShareLink() {
     const shareUrl = `${window.location.origin}${window.location.pathname}?v=${activeVideo.id}`;
     
     navigator.clipboard.writeText(shareUrl).then(() => {
-        // 1. Trigger the sleek pop-up toast notification
         if (typeof window.showNotification === 'function') {
             window.showNotification('🔗 URL copied to clipboard! You can now share it.', 'success');
         }
 
-        // 2. Also update the button text as an extra visual cue
         const btnText = document.getElementById('shareBtnText');
         if (btnText) {
             btnText.innerText = 'Copied!';
@@ -140,3 +122,37 @@ function copyShareLink() {
         }
     });
 }
+
+// --- NOTIFICATION SYSTEM ---
+function showNotification(message, type = 'success') {
+    const toast = document.getElementById('notification');
+    const msgEl = document.getElementById('notificationMessage');
+    
+    if (!toast || !msgEl) {
+        console.log(`[${type.toUpperCase()}] ${message}`);
+        return;
+    }
+
+    msgEl.textContent = message;
+    
+    const colors = {
+        'error': '#EF4444', 
+        'info': '#3B82F6',  
+        'success': '#F97316' 
+    };
+    
+    toast.style.backgroundColor = colors[type] || colors.success;
+    toast.style.display = 'block';
+    toast.classList.remove('hidden');
+
+    setTimeout(() => {
+        toast.style.display = 'none';
+        toast.classList.add('hidden');
+    }, 4000);
+}
+
+// --- GLOBAL EXPORTS ---
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.copyShareLink = copyShareLink;
+window.showNotification = showNotification;
