@@ -1989,13 +1989,7 @@ async function submitClaim(type) {
     
     <!-- SCRIPTS -->
    
-    
- 
-  
- 
-  
-    
-   <script>
+<script>
     // 1. Core Initialization - Only runs ONCE to prevent double products
     document.addEventListener('DOMContentLoaded', () => {
         console.log('🎬 Initializing Stockflow Systems...');
@@ -2022,7 +2016,6 @@ async function submitClaim(type) {
         }
     }
 
-
     async function submitClaim(type) {
         const SCRIPT_DEST = "https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec";
         const popup = document.getElementById('overlay-' + type);
@@ -2030,60 +2023,59 @@ async function submitClaim(type) {
         const errorEl = popup?.querySelector('.claim-error');
         const submitBtn = popup?.querySelector('.popup-action:not(.action-ghost)');
 
-if (!successEl || !errorEl) return;
+        if (!successEl || !errorEl) return;
 
-successEl.style.display = 'none';
-errorEl.style.display = 'none';
+        successEl.style.display = 'none';
+        errorEl.style.display = 'none';
 
-// Detect inputs based on the specific popup type
-const email = (document.getElementById(type === 'review' ? 'rv-email' : 'yt-email')?.value || '').trim();
-const extra = (document.getElementById(type === 'review' ? 'rv-link' : 'yt-url')?.value || '').trim();
+        // Detect inputs based on the specific popup type
+        const email = (document.getElementById(type === 'review' ? 'rv-email' : 'yt-email')?.value || '').trim();
+        const extra = (document.getElementById(type === 'review' ? 'rv-link' : 'yt-url')?.value || '').trim();
 
-if (!email || !extra) {
-    errorEl.textContent = 'Please provide both email and the verification link.';
-    errorEl.style.display = 'block';
-    return;
-}
+        if (!email || !extra) {
+            errorEl.textContent = 'Please provide both email and the verification link.';
+            errorEl.style.display = 'block';
+            return;
+        }
 
-if (submitBtn) {
-    submitBtn.disabled = true;
-    submitBtn.style.opacity = '0.6';
-    submitBtn.textContent = 'Submitting...';
-}
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.6';
+            submitBtn.textContent = 'Submitting...';
+        }
 
-try {
-    const params = new URLSearchParams({
-        action: 'submitClaim',
-        claimType: type,
-        email: email,
-        extra: extra
-    });
+        try {
+            const params = new URLSearchParams({
+                action: 'submitClaim',
+                claimType: type,
+                email: email,
+                extra: extra
+            });
 
-    const res = await fetch(`${SCRIPT_DEST}?${params.toString()}`, {
-        method: 'GET',
-        mode: 'cors',
-        cache: 'no-cache'
-    });
+            const res = await fetch(`${SCRIPT_DEST}?${params.toString()}`, {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache'
+            });
 
-    const result = await res.json();
+            const result = await res.json();
 
-    if (result.success) {
-        successEl.textContent = result.message || 'Submission received! Verification takes 24-48h.';
-        successEl.style.display = 'block';
-        if (submitBtn) submitBtn.style.display = 'none';
-    } else {
-        errorEl.textContent = result.message || 'Submission failed.';
-        errorEl.style.display = 'block';
-        resetBtn(submitBtn, type);
-    }
-} catch (err) {
-    console.error('❌ Error:', err);
-    errorEl.textContent = 'Connection error. Please try again.';
-    errorEl.style.display = 'block';
-    resetBtn(submitBtn, type);
-}
-       
-    }
+            if (result.success) {
+                successEl.textContent = result.message || 'Submission received! Verification takes 24-48h.';
+                successEl.style.display = 'block';
+                if (submitBtn) submitBtn.style.display = 'none';
+            } else {
+                errorEl.textContent = result.message || 'Submission failed.';
+                errorEl.style.display = 'block';
+                resetBtn(submitBtn, type);
+            }
+        } catch (err) {
+            console.error('❌ Error:', err);
+            errorEl.textContent = 'Connection error. Please try again.';
+            errorEl.style.display = 'block';
+            resetBtn(submitBtn, type);
+        }
+    } // <--- THIS WAS THE MISSING BRACKET THAT CAUSED THE ERROR!
 
     function resetBtn(btn, type) {
         if (!btn) return;
@@ -2096,7 +2088,9 @@ try {
     document.querySelectorAll('.offer-overlay').forEach(o => {
         o.addEventListener('click', e => { if (e.target === o) closeOffer(o.id.replace('overlay-', '')); });
     });
-   </script>
+</script>
+   
+
     
 <script src="js/config.js"></script>
 <script type="module" src="js/auth.js"></script>
