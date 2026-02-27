@@ -24,7 +24,7 @@ function openModal(video) {
     const fileFormatEl = document.getElementById('modalFileFormat');
     if (fileFormatEl) {
         if (video.fileFormat) {
-            fileFormatEl.innerText = `.${video.fileFormat}`;
+            fileFormatEl.innerText = `.${video.fileFormat.toLowerCase()}`;
             fileFormatEl.style.display = 'inline-block';
        } else {
            fileFormatEl.style.display = 'none'; // No info, no display
