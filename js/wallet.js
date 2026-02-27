@@ -185,12 +185,12 @@ function promptDuplicateWarning(videoTitle, purchaseDate) {
             modal.style.cssText = 'display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; align-items:center; justify-content:center; backdrop-filter:blur(3px);';
             modal.innerHTML = `
                 <div style="background:white; padding:30px; border-radius:12px; max-width:400px; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.15); font-family:sans-serif; margin: 20px;">
-                    <h3 style="color:#F97316; font-size:1.4rem; font-weight:800; margin-top:0; margin-bottom:15px;">💡You already own! </h3>
+                    <h3 style="color:#F97316; font-size:1.4rem; font-weight:800; margin-top:0; margin-bottom:15px;">💡You already own a Lisence! </h3>
                     
-                    <p style="margin-bottom:10px; font-size:1rem; color:#374151; line-height:1.5;">If you are looking to use it in a different project thats fine! <br><strong id="dupVideoTitle" style="color:#000;"></strong> <br><span style="font-size:0.85rem; color:#6B7280;">(Purchased on <span id="dupVideoDate"></span>)</span></p>
+                    <p style="margin-bottom:10px; font-size:1rem; color:#374151; line-height:1.5;">If its for a new project thats all Good! <br><strong id="dupVideoTitle" style="color:#000;"></strong> <br><span style="font-size:0.85rem; color:#6B7280;">(Purchased on <span id="dupVideoDate"></span>)</span></p>
                     
                     <div style="background:#FFF7ED; border:1px solid #FFEDD5; padding:15px; border-radius:8px; margin-bottom:20px;">
-                        <p style="margin:0; font-size:0.85rem; color:#C2410C;">If this is for a <b>NEW</b> project, no action is needed. Your new license will process automatically in:</p>
+                        <p style="margin:0; font-size:0.85rem; color:#C2410C;">Download will begin <b>NEW</b>, no action is needed. Your new license will process automatically in:</p>
                         <p id="dupCountdown" style="margin:10px 0 0 0; color:#F97316; font-size:2rem; font-weight:900; line-height:1;">5</p>
                     </div>
                     
@@ -216,7 +216,7 @@ function promptDuplicateWarning(videoTitle, purchaseDate) {
         
         warningModal.style.display = 'flex'; // Show modal
 
-        let timeLeft = 5; // 5-second grace period
+        let timeLeft = 10; // 5-second grace period
         countdownEl.innerText = timeLeft;
 
         // 3. Start the timer logic
