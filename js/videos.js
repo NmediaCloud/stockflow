@@ -513,8 +513,9 @@ function createVideoCard(video) {
     }[video.format] || video.format;
 
     // Minimalistic extension tag logic
+    // Displays exactly what was sniffed, no forcing
     const extensionTag = video.fileFormat 
-        ? `<span class="ml-2 bg-gray-700 text-white px-1.5 py-0.5 rounded text-[10px] font-bold uppercase border border-gray-600">${video.fileFormat}</span>`
+        ? `<span class="ml-2 bg-gray-700 text-white px-1.5 py-0.5 rounded text-[10px] border border-gray-600">${video.fileFormat}</span>`
         : "";
 
     card.innerHTML = `
