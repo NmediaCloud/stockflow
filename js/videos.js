@@ -141,17 +141,9 @@ async function loadVideosFromSheet() {
             const hrFileName = (row[12] || '').toString().trim();
             const formatMatch = hrFileName.match(/_([^_]+)_\.[a-z0-9]+$/i);
             const technicalExtension = formatMatch ? formatMatch[1].toUpperCase() : "";
+           // 3. THE SINGLE VIDEO OBJECT
             const video = {
                 id: (row[0] || '').toString().trim(),
-                title: (row[1] || '').toString().trim(),
-                // ... other fields (2 through 11) ...
-                highResUrl: (row[13] || '').toString().trim(), // URL is at Index 13
-                featured: hasFeaturedColumn ? (row[14] === 'TRUE' || row[14] === 'true' || row[14] === true) : false,
-                fileFormat: technicalExtension // This stores "MP4", "PNG", etc.
-            };
-            
-            const video = {
-             id: (row[0] || '').toString().trim(),
                 title: (row[1] || '').toString().trim(),
                 category: (row[2] || '').toString().trim(),
                 subcategory: (row[3] || '').toString().trim(),
@@ -163,9 +155,9 @@ async function loadVideosFromSheet() {
                 format: (row[9] || '16:9').toString().trim(),
                 resolution: (row[10] || '').toString().trim(),
                 tags: (row[11] || '').toString().trim(),
-                highResUrl: (row[13] || '').toString().trim(), // URL is at Index 13
+                highResUrl: (row[13] || '').toString().trim(), 
                 featured: hasFeaturedColumn ? (row[14] === 'TRUE' || row[14] === 'true' || row[14] === true) : false,
-                fileFormat: technicalExtension // This stores "MP4", "PNG", etc.
+                fileFormat: technicalExtension 
             };
             
             if (video.id && video.title && video.thumbnail && video.preview) {
