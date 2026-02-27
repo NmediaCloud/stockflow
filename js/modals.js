@@ -19,6 +19,12 @@ function openModal(video) {
     document.getElementById('modalResolution').innerText  = video.resolution;
     document.getElementById('modalPrice').innerText       = video.price;
     document.getElementById('modalDescription').innerText = video.description;
+    // --- AREA 2 MOUNT: FILE FORMAT DISPLAY ---
+    const fileFormatEl = document.getElementById('modalFileFormat');
+    if (fileFormatEl) {
+        fileFormatEl.innerText = video.fileFormat ? `.${video.fileFormat}` : "";
+        fileFormatEl.style.display = video.fileFormat ? 'inline-block' : 'none';
+    }
 
     // Update Tags
     const tagsContainer = document.getElementById('modalTags');
