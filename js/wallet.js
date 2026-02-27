@@ -131,9 +131,14 @@ async function addFunds(amount) {
 
 // ---- PURCHASE ----
 // ---- PURCHASE ----
+// ---- PURCHASE ----
 
 async function purchaseVideo(videoId, videoTitle, price) {
     const numPrice = parseFloat(price);
+
+    // Grab the button to show visual feedback (Assuming it uses onclick="handlePurchase()")
+    const purchaseBtn = document.querySelector('button[onclick="handlePurchase()"]');
+    const originalBtnText = purchaseBtn ? purchaseBtn.innerText : "Download Now";
 
     // 1. GATEKEEPER: LOGIN CHECK
     if (!currentUser.isLoggedIn) {
@@ -144,12 +149,8 @@ async function purchaseVideo(videoId, videoTitle, price) {
     }
 
     try {
-        window.showNotification('Checking license status...', 'info');
-        
         // 2. GATEKEEPER: DUPLICATE / LICENSE CHECK
         await loadUserPurchases(currentUser.email);
-        
-        // Use '==' instead of '===' to prevent string/number mismatches!
         const alreadyOwned = currentUser.purchases.find(p => p.videoId == videoId);
         
         if (alreadyOwned) {
@@ -159,7 +160,7 @@ async function purchaseVideo(videoId, videoTitle, price) {
                 `Each purchase is for ONE project. If this is for a NEW project, click OK to purchase another license.\n\n` +
                 `If you just need to re-download for the SAME project, click Cancel and go to "My Purchases".`
             );
-            if (!confirmRepurchase) return; // User canceled the duplicate purchase
+            if (!confirmRepurchase) return; // User canceled
         }
 
         // 3. GATEKEEPER: WALLET CHECK
@@ -175,12 +176,31 @@ async function purchaseVideo(videoId, videoTitle, price) {
             return;
         }
 
-        // 4. EXECUTION: INTERNAL WALLET DEDUCTION
-        window.showNotification('Processing transaction...', 'info');
-        const url = `${CONFIG.API_URL}?action=purchase&email=${encodeURIComponent(currentUser.email)}&videoId=${encodeURIComponent(videoId)}&videoTitle=${encodeURIComponent(videoTitle)}&amount=${numPrice}`;
+        // ==========================================
+        // 4. EXECUTION: VISUAL LOADING STATE
+        // ==========================================
+        window.showNotification('🔄 Processing transaction... please wait.', 'info');
         
+        // Disable the button and change text so the user knows it's working
+        if (purchaseBtn) {
+            purchaseBtn.disabled = true;
+            purchaseBtn.innerText = "Processing...";
+            purchaseBtn.style.opacity = "0.6";
+            purchaseBtn.style.cursor = "not-allowed";
+        }
+
+        // The actual API call
+        const url = `${CONFIG.API_URL}?action=purchase&email=${encodeURIComponent(currentUser.email)}&videoId=${encodeURIComponent(videoId)}&videoTitle=${encodeURIComponent(videoTitle)}&amount=${numPrice}`;
         const response = await fetch(url);
         const result = await response.json();
+
+        // Restore the button to normal after the API finishes
+        if (purchaseBtn) {
+            purchaseBtn.disabled = false;
+            purchaseBtn.innerText = originalBtnText;
+            purchaseBtn.style.opacity = "1";
+            purchaseBtn.style.cursor = "pointer";
+        }
 
         if (result.success) {
             currentUser.wallet = result.newBalance;
@@ -191,14 +211,23 @@ async function purchaseVideo(videoId, videoTitle, price) {
             window.showNotification('✔️ Purchase successful!', 'success');
             showDownloadModal(videoTitle, result.downloadLink);
         } else {
-            window.showNotification('Error: ' + (result.message || 'Purchase failed'), 'error');
+            window.showNotification('❌ Error: ' + (result.message || 'Purchase failed'), 'error');
         }
 
     } catch (error) {
         console.error('Fulfillment Pipeline Error:', error);
-        window.showNotification('Error connecting to wallet system', 'error');
+        window.showNotification('❌ Error connecting to secure wallet system', 'error');
+        
+        // Make sure to restore the button even if there's a connection error
+        if (purchaseBtn) {
+            purchaseBtn.disabled = false;
+            purchaseBtn.innerText = originalBtnText;
+            purchaseBtn.style.opacity = "1";
+            purchaseBtn.style.cursor = "pointer";
+        }
     }
 }
+
 
 // ---- Updated handle purchase DOWNLOAD MODAL ----
 function handlePurchase() {
