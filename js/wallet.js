@@ -173,6 +173,8 @@ async function addFunds(amount) {
 // ---- PURCHASE ----
 // ---- CUSTOM DUPLICATE WARNING MODAL ----
 // Dynamically creates a 5-second auto-proceeding warning modal
+// ---- CUSTOM DUPLICATE WARNING MODAL (Softer UI) ----
+// Dynamically creates a 5-second auto-proceeding warning modal
 function promptDuplicateWarning(videoTitle, purchaseDate) {
     return new Promise((resolve) => {
         // 1. Create the modal if it doesn't exist yet
@@ -180,18 +182,27 @@ function promptDuplicateWarning(videoTitle, purchaseDate) {
         if (!modal) {
             modal = document.createElement('div');
             modal.id = 'duplicateWarningModal';
-            modal.style.cssText = 'display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:999999; align-items:center; justify-content:center; backdrop-filter:blur(3px);';
+            modal.style.cssText = 'display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:999999; align-items:center; justify-content:center; backdrop-filter:blur(3px);';
             modal.innerHTML = `
-                <div style="background:white; padding:30px; border-radius:12px; max-width:400px; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.5); font-family:sans-serif; margin: 20px;">
-                    <h3 style="color:#F97316; font-size:1.4rem; font-weight:800; margin-top:0; margin-bottom:15px;">⚠️ Duplicate License</h3>
+                <div style="background:white; padding:30px; border-radius:12px; max-width:400px; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.15); font-family:sans-serif; margin: 20px;">
+                    <h3 style="color:#F97316; font-size:1.4rem; font-weight:800; margin-top:0; margin-bottom:15px;">💡 License Info</h3>
+                    
                     <p style="margin-bottom:10px; font-size:1rem; color:#374151; line-height:1.5;">You already own a license for <br><strong id="dupVideoTitle" style="color:#000;"></strong> <br><span style="font-size:0.85rem; color:#6B7280;">(Purchased on <span id="dupVideoDate"></span>)</span></p>
-                    <div style="background:#FEF3C7; padding:10px; border-radius:8px; margin-bottom:20px;">
-                        <p style="margin:0; font-size:0.85rem; color:#92400E;">If this is for a <b>NEW</b> project, no action is needed. Your new license will process automatically in:</p>
-                        <p id="dupCountdown" style="margin:10px 0 0 0; color:#EF4444; font-size:2rem; font-weight:900; line-height:1;">5</p>
+                    
+                    <div style="background:#FFF7ED; border:1px solid #FFEDD5; padding:15px; border-radius:8px; margin-bottom:20px;">
+                        <p style="margin:0; font-size:0.85rem; color:#C2410C;">If this is for a <b>NEW</b> project, no action is needed. Your new license will process automatically in:</p>
+                        <p id="dupCountdown" style="margin:10px 0 0 0; color:#F97316; font-size:2rem; font-weight:900; line-height:1;">5</p>
                     </div>
-                    <button id="dupCancelBtn" style="background:#EF4444; color:white; padding:12px 20px; border-radius:8px; font-weight:bold; font-size:1rem; width:100%; cursor:pointer; border:none; transition:background 0.2s;">Cancel Purchase</button>
+                    
+                    <button id="dupCancelBtn" style="background:#F3F4F6; color:#4B5563; padding:12px 20px; border-radius:8px; font-weight:bold; font-size:1rem; width:100%; cursor:pointer; border:1px solid #D1D5DB; transition:background 0.2s;">Wait, Cancel Purchase</button>
                 </div>
             `;
+            
+            // Add hover effect for the cancel button
+            const style = document.createElement('style');
+            style.innerHTML = `#dupCancelBtn:hover { background: #E5E7EB !important; color: #1F2937 !important; }`;
+            document.head.appendChild(style);
+            
             document.body.appendChild(modal);
         }
 
