@@ -94,6 +94,7 @@ async function init() {
         });
         
         buildCategoryButtons();
+        generateAssetFormatBar(); // <--- STEP 3: INSERTED HERE
         filterVideos();
         // --- ADD THIS BLOCK HERE ---
         // --- DEEP LINKING: CATEGORIES & VIDEOS ---
