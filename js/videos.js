@@ -20,6 +20,64 @@ let selectedSubcategory = null;
 let selectedSub = null;
 let selectedFormat = 'all';
 
+// --- NEW: TIER 1 DYNAMIC FORMAT TRACKER ---
+let currentAssetFormat = 'All';
+
+// Automatically builds the buttons based on your Google Sheet Data
+function generateAssetFormatBar() {
+    const container = document.getElementById('assetsFormatBar');
+    if (!container) return;
+
+    // 1. Extract unique formats from your loaded database
+    const formats = new Set();
+    allVideos.forEach(video => {
+        if (video.fileFormat && video.fileFormat.trim() !== "") {
+            formats.add(video.fileFormat.trim());
+        }
+    });
+
+    // 2. Convert to array and sort alphabetically (01 Mp4, 02 Jpg, etc.)
+    const sortedFormats = Array.from(formats).sort();
+
+    // 3. Build the HTML string, starting with the default "ALL ASSETS"
+    let html = `<button onclick="filterByAssetFormat('All')" data-format="All" class="asset-format-btn active border border-orange-500 text-orange-500 bg-black/40 px-4 py-2 rounded transition-colors cursor-pointer">ALL ASSETS</button>`;
+
+    // 4. Add the dynamic buttons exactly as they appear in the sheet
+    sortedFormats.forEach(fmt => {
+        html += `<button onclick="filterByAssetFormat('${fmt}')" data-format="${fmt}" class="asset-format-btn border border-gray-700 text-gray-400 bg-black/40 px-4 py-2 rounded hover:text-white transition-colors cursor-pointer">${fmt}</button>`;
+    });
+
+    // 5. Inject into the page
+    container.innerHTML = html;
+}
+
+// Handles the click and highlighting
+function filterByAssetFormat(format) {
+    currentAssetFormat = format;
+    
+    document.querySelectorAll('.asset-format-btn').forEach(btn => {
+        if (btn.getAttribute('data-format') === format) {
+            btn.classList.add('active', 'border-orange-500', 'text-orange-500');
+            btn.classList.remove('border-gray-700', 'text-gray-400');
+        } else {
+            btn.classList.remove('active', 'border-orange-500', 'text-orange-500');
+            btn.classList.add('border-gray-700', 'text-gray-400');
+        }
+    });
+
+    // Re-trigger your existing category filter logic
+    if (typeof filterByCategory === 'function') {
+        filterByCategory(typeof currentCategory !== 'undefined' ? currentCategory : 'All'); 
+    }
+}
+
+
+
+// ===============================
+
+
+
+
 async function init() {
     console.log('🎬 Initializing Stockflow...');
     
