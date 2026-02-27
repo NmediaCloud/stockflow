@@ -171,17 +171,79 @@ async function addFunds(amount) {
 
 // ---- PURCHASE ----
 // ---- PURCHASE ----
+// ---- CUSTOM DUPLICATE WARNING MODAL ----
+// Dynamically creates a 5-second auto-proceeding warning modal
+function promptDuplicateWarning(videoTitle, purchaseDate) {
+    return new Promise((resolve) => {
+        // 1. Create the modal if it doesn't exist yet
+        let modal = document.getElementById('duplicateWarningModal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'duplicateWarningModal';
+            modal.style.cssText = 'display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:999999; align-items:center; justify-content:center; backdrop-filter:blur(3px);';
+            modal.innerHTML = `
+                <div style="background:white; padding:30px; border-radius:12px; max-width:400px; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.5); font-family:sans-serif; margin: 20px;">
+                    <h3 style="color:#F97316; font-size:1.4rem; font-weight:800; margin-top:0; margin-bottom:15px;">⚠️ Duplicate License</h3>
+                    <p style="margin-bottom:10px; font-size:1rem; color:#374151; line-height:1.5;">You already own a license for <br><strong id="dupVideoTitle" style="color:#000;"></strong> <br><span style="font-size:0.85rem; color:#6B7280;">(Purchased on <span id="dupVideoDate"></span>)</span></p>
+                    <div style="background:#FEF3C7; padding:10px; border-radius:8px; margin-bottom:20px;">
+                        <p style="margin:0; font-size:0.85rem; color:#92400E;">If this is for a <b>NEW</b> project, no action is needed. Your new license will process automatically in:</p>
+                        <p id="dupCountdown" style="margin:10px 0 0 0; color:#EF4444; font-size:2rem; font-weight:900; line-height:1;">5</p>
+                    </div>
+                    <button id="dupCancelBtn" style="background:#EF4444; color:white; padding:12px 20px; border-radius:8px; font-weight:bold; font-size:1rem; width:100%; cursor:pointer; border:none; transition:background 0.2s;">Cancel Purchase</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // 2. Populate the text
+        document.getElementById('dupVideoTitle').innerText = `"${videoTitle}"`;
+        document.getElementById('dupVideoDate').innerText = purchaseDate;
+        
+        const countdownEl = document.getElementById('dupCountdown');
+        const cancelBtn = document.getElementById('dupCancelBtn');
+        const warningModal = document.getElementById('duplicateWarningModal');
+        
+        warningModal.style.display = 'flex'; // Show modal
+
+        let timeLeft = 5; // 5-second grace period
+        countdownEl.innerText = timeLeft;
+
+        // 3. Start the timer logic
+        const timer = setInterval(() => {
+            timeLeft--;
+            countdownEl.innerText = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                warningModal.style.display = 'none';
+                resolve(true); // Timer finished! Auto-proceed with purchase
+            }
+        }, 1000);
+
+        // 4. Cancel button logic
+        cancelBtn.onclick = () => {
+            clearInterval(timer);
+            warningModal.style.display = 'none';
+            resolve(false); // User clicked cancel, abort purchase
+        };
+    });
+}
+
 // ---- PURCHASE ----
 
-async function purchaseVideo(videoId, videoTitle, price) {
+async function purchaseVideo(videoId, videoTitle, price, purchaseBtn, originalBtnText) {
     const numPrice = parseFloat(price);
 
-    // Grab the button to show visual feedback (Assuming it uses onclick="handlePurchase()")
-    const purchaseBtn = document.querySelector('button[onclick="handlePurchase()"]');
-    const originalBtnText = purchaseBtn ? purchaseBtn.innerText : "Download Now";
+    const unlockButton = () => {
+        if (purchaseBtn) {
+            purchaseBtn.disabled = false;
+            purchaseBtn.innerText = originalBtnText;
+            purchaseBtn.style.opacity = "1";
+            purchaseBtn.style.cursor = "pointer";
+        }
+    };
 
-    // 1. GATEKEEPER: LOGIN CHECK
     if (!currentUser.isLoggedIn) {
+        unlockButton();
         if (typeof window.closeModal === 'function') window.closeModal(); 
         showLoginModal();
         window.showNotification('Please sign in to purchase', 'info');
@@ -189,91 +251,88 @@ async function purchaseVideo(videoId, videoTitle, price) {
     }
 
     try {
-        // 2. GATEKEEPER: DUPLICATE / LICENSE CHECK
+        window.showNotification('Checking license & wallet...', 'info');
+        
+        // 1. DUPLICATE CHECK
         await loadUserPurchases(currentUser.email);
         const alreadyOwned = currentUser.purchases.find(p => p.videoId == videoId);
         
         if (alreadyOwned) {
             const purchaseDate = new Date(alreadyOwned.date).toLocaleDateString();
-            const confirmRepurchase = confirm(
-                `⚠️ You already purchased "${videoTitle}" on ${purchaseDate}.\n\n` +
-                `Each purchase is for ONE project. If this is for a NEW project, click OK to purchase another license.\n\n` +
-                `If you just need to re-download for the SAME project, click Cancel and go to "My Purchases".`
-            );
-            if (!confirmRepurchase) return; // User canceled
+            
+            // Trigger our new auto-proceeding countdown modal!
+            const proceed = await promptDuplicateWarning(videoTitle, purchaseDate);
+            
+            if (!proceed) {
+                unlockButton(); // Restore button
+                window.showNotification('Purchase cancelled.', 'info');
+                return; // Stop the code here
+            }
+            // If they didn't cancel, the code automatically continues down to check the wallet!
         }
 
-        // 3. GATEKEEPER: WALLET CHECK
+        // 2. WALLET CHECK
         await loadUserData(currentUser.email);
         
         if (currentUser.wallet < numPrice) {
+            unlockButton(); 
             const shortage = (numPrice - currentUser.wallet).toFixed(2);
             window.showNotification(`Insufficient funds. You need $${shortage} more.`, 'error');
             
-            // Auto-transition to Top-Up Modal
             if (typeof window.closeModal === 'function') window.closeModal();
             showTopUpModal();
             return;
         }
 
-        // ==========================================
-        // 4. EXECUTION: VISUAL LOADING STATE
-        // ==========================================
-        window.showNotification('🔄 Processing transaction... please wait.', 'info');
-        
-        // Disable the button and change text so the user knows it's working
-        if (purchaseBtn) {
-            purchaseBtn.disabled = true;
-            purchaseBtn.innerText = "Processing...";
-            purchaseBtn.style.opacity = "0.6";
-            purchaseBtn.style.cursor = "not-allowed";
-        }
-
-        // The actual API call
+        // 3. EXECUTION: PROCESSING STATE
+        window.showNotification('🔄 Processing transaction...', 'info');
         const url = `${CONFIG.API_URL}?action=purchase&email=${encodeURIComponent(currentUser.email)}&videoId=${encodeURIComponent(videoId)}&videoTitle=${encodeURIComponent(videoTitle)}&amount=${numPrice}`;
+        
         const response = await fetch(url);
         const result = await response.json();
 
-        // Restore the button to normal after the API finishes
-        if (purchaseBtn) {
-            purchaseBtn.disabled = false;
-            purchaseBtn.innerText = originalBtnText;
-            purchaseBtn.style.opacity = "1";
-            purchaseBtn.style.cursor = "pointer";
-        }
+        unlockButton();
 
         if (result.success) {
             currentUser.wallet = result.newBalance;
-            await loadUserPurchases(currentUser.email); // Sync the local list
+            await loadUserPurchases(currentUser.email); 
             updateWalletDisplay();
             
             if (typeof window.closeModal === 'function') window.closeModal();
             window.showNotification('✔️ Purchase successful!', 'success');
             showDownloadModal(videoTitle, result.downloadLink);
         } else {
-            window.showNotification('❌ Error: ' + (result.message || 'Purchase failed'), 'error');
+            window.showNotification('Error: ' + (result.message || 'Purchase failed'), 'error');
         }
 
     } catch (error) {
         console.error('Fulfillment Pipeline Error:', error);
-        window.showNotification('❌ Error connecting to secure wallet system', 'error');
-        
-        // Make sure to restore the button even if there's a connection error
-        if (purchaseBtn) {
-            purchaseBtn.disabled = false;
-            purchaseBtn.innerText = originalBtnText;
-            purchaseBtn.style.opacity = "1";
-            purchaseBtn.style.cursor = "pointer";
-        }
+        unlockButton(); 
+        window.showNotification('Error connecting to wallet system', 'error');
     }
 }
 
-
 // ---- Updated handle purchase DOWNLOAD MODAL ----
 function handlePurchase() {
+    const purchaseBtn = document.querySelector('[onclick*="handlePurchase"]');
+    const originalText = purchaseBtn ? purchaseBtn.innerText : "Download Now";
+
+    if (purchaseBtn) {
+        purchaseBtn.disabled = true;
+        purchaseBtn.innerText = "⏳ Processing...";
+        purchaseBtn.style.opacity = "0.6";
+        purchaseBtn.style.cursor = "wait"; 
+    }
+
     if (!window.currentVideo) {
-        console.error("❌ No video selected. Logic stopped.");
+        console.error("❌ No video selected.");
         window.showNotification("Error: No video selected.", "error");
+        if (purchaseBtn) {
+            purchaseBtn.disabled = false;
+            purchaseBtn.innerText = originalText;
+            purchaseBtn.style.opacity = "1";
+            purchaseBtn.style.cursor = "pointer";
+        }
         return;
     }
     
@@ -281,9 +340,11 @@ function handlePurchase() {
     const videoTitle = window.currentVideo.title;
     const priceValue = parseFloat(window.currentVideo.price);
 
-    console.log(`💰 Attempting purchase: ${videoTitle} for $${priceValue}`);
-    purchaseVideo(videoId, videoTitle, priceValue);
+    purchaseVideo(videoId, videoTitle, priceValue, purchaseBtn, originalText);
 }
+
+
+
 // ---- DOWNLOAD MODAL ----
 
 function showDownloadModal(videoTitle, downloadUrl) {
