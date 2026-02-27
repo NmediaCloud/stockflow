@@ -638,6 +638,9 @@ document.querySelectorAll('.offer-overlay').forEach(o => {
                         <div style="background:#E0F2FE;padding:8px 15px;border-radius:6px;">
                             <span style="font-size:14px;color:#0369A1;">Wallet:</span>
                             <strong id="walletAmount" style="color:#F97316;font-size:18px;">$0.00</strong>
+                            <div onclick="refreshWalletBalance()" class="font-bold text-green-600 cursor-pointer hover:text-green-500 transition-colors" title="Click to refresh balance">
+                                Wallet: <span id="walletAmount">$0.00</span>
+                            </div>
                         </div>
 
 
