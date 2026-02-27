@@ -27,6 +27,46 @@ function updateWalletDisplay() {
         walletDisplay.style.display = 'none';
     }
 }
+// ---- MANUAL WALLET REFRESH ----
+async function refreshWalletBalance() {
+    // Only run if the user is actually logged in
+    if (!currentUser.isLoggedIn || !currentUser.email) return;
+
+    const walletAmountEl = document.getElementById('walletAmount');
+    if (!walletAmountEl) return;
+
+    // 1. Give immediate visual feedback that it's loading
+    const originalText = walletAmountEl.textContent;
+    walletAmountEl.textContent = '↻...';
+    walletAmountEl.style.opacity = '0.7';
+
+    try {
+        // 2. Fetch the absolute latest data from Google Sheets
+        await loadUserData(currentUser.email);
+        
+        // 3. Update the UI with the fresh data
+        updateWalletDisplay();
+        walletAmountEl.style.opacity = '1';
+        
+        if (typeof window.showNotification === 'function') {
+            window.showNotification('Wallet balance synced', 'success');
+        }
+    } catch (error) {
+        console.error('Error refreshing wallet:', error);
+        // Revert the text if it fails
+        walletAmountEl.textContent = originalText;
+        walletAmountEl.style.opacity = '1';
+        if (typeof window.showNotification === 'function') {
+            window.showNotification('Failed to sync wallet', 'error');
+        }
+    }
+}
+
+// Ensure the HTML can see this new function
+window.refreshWalletBalance = refreshWalletBalance;
+
+
+
 
 // ---- LOGIN ----
 
