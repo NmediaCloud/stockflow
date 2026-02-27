@@ -140,7 +140,7 @@ async function loadVideosFromSheet() {
             const row = rows[i];
             const hrFileName = (row[12] || '').toString().trim();
             const formatMatch = hrFileName.match(/_([^_]+)_\.[a-z0-9]+$/i);
-            const technicalExtension = formatMatch ? formatMatch[1].toUpperCase() : "";
+            const technicalExtension = formatMatch ? formatMatch[1] : "";
            // 3. THE SINGLE VIDEO OBJECT
             const video = {
                 id: (row[0] || '').toString().trim(),
@@ -517,7 +517,6 @@ function createVideoCard(video) {
     const extensionTag = video.fileFormat 
         ? `<span class="ml-2 bg-gray-700 text-white px-1.5 py-0.5 rounded text-[10px] border border-gray-600">${video.fileFormat}</span>`
         : "";
-
     card.innerHTML = `
         <div class="relative overflow-hidden aspect-video bg-gray-900">
             <span class="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded-md text-xs font-medium">${formatBadge}</span>
