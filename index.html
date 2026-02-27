@@ -1535,8 +1535,15 @@ async function submitClaim(type) {
     </div>
 </header>
    <!-- ===================== MODALS ===================== -->
-    <div class="bg-white border-b border-gray-200 sticky top-[73px] z-40 shadow-sm">
+   <div class="bg-white border-b border-gray-200 sticky top-[73px] z-40 shadow-sm">
         <div class="max-w-7xl mx-auto px-6 py-4">
+            
+            <div class="mb-5 border-b border-gray-100 pb-4">
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Assets Format</p>
+                <div id="assetsFormatBar" class="flex items-center gap-3 text-[11px] md:text-xs font-bold uppercase tracking-widest overflow-x-auto pb-2 whitespace-nowrap custom-scrollbar">
+                </div>
+            </div>
+
             <div class="mb-4">
                 <div class="flex items-center justify-between mb-3">
                     <p class="text-sm font-bold text-gray-700 uppercase tracking-wide">Browse Categories</p>
@@ -1549,13 +1556,6 @@ async function submitClaim(type) {
                 <div class="bg-teal-50 border border-teal-200 rounded-xl p-4">
                     <p class="text-sm font-semibold text-orange-800 mb-3" id="subcategoryTitle">Subcategories</p>
                     <div class="flex flex-wrap gap-2" id="subcategoryButtons"></div>
-                </div>
-            </div>
-
-            <div id="subSection" class="mb-4 hidden">
-                <div class="bg-purple-50 border border-purple-200 rounded-xl p-4">
-                    <p class="text-sm font-semibold text-purple-800 mb-3" id="subTitle">Types</p>
-                    <div class="flex flex-wrap gap-2" id="subButtons"></div>
                 </div>
             </div>
 
