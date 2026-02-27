@@ -396,25 +396,31 @@ footer a:hover {
 
 
 /* ── NEON SELECTION RINGS ──────────────────── */
+/* ── NEON SELECTION RINGS ──────────────────── */
 
 /* 1. Base State: Remove background colors for a cleaner look */
 #categoryButtons button, 
 #subcategoryButtons button, 
 #subButtons button,
-.format-btn {
+.format-btn,
+.asset-format-btn {
   background: transparent !important;
   border: 1px solid var(--bg-border) !important;
+  border-radius: 8px !important; /* Forces the exact same curved corners on all buttons */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  outline: none !important; /* Kills the ugly default blue browser ring */
 }
 
 /* 2. Hover State: Soft Orange Glow when "getting close" */
 #categoryButtons button:hover, 
 #subcategoryButtons button:hover, 
 #subButtons button:hover,
-.format-btn:hover {
+.format-btn:hover,
+.asset-format-btn:hover {
   border-color: rgba(249, 115, 22, 0.5) !important;
   box-shadow: 0 0 15px rgba(249, 115, 22, 0.2) !important;
   color: var(--orange-primary) !important;
+  outline: none !important;
 }
 
 /* 3. Active State: The Permanent Neon Ring */
@@ -422,10 +428,12 @@ footer a:hover {
 #categoryButtons button.active, 
 #subcategoryButtons button.active, 
 #subButtons button.active,
-.format-btn.active {
+.format-btn.active,
+.asset-format-btn.active {
   background: transparent !important; /* Keep it hollow */
   border: 2px solid var(--orange-primary) !important; /* Thick Orange Rim */
   box-shadow: 0 0 20px rgba(249, 115, 22, 0.4) !important; /* Neon Glow */
   color: var(--orange-primary) !important; /* Orange Text */
   font-weight: bold !important;
+  outline: none !important; /* Prevents blue ring from appearing after clicking */
 }
