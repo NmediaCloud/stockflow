@@ -28,11 +28,11 @@ function generateAssetFormatBar() {
     const container = document.getElementById('assetsFormatBar');
     if (!container) return;
 
-    // 1. Extract unique formats from your loaded database
+  // 1. Extract unique formats from your loaded database
     const formats = new Set();
     allVideos.forEach(video => {
-        if (video.fileFormat && video.fileFormat.trim() !== "") {
-            formats.add(video.fileFormat.trim());
+        if (video.assetFormat && video.assetFormat.trim() !== "") {
+            formats.add(video.assetFormat.trim().toUpperCase());
         }
     });
 
