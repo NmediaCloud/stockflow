@@ -501,7 +501,7 @@ function filterVideos() {
         if (selectedFormat !== 'all' && video.format !== selectedFormat) return false;
        // --- STEP 4: INSERTED HERE (The Asset Format Gate) ---
         if (currentAssetFormat !== 'All' && (!video.assetFormat || video.assetFormat.toUpperCase() !== currentAssetFormat.toUpperCase())) return false;
-        
+          
         if (searchTerm) {
             const searchableText = `${video.title} ${video.description} ${video.tags} ${video.category} ${video.subcategory} ${video.sub}`.toLowerCase();
             if (!searchableText.includes(searchTerm)) return false;
