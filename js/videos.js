@@ -138,8 +138,17 @@ async function loadVideosFromSheet() {
         
         for (let i = 1; i < rows.length; i++) {
             const row = rows[i];
-            const highResUrl = (row[13] || '').toString().trim(); // Target Column N
-            const formatMatch = highResUrl.match(/_([^_]+)_\.[a-z0-9]+$/i);
+            const hrFileName = (row[12] || '').toString().trim();
+            const formatMatch = hrFileName.match(/_([^_]+)_\.[a-z0-9]+$/i);
+            const technicalExtension = formatMatch ? formatMatch[1].toUpperCase() : "";
+            const video = {
+                id: (row[0] || '').toString().trim(),
+                title: (row[1] || '').toString().trim(),
+                // ... other fields (2 through 11) ...
+                highResUrl: (row[13] || '').toString().trim(), // URL is at Index 13
+                featured: hasFeaturedColumn ? (row[14] === 'TRUE' || row[14] === 'true' || row[14] === true) : false,
+                fileFormat: technicalExtension // This stores "MP4", "PNG", etc.
+            };
             
             const video = {
              id: (row[0] || '').toString().trim(),
