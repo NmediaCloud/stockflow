@@ -559,7 +559,7 @@ function openModal(video) {
         window.showPreviewModal(video);
     } else {
         // Fallback if modals.js isn't separate
-        console.log("Opening modal for:", video.title);
+        console.log("Opening modal for:", video.title, "Format:", video.fileFormat);
     }
 }
 
