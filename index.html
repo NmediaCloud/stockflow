@@ -600,34 +600,7 @@ document.querySelectorAll('.offer-overlay').forEach(o => {
 });
 
 
-  // Disable button while submitting
-  const btns = document.querySelectorAll(`#overlay-${type} button.popup-action:not(.action-ghost)`);
-  btns.forEach(b => { b.disabled = true; b.style.opacity = '0.6'; });
-
-  try {
-    const url    = CONFIG.API_URL + '?action=submitClaim&claimType=' + encodeURIComponent(type) + '&email=' + encodeURIComponent(email) + '&extra=' + encodeURIComponent(extra);
-    const res    = await fetch(url);
-    const result = await res.json();
-
-    if (result.success) {
-      successEl.textContent = result.message;
-      successEl.style.display = 'block';
-      btns.forEach(b => b.style.display = 'none');
-    } else {
-      // Subscription error gets orange styling
-      if (result.subscriptionRequired) errorEl.classList.add('sub-error');
-      errorEl.textContent = result.message || 'Something went wrong. Please try again.';
-      errorEl.style.display = 'block';
-      btns.forEach(b => { b.disabled = false; b.style.opacity = '1'; });
-    }
-  } catch(e) {
-    errorEl.textContent = 'Connection error. Please try again.';
-    errorEl.style.display = 'block';
-    btns.forEach(b => { b.disabled = false; b.style.opacity = '1'; });
-  }
-}
-
-document.addEventListener('DOMContentLoaded', loadOffers);
+  
 </script>
     <nav class="bg-white border-b border-gray-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
