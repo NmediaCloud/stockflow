@@ -1935,171 +1935,105 @@ async function submitClaim(type) {
         <p id="notificationMessage" style="margin:0;"></p>
     </div>
 
-    <!-- FOOTER -->
-
-    <!-- Social media  TOAST -->
-<footer style="background:#1F2937; color:#9CA3AF; padding:40px 20px; margin-top:60px;">
-    <div style="max-width:1200px; margin:0 auto; text-align:center;">
-        <p style="margin:10px 0;">
-            <a href="#" onclick="showAboutModal();return false;" style="color:#F97316; text-decoration:none; margin:0 15px;">About</a>
-            <a href="#" onclick="showLicenseInfo();return false;" style="color:#9CA3AF; text-decoration:none; margin:0 15px;">License Terms</a>
-        </p>
-        
-        <p style="margin:20px 0 0 0; font-size:14px;">© 2026 Nmediaservices Stockflow. All rights reserved.</p>
-
-        <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin: 20px 0;">
-            <a href="https://x.com/nmedia_services" target="_blank" 
-                   style="text-decoration: none; color: #9CA3AF; font-size: 12px; font-weight: 500;">Twitter</a>
-    
-            <a href="https://www.youtube.com/playlist?list=PLee8tHW01hSNpJUqfVfYrkWIPe85ksY4v" target="_blank" 
-                   style="text-decoration: none; color: #9CA3AF; font-size: 12px; font-weight: 500;">YouTube</a>
-    
-            <a href="https://www.linkedin.com/showcase/stockflowmedia/" target="_blank" 
-                   style="text-decoration: none; color: #9CA3AF; font-size: 12px; font-weight: 500;">LinkedIn</a>
-    
-            <a href="https://ca.pinterest.com/nmediaservices/" target="_blank" 
-                   style="text-decoration: none; color: #9CA3AF; font-size: 12px; font-weight: 500;">Pinterest</a>
-            
-            <a href="https://www.instagram.com/nmedia.services" target="_blank" 
-                   style="text-decoration: none; color: #9CA3AF; font-size: 12px; font-weight: 500;">Instagram</a>
-
-            <a href="https://www.tiktok.com/@nmediaservices" target="_blank" 
-                   style="text-decoration: none; color: #9CA3AF; font-size: 12px; font-weight: 500;">Tiktok</a>
-
-        </div>
-        
-        
-    </div> </footer>
-    <!-- Social media  TOAST -->
-
-     <!--
-    <footer style="background:#1F2937;color:#9CA3AF;padding:40px 20px;margin-top:60px;">
-        <div style="max-width:1200px;margin:0 auto;text-align:center;">
+    <footer style="background:#1F2937; color:#9CA3AF; padding:40px 20px; margin-top:60px;">
+        <div style="max-width:1200px; margin:0 auto; text-align:center;">
             <p style="margin:10px 0;">
-                <a href="#" onclick="showAboutModal();return false;" style="color:#F97316;text-decoration:none;margin:0 15px;">About</a>
-                <a href="#" onclick="showLicenseInfo();return false;" style="color:#9CA3AF;text-decoration:none;margin:0 15px;">License Terms</a>
+                <a href="#" onclick="showAboutModal();return false;" style="color:#F97316; text-decoration:none; margin:0 15px;">About</a>
+                <a href="#" onclick="showLicenseInfo();return false;" style="color:#9CA3AF; text-decoration:none; margin:0 15px;">License Terms</a>
             </p>
-            <p style="margin:20px 0 0 0;font-size:14px;">© 2026 Nmediaservices Stockflow. All rights reserved.</p>
+            
+            <p style="margin:20px 0 0 0; font-size:14px;">© 2026 Nmediaservices Stockflow. All rights reserved.</p>
+
             <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin: 20px 0;">
-                <a href="https://twitter.com/yourhandle" target="_blank" style="text-decoration: none; color: #1DA1F2; font-size: 12px; font-weight: 500;">Twitter</a>
-                <a href="https://youtube.com/yourchannel" target="_blank" style="text-decoration: none; color: #FF0000; font-size: 12px; font-weight: 500;">YouTube</a>
-                <a href="https://linkedin.com/company/yourpage" target="_blank" style="text-decoration: none; color: #0077B5; font-size: 12px; font-weight: 500;">LinkedIn</a>
-                <a href="https://pinterest.com/yourpage" target="_blank" style="text-decoration: none; color: #BD081C; font-size: 12px; font-weight: 500;">Pinterest</a>
+                <a href="https://x.com/nmedia_services" target="_blank" style="text-decoration: none; color: #9CA3AF; font-size: 12px; font-weight: 500;">Twitter</a>
+                <a href="https://www.youtube.com/playlist?list=PLee8tHW01hSNpJUqfVfYrkWIPe85ksY4v" target="_blank" style="text-decoration: none; color: #9CA3AF; font-size: 12px; font-weight: 500;">YouTube</a>
+                <a href="https://www.linkedin.com/showcase/stockflowmedia/" target="_blank" style="text-decoration: none; color: #9CA3AF; font-size: 12px; font-weight: 500;">LinkedIn</a>
+                <a href="https://ca.pinterest.com/nmediaservices/" target="_blank" style="text-decoration: none; color: #9CA3AF; font-size: 12px; font-weight: 500;">Pinterest</a>
+                <a href="https://www.instagram.com/nmedia.services" target="_blank" style="text-decoration: none; color: #9CA3AF; font-size: 12px; font-weight: 500;">Instagram</a>
+                <a href="https://www.tiktok.com/@nmediaservices" target="_blank" style="text-decoration: none; color: #9CA3AF; font-size: 12px; font-weight: 500;">Tiktok</a>
+            </div>
+        </div> 
     </footer>
-    
-    <!-- SCRIPTS -->
-   
-<script>
-    // 1. Core Initialization - Only runs ONCE to prevent double products
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log('🎬 Initializing Stockflow Systems...');
-        if (typeof init === 'function') {
-            init(); 
-        }
-        console.log('🎁 Promotional System Active');
-    });
 
-    // 2. Modular Popup Controls
-    function openOffer(type) {
-        const overlay = document.getElementById('overlay-' + type);
-        if (overlay) {
-            overlay.classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-    }
+    <script>
+        // 1. Core Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🎬 Initializing Stockflow Systems...');
+            if (typeof init === 'function') { init(); }
+            console.log('🎁 Promotional System Active');
+        });
 
-    function closeOffer(type) {
-        const overlay = document.getElementById('overlay-' + type);
-        if (overlay) {
-            overlay.classList.remove('open');
-            document.body.style.overflow = '';
-        }
-    }
-
-    async function submitClaim(type) {
-        const SCRIPT_DEST = "https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec";
-        const popup = document.getElementById('overlay-' + type);
-        const successEl = popup?.querySelector('.claim-success');
-        const errorEl = popup?.querySelector('.claim-error');
-        const submitBtn = popup?.querySelector('.popup-action:not(.action-ghost)');
-
-        if (!successEl || !errorEl) return;
-
-        successEl.style.display = 'none';
-        errorEl.style.display = 'none';
-
-        // Detect inputs based on the specific popup type
-        const email = (document.getElementById(type === 'review' ? 'rv-email' : 'yt-email')?.value || '').trim();
-        const extra = (document.getElementById(type === 'review' ? 'rv-link' : 'yt-url')?.value || '').trim();
-
-        if (!email || !extra) {
-            errorEl.textContent = 'Please provide both email and the verification link.';
-            errorEl.style.display = 'block';
-            return;
+        // 2. Modular Popup Controls
+        function openOffer(type) {
+            const overlay = document.getElementById('overlay-' + type);
+            if (overlay) { overlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
         }
 
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.style.opacity = '0.6';
-            submitBtn.textContent = 'Submitting...';
+        function closeOffer(type) {
+            const overlay = document.getElementById('overlay-' + type);
+            if (overlay) { overlay.classList.remove('open'); document.body.style.overflow = ''; }
         }
 
-        try {
-            const params = new URLSearchParams({
-                action: 'submitClaim',
-                claimType: type,
-                email: email,
-                extra: extra
-            });
+        async function submitClaim(type) {
+            const SCRIPT_DEST = "https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec";
+            const popup = document.getElementById('overlay-' + type);
+            const successEl = popup?.querySelector('.claim-success');
+            const errorEl = popup?.querySelector('.claim-error');
+            const submitBtn = popup?.querySelector('.popup-action:not(.action-ghost)');
 
-            const res = await fetch(`${SCRIPT_DEST}?${params.toString()}`, {
-                method: 'GET',
-                mode: 'cors',
-                cache: 'no-cache'
-            });
+            if (!successEl || !errorEl) return;
+            successEl.style.display = 'none'; errorEl.style.display = 'none';
 
-            const result = await res.json();
+            const email = (document.getElementById(type === 'review' ? 'rv-email' : 'yt-email')?.value || '').trim();
+            const extra = (document.getElementById(type === 'review' ? 'rv-link' : 'yt-url')?.value || '').trim();
 
-            if (result.success) {
-                successEl.textContent = result.message || 'Submission received! Verification takes 24-48h.';
-                successEl.style.display = 'block';
-                if (submitBtn) submitBtn.style.display = 'none';
-            } else {
-                errorEl.textContent = result.message || 'Submission failed.';
+            if (!email || !extra) {
+                errorEl.textContent = 'Please provide both email and the verification link.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.6'; submitBtn.textContent = 'Submitting...'; }
+
+            try {
+                const params = new URLSearchParams({ action: 'submitClaim', claimType: type, email: email, extra: extra });
+                const res = await fetch(`${SCRIPT_DEST}?${params.toString()}`, { method: 'GET', mode: 'cors', cache: 'no-cache' });
+                const result = await res.json();
+
+                if (result.success) {
+                    successEl.textContent = result.message || 'Submission received! Verification takes 24-48h.';
+                    successEl.style.display = 'block';
+                    if (submitBtn) submitBtn.style.display = 'none';
+                } else {
+                    errorEl.textContent = result.message || 'Submission failed.';
+                    errorEl.style.display = 'block';
+                    resetBtn(submitBtn, type);
+                }
+            } catch (err) {
+                console.error('❌ Error:', err);
+                errorEl.textContent = 'Connection error. Please try again.';
                 errorEl.style.display = 'block';
                 resetBtn(submitBtn, type);
             }
-        } catch (err) {
-            console.error('❌ Error:', err);
-            errorEl.textContent = 'Connection error. Please try again.';
-            errorEl.style.display = 'block';
-            resetBtn(submitBtn, type);
         }
-    } // <--- THIS WAS THE MISSING BRACKET THAT CAUSED THE ERROR!
 
-    function resetBtn(btn, type) {
-        if (!btn) return;
-        btn.disabled = false;
-        btn.style.opacity = '1';
-        btn.textContent = type === 'review' ? 'Submit for $10 Credit →' : 'Submit for $50 Credit →';
-    }
+        function resetBtn(btn, type) {
+            if (!btn) return;
+            btn.disabled = false; btn.style.opacity = '1';
+            btn.textContent = type === 'review' ? 'Submit for $10 Credit →' : 'Submit for $50 Credit →';
+        }
 
-    // Modal Close Helper (Click Outside)
-    document.querySelectorAll('.offer-overlay').forEach(o => {
-        o.addEventListener('click', e => { if (e.target === o) closeOffer(o.id.replace('overlay-', '')); });
-    });
-</script>
-   
-
+        // Modal Close Helper (Click Outside)
+        document.querySelectorAll('.offer-overlay').forEach(o => {
+            o.addEventListener('click', e => { if (e.target === o) closeOffer(o.id.replace('overlay-', '')); });
+        });
+    </script>
     
-<script src="js/config.js"></script>
-<script type="module" src="js/auth.js"></script>
-<script src="js/wallet.js"></script>
-<script src="js/videos.js?v=6"></script>
-<script src="js/modals.js?v=6"></script>
-    
-
-    
+    <script src="js/config.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script src="js/wallet.js"></script>
+    <script src="js/videos.js?v=7"></script>
+    <script src="js/modals.js?v=7"></script>
 </body>
 </html>
-
+  
