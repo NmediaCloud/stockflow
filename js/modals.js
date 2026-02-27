@@ -5,7 +5,7 @@
 // ---- PREVIEW MODAL ----
 
 function openModal(video) {
-    currentVideo = video;
+    window.currentVideo = video; // 'window.' makes it accessible to wallet.js!
     const modal = document.getElementById('previewModal');
     // Identify the container where we will inject the media
     const container = document.getElementById('modalMediaContainer');
@@ -109,4 +109,34 @@ function scrollToSearch() {
         searchInput.classList.add('ring-4', 'ring-orange-500');
         setTimeout(() => searchInput.classList.remove('ring-4', 'ring-orange-500'), 1500);
     }, 800);
+}
+
+// Copies the deep link to the specific video and shows a Toast Notification
+function copyShareLink() {
+    const activeVideo = window.currentVideo;
+    if (!activeVideo) {
+        console.error("No active video found to share.");
+        return;
+    }
+    
+    const shareUrl = `${window.location.origin}${window.location.pathname}?v=${activeVideo.id}`;
+    
+    navigator.clipboard.writeText(shareUrl).then(() => {
+        // 1. Trigger the sleek pop-up toast notification
+        if (typeof window.showNotification === 'function') {
+            window.showNotification('🔗 URL copied to clipboard! You can now share it.', 'success');
+        }
+
+        // 2. Also update the button text as an extra visual cue
+        const btnText = document.getElementById('shareBtnText');
+        if (btnText) {
+            btnText.innerText = 'Copied!';
+            setTimeout(() => { btnText.innerText = 'Share'; }, 2000);
+        }
+    }).catch(err => {
+        console.error('Failed to copy text: ', err);
+        if (typeof window.showNotification === 'function') {
+            window.showNotification('❌ Failed to copy link.', 'error');
+        }
+    });
 }
