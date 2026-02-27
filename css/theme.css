@@ -20,9 +20,19 @@
   --bg-border:      #3A3F46;
   --text-primary:   #F3F4F6;
   --text-secondary: #9CA3AF;
+  /* ... your background colors stay the same ... */
+  /* You just swap these 3 lines! */
+  --orange-primary: #10B981; /* Example: A sleek Emerald Green */
+  --orange-burnt:   #047857; /* Darker green for hovers */
+  --orange-hover:   #34D399; /* Lighter green for glows */
+
+
+/* You just swap these 3 lines! 
   --orange-primary: #F97316;
   --orange-burnt:   #C2410C;
-  --orange-hover:   #FB923C;
+  --orange-hover:   #FB923C;*/
+
+   
   --amber-deep:     #D97706;
   --amber-dark:     #B45309;
   --amber-light:    #F59E0B;
