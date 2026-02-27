@@ -361,20 +361,23 @@ function selectCategory(category, e) {
     const subSection = document.getElementById('subcategorySection');
     const subSubSection = document.getElementById('subSection');
     
+    // SAFETY CHECKS: Only try to hide/show them if they exist
     if (category === null) {
-        subSection.classList.add('hidden');
-        subSubSection.classList.add('hidden');
+        if (subSection) subSection.classList.add('hidden');
+        if (subSubSection) subSubSection.classList.add('hidden');
     } else if (subcategories[category] && subcategories[category].size > 0) {
         buildSubcategoryButtons(category);
-        subSection.classList.remove('hidden');
+        if (subSection) subSection.classList.remove('hidden');
     } else {
-        subSection.classList.add('hidden');
+        if (subSection) subSection.classList.add('hidden');
     }
     
-    subSubSection.classList.add('hidden');
+    if (subSubSection) {
+        subSubSection.classList.add('hidden');
+    }
+    
     filterVideos(); 
 }
-
 
 
     // ============================================
@@ -441,21 +444,22 @@ function selectSubcategory(subcategory, e) {
 
 function buildSubButtons(catSubKey) {
     const container = document.getElementById('subButtons');
+    
+    // SAFETY CHECK: Stop the code if the HTML container is missing!
+    if (!container) return; 
+    
     container.innerHTML = '';
     
     const sortedSubs = Array.from(subs[catSubKey]).sort();
     sortedSubs.forEach(sub => {
         const btn = document.createElement('button');
-        // CLEANED: Removed old bg-white/teal classes
-        btn.className = 'sub-btn px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm';
+        btn.className = 'sub-btn px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm bg-black/40 text-gray-400 border border-gray-700 hover:text-white';
         btn.textContent = sub;
-        
-        // Corrected: Passing 'e'
         btn.onclick = (e) => selectSub(sub, e);
-        
         container.appendChild(btn);
     });
 }
+
 
 function selectSub(sub, e) {
     selectedSub = sub;
