@@ -369,46 +369,59 @@ function closeDownloadModal() {
 }
 
 // ---- PURCHASE HISTORY ----
-
 async function showPurchaseHistory() {
     if (!currentUser.isLoggedIn) { showLoginModal(); return; }
     
     document.getElementById('historyModal').style.display = 'block';
-    document.getElementById('historyList').innerHTML = '<p style="color:#666;">Loading...</p>';
+    document.getElementById('historyList').innerHTML = '<p style="color:#9CA3AF; text-align:center;">Loading...</p>';
     
     await loadUserPurchases(currentUser.email);
     
     if (!currentUser.purchases || currentUser.purchases.length === 0) {
-        document.getElementById('historyList').innerHTML = '<p style="color:#999;">No purchases yet.</p>';
+        document.getElementById('historyList').innerHTML = `
+            <div class="text-center py-8 flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-gray-600 mb-3 opacity-50"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>
+                <p class="text-gray-500 mb-4 font-medium">You haven't purchased anything yet.</p>
+                <button onclick="closeHistoryModal()" class="bg-gray-900 text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-800 transition-colors">Browse Assets</button>
+            </div>
+        `;
         return;
     }
     
-    let html = '<div style="margin-bottom:15px;padding:12px;background:#FEF3C7;border-radius:8px;">';
-    html += '<p style="font-size:12px;color:#92400E;margin:0;">';
-    html += '💡 <strong>License Reminder:</strong> Each purchase is licensed for one project. ';
-    html += 'Using in multiple projects? Please purchase again. ';
-    html += '<a href="#" onclick="showLicenseInfo();return false;" style="color:#0369A1;text-decoration:underline;">View full license terms</a>';
-    html += '</p></div>';
+    // Upgraded Dark-Theme License Reminder
+    let html = `
+        <div style="background: rgba(249, 115, 22, 0.05); border: 1px solid rgba(249, 115, 22, 0.2); border-left: 3px solid #F97316; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-start;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 18px; height: 18px; color: #F97316; flex-shrink: 0; margin-top: 1px;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+            </svg>
+            <div style="font-size: 13px; color: #9CA3AF; line-height: 1.5; padding-right: 20px;">
+                <strong style="color: #F3F4F6;">License Reminder:</strong> Each purchase is licensed for one project. Using in multiple projects? Please purchase again. <a href="#" onclick="showLicenseInfo(); return false;" style="color: #F97316; text-decoration: none; font-weight: 500;">View full license terms</a>
+            </div>
+        </div>
+    `;
     
+    // Upgraded Dark-Theme Purchase Cards + SVG Download Button
     currentUser.purchases.forEach(function(p) {
         const dlUrl = (p.downloadLink || '').replace('export=view', 'export=download');
-        html += '<div style="border:1px solid #e5e7eb;border-radius:8px;padding:15px;margin-bottom:10px;">';
-        html += '<strong>' + p.title + '</strong>';
-        html += '<span style="float:right;color:#F97316;">$' + p.amount + '</span><br>';
-        html += '<small style="color:#999;">' + new Date(p.date).toLocaleDateString() + '</small>';
-        html += '<a href="' + dlUrl + '" style="display:block;margin-top:8px;color:#F97316;"><span style="display:flex; align-items:center; gap:6px;">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 16px; height: 16px;">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                </svg>  Download </span></a>';
-        html += '</div>';
+        html += `
+            <div style="background: #2A2F36; border: 1px solid #3A3F46; border-radius: 8px; padding: 15px; margin-bottom: 10px;">
+                <strong style="color: #F3F4F6;">${p.title}</strong>
+                <span style="float:right; color:#F97316; font-weight: bold;">$${p.amount}</span><br>
+                <small style="color:#9CA3AF;">${new Date(p.date).toLocaleDateString()}</small>
+                
+                <a href="${dlUrl}" target="_blank" style="display:inline-flex; align-items:center; gap:6px; margin-top:12px; color:#F97316; text-decoration:none; font-size: 14px; font-weight: 600; transition: color 0.2s;" onmouseover="this.style.color='#FB923C'" onmouseout="this.style.color='#F97316'">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 16px; height: 16px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                    Download
+                </a>
+            </div>
+        `;
     });
     
     document.getElementById('historyList').innerHTML = html;
 }
 
-function closeHistoryModal() {
-    document.getElementById('historyModal').style.display = 'none';
-}
 
 // ---- LICENSE INFO ----
 
