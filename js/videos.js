@@ -24,7 +24,6 @@ let selectedFormat = 'all';
 let currentAssetFormat = 'All';
 
 // Automatically builds the buttons based on your Google Sheet Data
-// Automatically builds the buttons based on your Google Sheet Data
 function generateAssetFormatBar() {
     const container = document.getElementById('assetsFormatBar');
     if (!container) return;
@@ -57,7 +56,6 @@ function generateAssetFormatBar() {
     // 5. Inject into the page
     container.innerHTML = html;
 }
-// Handles the click and highlighting
 
 // Handles the click and highlighting
 function filterByAssetFormat(format) {
@@ -79,9 +77,6 @@ function filterByAssetFormat(format) {
 
 // ===============================
 
-
-
-
 async function init() {
     console.log('🎬 Initializing Stockflow...');
     
@@ -98,9 +93,9 @@ async function init() {
         });
         
         buildCategoryButtons();
-        generateAssetFormatBar(); // <--- STEP 3: INSERTED HERE
+        generateAssetFormatBar(); 
         filterVideos();
-        // --- ADD THIS BLOCK HERE ---
+
         // --- DEEP LINKING: CATEGORIES & VIDEOS ---
         const urlParams = new URLSearchParams(window.location.search);
         const catToOpen = urlParams.get('cat');
@@ -130,27 +125,6 @@ async function init() {
             }
         }
 
-
-
-        
-        /* / Check if the URL has a shared video ID (e.g., ?v=123)
-       const urlParams = new URLSearchParams(window.location.search);
-        const videoIdToOpen = urlParams.get('v');
-        
-        if (videoIdToOpen) {
-            // Find the video in the master list
-            const targetVideo = allVideos.find(v => v.id == videoIdToOpen);
-            
-            if (targetVideo) {
-                console.log("🔗 Shared link detected. Auto-opening:", targetVideo.title);
-                // We use a small timeout to let the grid finish rendering first
-                setTimeout(() => {
-                    openModal(targetVideo);
-                }, 800); 
-            }
-        }
-        / ---------------------------*/
-
         const featuredCount = allVideos.filter(v => v.featured).length;
         console.log(`✅ Loaded ${allVideos.length} videos (${featuredCount} featured)`);
         
@@ -169,10 +143,8 @@ async function init() {
 }
 
 async function loadVideosFromSheet() {
-    allVideos = []; // ⭐ THE FIX: Clear the array before loading new data
+    allVideos = []; 
     const csvUrl = CONFIG.SHEET_CSV_URL;
-  
-
     
     console.log('📡 Fetching from:', csvUrl);
     
@@ -204,7 +176,7 @@ async function loadVideosFromSheet() {
             const hrFileName = (row[12] || '').toString().trim();
             const formatMatch = hrFileName.match(/_([^_]+)_\.[a-z0-9]+$/i);
             const technicalExtension = formatMatch ? formatMatch[1] : "";
-           // 3. THE SINGLE VIDEO OBJECT
+            
             const video = {
                 id: (row[0] || '').toString().trim(),
                 title: (row[1] || '').toString().trim(),
@@ -221,7 +193,7 @@ async function loadVideosFromSheet() {
                 highResUrl: (row[13] || '').toString().trim(), 
                 featured: hasFeaturedColumn ? (row[14] === 'TRUE' || row[14] === 'true' || row[14] === true) : false,
                 fileFormat: technicalExtension,
-                assetFormat: (row[20] || '').toString().trim() // <-- THE FIX: PULLS FROM COLUMN U
+                assetFormat: (row[20] || '').toString().trim() 
             };
             
             if (video.id && video.title && video.thumbnail && video.preview) {
@@ -310,8 +282,10 @@ function buildCategoryButtons() {
     if (featuredCount > 0) {
         const featuredBtn = document.createElement('button');
         featuredBtn.className = 'category-btn active px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm';
-        featuredBtn.innerHTML = '⭐ Featured';
-        // Passing 'e' ensures the neon ring logic works
+        
+        // UPGRADED FEATURED STAR SVG
+        featuredBtn.innerHTML = `<span class="flex items-center gap-1.5"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-orange-500"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09l2.846.813-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.428-1.428L13.5 18.75l1.178-.394a2.25 2.25 0 001.428-1.428l.394-1.183.394 1.183a2.25 2.25 0 001.428 1.428l1.178.394-1.178.394a2.25 2.25 0 00-1.428 1.428z" /></svg> Featured</span>`;
+        
         featuredBtn.onclick = (e) => selectCategory(null, e); 
         container.appendChild(featuredBtn);
     } else {
@@ -327,19 +301,13 @@ function buildCategoryButtons() {
         const btn = document.createElement('button');
         btn.className = 'category-btn px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm';
         btn.textContent = cat;
-        // Corrected function name to selectCategory and passed 'e'
         btn.onclick = (e) => selectCategory(cat, e);
         
         container.appendChild(btn);
     });
 }
-    // ============================================
 
-
-// Add 'e' here to capture the event object
-// Add 'e' here to capture the event object
 function selectCategory(category, e) {
-    // --- PART 1: Update URL (INTERNALIZED) ---
     const newUrl = new URL(window.location.href);
     if (category) {
         newUrl.searchParams.set('cat', category);
@@ -350,7 +318,6 @@ function selectCategory(category, e) {
     }
     window.history.pushState({}, '', newUrl);
 
-    // --- PART 2: Logic Execution ---
     selectedCategory = category;
     selectedSubcategory = null;
     selectedSub = null;
@@ -366,7 +333,6 @@ function selectCategory(category, e) {
     const subSection = document.getElementById('subcategorySection');
     const subSubSection = document.getElementById('subSection');
     
-    // SAFETY CHECKS: Only try to hide/show them if they exist
     if (category === null) {
         if (subSection) subSection.classList.add('hidden');
         if (subSubSection) subSubSection.classList.add('hidden');
@@ -384,8 +350,6 @@ function selectCategory(category, e) {
     filterVideos(); 
 }
 
-
-    // ============================================
 function buildSubcategoryButtons(category) {
     const container = document.getElementById('subcategoryButtons');
     const title = document.getElementById('subcategoryTitle');
@@ -398,13 +362,8 @@ function buildSubcategoryButtons(category) {
         const count = allVideos.filter(v => v.category === category && v.subcategory === sub).length;
         
         const btn = document.createElement('button');
-        
-        // CLEANED CLASSNAME: Removed bg-white and teal colors
         btn.className = 'subcategory-btn px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm';
-        
         btn.textContent = `${sub} (${count})`;
-        
-        // Passing 'e' ensures the neon ring logic works
         btn.onclick = (e) => selectSubcategory(sub, e);
         
         container.appendChild(btn);
@@ -412,7 +371,6 @@ function buildSubcategoryButtons(category) {
 }
 
 function selectSubcategory(subcategory, e) {
-    // Update URL for sharing subcategory
     const newUrl = new URL(window.location.href);
     newUrl.searchParams.set('sub', subcategory);
     window.history.pushState({}, '', newUrl);
@@ -420,17 +378,14 @@ function selectSubcategory(subcategory, e) {
     selectedSubcategory = subcategory;
     selectedSub = null;
 
-    // 1. Clear active states from this specific row
     document.querySelectorAll('.subcategory-btn').forEach(btn => btn.classList.remove('active'));
     
-    // 2. Apply the Neon Ring
     const evt = e || window.event;
     if (evt && (evt.currentTarget || evt.target)) {
         const targetBtn = evt.currentTarget || evt.target;
         targetBtn.classList.add('active');
     }
     
-    // 3. Logic for the next row (Types)
     const catSubKey = `${selectedCategory}|${subcategory}`;
     const subSection = document.getElementById('subSection');
     
@@ -444,13 +399,8 @@ function selectSubcategory(subcategory, e) {
     filterVideos();
 }
 
-
-
-
 function buildSubButtons(catSubKey) {
     const container = document.getElementById('subButtons');
-    
-    // SAFETY CHECK: Stop the code if the HTML container is missing!
     if (!container) return; 
     
     container.innerHTML = '';
@@ -465,16 +415,13 @@ function buildSubButtons(catSubKey) {
     });
 }
 
-
 function selectSub(sub, e) {
     selectedSub = sub;
     
-    // 1. Clear 'active' from all Type buttons in this row
     document.querySelectorAll('.sub-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     
-    // 2. Apply neon ring using the passed event
     const evt = e || window.event;
     if (evt && (evt.currentTarget || evt.target)) {
         const targetBtn = evt.currentTarget || evt.target;
@@ -483,8 +430,6 @@ function selectSub(sub, e) {
     
     filterVideos();
 }
-
-
 
 function filterVideos() {
     const searchTerm = document.getElementById('searchInput')?.value?.toLowerCase() || '';
@@ -499,7 +444,7 @@ function filterVideos() {
         if (selectedSubcategory && video.subcategory !== selectedSubcategory) return false;
         if (selectedSub && video.sub !== selectedSub) return false;
         if (selectedFormat !== 'all' && video.format !== selectedFormat) return false;
-       // --- STEP 4: INSERTED HERE (The Asset Format Gate) ---
+        
         if (currentAssetFormat !== 'All' && (!video.assetFormat || video.assetFormat.toUpperCase() !== currentAssetFormat.toUpperCase())) return false;
           
         if (searchTerm) {
@@ -522,7 +467,7 @@ function filterVideos() {
     if (filteredVideos.length === 0) {
         statusEl.innerHTML = `<span class="text-gray-400 flex items-center gap-1.5"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776" /></svg> No videos match your filters</span>`;
     } else {
-    } else {
+        // THE FIX: Removed the duplicate } else { that was right here!
         statusEl.innerHTML = `<span class="inline-block w-2 h-2 bg-teal-500 rounded-full mr-2"></span>${displayedVideos.length} of ${filteredVideos.length} videos loaded`;
     }
 }
@@ -530,13 +475,10 @@ function filterVideos() {
 function filterByFormat(format, e) {
     selectedFormat = format;
     
-    // 1. Clear active state from all format buttons
     document.querySelectorAll('.format-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     
-    // 2. Add active class to the clicked button
-    // Note: If called from HTML with onclick="filterByFormat('all', event)"
     const evt = e || window.event;
     if (evt && (evt.currentTarget || evt.target)) {
         const targetBtn = evt.currentTarget || evt.target;
@@ -571,13 +513,11 @@ function loadMore() {
         `<span class="inline-block w-2 h-2 bg-teal-500 rounded-full mr-2"></span>${displayedVideos.length} of ${filteredVideos.length} videos loaded`;
 }
 
-
 function createVideoCard(video) {
     const card = document.createElement('div');
     card.className = 'group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl rounded-xl overflow-hidden bg-white border border-gray-200';
     card.onclick = () => openModal(video);
 
-    // Upgraded with inline Heroicons (SVGs) for a native, premium UI
     const formatBadge = {
         '9:16': `<span class="flex items-center gap-1.5"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg> 9:16</span>`,
         
@@ -586,8 +526,6 @@ function createVideoCard(video) {
         '16:9': `<span class="flex items-center gap-1.5"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0V12a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 12V5.25" /></svg> 16:9</span>`
     }[video.format] || video.format;
 
-    // Minimalistic extension tag logic
-    // Displays exactly what was sniffed, no forcing
     const extensionTag = video.fileFormat 
         ? `<span class="ml-2 bg-gray-700 text-white px-1.5 py-0.5 rounded text-[10px] border border-gray-600">${video.fileFormat}</span>`
         : "";
@@ -623,22 +561,15 @@ window.filterVideos = filterVideos;
 window.filterByFormat = filterByFormat;
 window.loadMore = loadMore;
 
-
 // --- MODAL TRIGGER ---
 function openModal(video) {
-    // 1. Set the global variable for wallet.js to use
     window.currentVideo = video;
-    
-    // 2. Call the modal display function (in your HTML/modals.js)
     if (typeof window.showPreviewModal === 'function') {
         window.showPreviewModal(video);
     } else {
-        // Fallback if modals.js isn't separate
         console.log("Opening modal for:", video.title, "Format:", video.fileFormat);
     }
 }
-
-// Expose to window so the HTML cards can click it
 window.openModal = openModal;
 
 // ---- NOTIFICATION SYSTEM ----
@@ -651,28 +582,22 @@ function showNotification(message, type = 'success') {
         return;
     }
 
-    // Update content and styling
     msgEl.textContent = message;
     
-    // Styling based on type
     if (type === 'error') {
-        toast.style.backgroundColor = '#EF4444'; // Red
+        toast.style.backgroundColor = '#EF4444'; 
     } else if (type === 'info') {
-        toast.style.backgroundColor = '#3B82F6'; // Blue
+        toast.style.backgroundColor = '#3B82F6'; 
     } else {
-        toast.style.backgroundColor = '#F97316'; // Your signature Orange
+        toast.style.backgroundColor = '#F97316'; 
     }
 
-    // Show the toast
     toast.style.display = 'block';
     toast.classList.remove('hidden');
 
-    // Auto-hide after 4 seconds
     setTimeout(() => {
         toast.style.display = 'none';
         toast.classList.add('hidden');
     }, 4000);
 }
-
-// Expose globally
 window.showNotification = showNotification;
