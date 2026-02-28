@@ -503,7 +503,19 @@ function closeAboutModal() {
     }
 }
 
+
+// Function to close the My Purchases modal
+function closeHistoryModal() {
+    const modal = document.getElementById('historyModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Ensure the browser can see it
 // Make sure the browser can see them
+
+window.closeHistoryModal = closeHistoryModal;
 window.showAboutModal = showAboutModal;
 window.closeAboutModal = closeAboutModal;
 
