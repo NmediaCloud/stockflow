@@ -9,12 +9,12 @@
   "icons": [
     {
       "src": "/assets/Favicon.png",
-      "sizes": "32x32",
+      "sizes": "54x54",
       "type": "image/png"
     },
     {
-      "src": "/assets/apple-touch-icon.png",
-      "sizes": "180x180",
+      "src": "/assets/logo.png",
+      "sizes": "315x214",
       "type": "image/png"
     }
   ]
