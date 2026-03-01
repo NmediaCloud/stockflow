@@ -442,12 +442,12 @@
       </div>
 
         
-        <div id="form-newsletter" class="claim-form" style="display:block; margin-top: 15px;">
-            <input class="claim-input" id="nl-verify-email" type="email" placeholder="Enter your account email to verify" required>
-            <button id="submit-btn-newsletter" class="popup-action action-nl" onclick="submitClaim('newsletter')" style="width:100%;">
-          I've replied Email - Claim my $5
-         </button>
-      </div>
+      <div id="form-newsletter" style="display:block; margin-top: 15px;">
+          <input id="nl-verify-email" type="email" placeholder="Enter your account email" class="claim-input" style="width:100%; margin-bottom:10px;">
+          <button id="submit-btn-newsletter" class="popup-action action-nl" onclick="verifyNewsletterReply()" style="width:100%;">
+            I've Replied - Claim My $5 →
+          </button>
+    </div>
 
       <div class="claim-success" id="nl-success" style="display:none; margin-top:16px; padding:12px; background:rgba(16,185,129,0.1); border:1px solid #10B981; border-radius:8px; color:#10B981; text-align:center;"></div>
       <div class="claim-error" id="nl-error" style="display:none; margin-top:16px; padding:12px; background:rgba(239,68,68,0.1); border:1px solid #EF4444; border-radius:8px; color:#EF4444; text-align:center;"></div>
