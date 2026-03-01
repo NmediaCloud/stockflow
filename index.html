@@ -558,6 +558,11 @@
 </div>
 <!-- SCRIPTS -->
 <script>
+
+
+
+
+    
 // Default config (overridden by sheet on load)
 let OFFERS = {
   newsletter: { label:'Newsletter Reward', amount:5,  active:true },
@@ -645,7 +650,36 @@ document.querySelectorAll('.offer-overlay').forEach(o => {
   });
 });
 
+async function verifyNewsletterReply() {
+    const emailInput = document.getElementById('nl-verify-email');
+    const email = emailInput ? emailInput.value.trim() : '';
+    const btn = document.getElementById('submit-btn-newsletter');
 
+    if (!email) {
+        alert("Please enter your email.");
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Searching Gmail...';
+
+    try {
+        const response = await fetch(`${CONFIG.API_URL}?action=verifyNewsletter&email=${encodeURIComponent(email)}`);
+        const result = await response.json();
+
+        if (result.success) {
+            alert(result.message);
+            document.getElementById('overlay-newsletter').style.display = 'none';
+        } else {
+            alert(result.message);
+        }
+    } catch (error) {
+        alert("Connection error. Please try again.");
+    } finally {
+        btn.disabled = false;
+        btn.textContent = "I've Replied - Claim My $5 →";
+    }
+}
   
 </script>
     <nav class="bg-white border-b border-gray-200 shadow-sm">
