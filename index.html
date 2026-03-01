@@ -650,37 +650,46 @@ document.querySelectorAll('.offer-overlay').forEach(o => {
   });
 });
 
+
+    
 async function verifyNewsletterReply() {
     const emailInput = document.getElementById('nl-verify-email');
     const email = emailInput ? emailInput.value.trim() : '';
     const btn = document.getElementById('submit-btn-newsletter');
 
-    if (!email) {
-        alert("Please enter your email.");
+    if (!email || !email.includes('@')) {
+        alert("Please enter a valid account email address.");
         return;
     }
 
+    // UI Feedback: Lock the button so they don't double-click
+    const originalText = btn.textContent;
     btn.disabled = true;
-    btn.textContent = 'Searching Gmail...';
+    btn.textContent = 'Searching your inbox...';
 
     try {
+        // We call the specific 'verifyNewsletter' action
         const response = await fetch(`${CONFIG.API_URL}?action=verifyNewsletter&email=${encodeURIComponent(email)}`);
         const result = await response.json();
 
         if (result.success) {
-            alert(result.message);
+            alert("🎉 Success! " + result.message);
             document.getElementById('overlay-newsletter').style.display = 'none';
+            // Refresh wallet display if you have a function for that
+            if (typeof fetchUserWallet === "function") fetchUserWallet(); 
         } else {
             alert(result.message);
         }
     } catch (error) {
-        alert("Connection error. Please try again.");
+        console.error("Verification Error:", error);
+        alert("We couldn't connect to the verification server. Please try again.");
     } finally {
         btn.disabled = false;
-        btn.textContent = "I've Replied - Claim My $5 →";
+        btn.textContent = originalText;
     }
 }
-  
+
+    
 </script>
     <nav class="bg-white border-b border-gray-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
