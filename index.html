@@ -665,7 +665,7 @@ async function verifyNewsletterReply() {
     // UI Feedback: Lock the button so they don't double-click
     const originalText = btn.textContent;
     btn.disabled = true;
-    btn.textContent = 'Searching your inbox...';
+    btn.textContent = 'Verifying .....';
 
     try {
         // We call the specific 'verifyNewsletter' action
