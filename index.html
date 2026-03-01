@@ -461,9 +461,44 @@
 <!-- ══════════════════════════════════════════ -->
 <!-- POPUP 2 — GOOGLE REVIEW $10               -->
 <!-- ══════════════════════════════════════════ -->
-<!-- ══════════════════════════════════════════ -->
-<!-- POPUP 2 — GOOGLE REVIEW $10 (ALL VISIBLE, FIXED UX) -->
-<!-- ══════════════════════════════════════════ -->
+<div class="offer-overlay" id="overlay-review">
+  <div class="offer-popup">
+    <button class="popup-close" onclick="closeOffer('review')">✕</button>
+    <div class="popup-accent rv" style="background:linear-gradient(90deg,#1E3A5F,#3B82F6,#60A5FA);height:3px;"></div>
+    <div class="popup-body">
+      <div class="popup-badge badge-rv" style="background:rgba(59,130,246,0.08);color:#60A5FA;border:1px solid rgba(59,130,246,0.2);display:inline-flex;align-items:center;gap:7px;padding:5px 13px;border-radius:20px;font-size:12px;font-weight:800;margin-bottom:16px;"> FREE <span id="rv-badge-amt">$10</span> Wallet Credit</div>
+      <div class="popup-title">Write a Review.<br><span class="hi" style="color:#F97316;">Earn 10$ Wallet Credit </span></div>
+
+      <div class="popup-desc">
+        Leave an honest review on Google — helps others find us and earns you wallet credit. One time per account. Limited time offer, Aiming for first 1000 reviews approx.
+      </div>
+
+      <div class="popup-steps">
+        <div class="popup-step"><div class="step-num step-rv" style="background:rgba(59,130,246,0.12);color:#60A5FA;">1</div><div>Click below to open our review page</div></div>
+        <div class="popup-step"><div class="step-num step-rv" style="background:rgba(59,130,246,0.12);color:#60A5FA;">2</div><div>Leave an honest review</div></div>
+        <div class="popup-step"><div class="step-num step-rv" style="background:rgba(59,130,246,0.12);color:#60A5FA;">3</div><div>Copy the link to your review and paste it below</div></div>
+      </div>
+
+      <a href="https://g.page/r/CcaLxiFI_1IbEAE/review" target="_blank" class="popup-action action-rv" style="background:#3B82F6;margin-bottom:20px; display:block; text-align:center; color:white; text-decoration:none;">
+        ⭐⭐⭐⭐⭐ Open Google Review Page →
+      </a>
+
+      <div id="form-review" class="claim-form" style="display:block;">
+        <input class="claim-input" id="rv-email" type="email" placeholder="Your Stockflow account email" required>
+        <input class="claim-input" id="rv-link" type="url" placeholder="Paste your Google review link here" required>
+
+        <button id="submit-btn-review" class="popup-action action-rv" onclick="submitClaim('review')" style="background:#3B82F6;color:white;width:100%;">
+          Submit for $10 Credit →
+        </button>
+      </div>
+
+      <div class="claim-success" style="display:none; margin-top:16px; padding:12px; background:rgba(16,185,129,0.1); border:1px solid #10B981; border-radius:8px; color:#10B981; text-align:center;"></div>
+      <div class="claim-error" style="display:none; margin-top:16px; padding:12px; background:rgba(239,68,68,0.1); border:1px solid #EF4444; border-radius:8px; color:#EF4444; text-align:center;"></div>
+
+      <button class="popup-action action-ghost" onclick="closeOffer('review')" style="margin-top:12px; width:100%;">Close</button>
+    </div>
+  </div>
+</div>
 <!-- ══════════════════════════════════════════ -->
 <!-- POPUP 3 — YOUTUBE $50 -->
 <!-- ══════════════════════════════════════════ -->
@@ -1223,91 +1258,7 @@ document.querySelectorAll('.offer-overlay').forEach(o => {
   <button id="bannerDismiss" onclick="dismissBanner()" title="Dismiss">×</button>
 </div>
 
-<!-- ══════════════════════════════════════════ -->
-<!-- POPUP 1 — NEWSLETTER $5 (AUTO-REWARD)     -->
-<!-- ══════════════════════════════════════════ -->
-<div class="offer-overlay" id="overlay-newsletter">
-  <div class="offer-popup">
-    <button class="popup-close" onclick="closeOffer('newsletter')">×</button>
-    <div class="popup-accent green"></div>
-    <div class="popup-body">
-      <div class="popup-reward-badge badge-green">✨ Free $5 Credit</div>
-      <div class="popup-title">Find Our Newsletter.<br><span class="hi">Reply & Earn $5.</span></div>
-      <div class="popup-desc">
-        Our newsletter might be in your spam folder. Find it, mark it as "Not Spam", and reply to it. We'll automatically add <strong style="color:#F3F4F6;">$5 to your wallet</strong> when we receive your reply.
-      </div>
-      <div class="popup-steps">
-        <div class="popup-step">
-          <div class="step-num green">1</div>
-          <div>Check your spam folder for email from <strong>stockflowmedia.contact@gmail.com</strong></div>
-        </div>
-        <div class="popup-step">
-          <div class="step-num green">2</div>
-          <div>Mark it as <strong>Not Spam</strong> and move to inbox</div>
-        </div>
-        <div class="popup-step">
-          <div class="step-num green">3</div>
-          <div>Reply to the email with your account email - we'll <strong>automatically credit $5</strong></div>
-        </div>
-      </div>
-      <div class="popup-note">
-        ✔ One-time reward per account. Auto-credited within 24 hours of reply.
-      </div>
 
-      <button class="popup-action action-green" onclick="closeOffer('newsletter')">
-        Got It! I'll Check My Spam →
-      </button>
-      <button class="popup-action action-ghost" onclick="closeOffer('newsletter')">Close</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════ -->
-<!-- POPUP 2 — GOOGLE REVIEW $10               -->
-<!-- ══════════════════════════════════════════ -->
-<!-- ══════════════════════════════════════════ -->
-<!-- POPUP 2 — GOOGLE REVIEW $10 -->
-<!-- ══════════════════════════════════════════ -->
-<div class="offer-overlay" id="overlay-review">
-  <div class="offer-popup">
-    <button class="popup-close" onclick="closeOffer('review')">✕</button>
-    <div class="popup-accent blue"></div>
-    <div class="popup-body">
-      <div class="popup-reward-badge badge-blue">⭐ Free $10 Wallet Credit</div>
-      <div class="popup-title">Write a Review.<br><span class="hi">Earn Credit and Earn 10$ Wallet Credit </span></div>
-      
-      <div class="popup-desc">
-        Leave an honest review on Google — helps others find us and earns you wallet credit. One time per account. Limited time offer, Aiming for first 1000 reviews approx.
-      </div>
-
-      <div class="popup-steps">
-        <div class="popup-step"><div class="step-num blue">1</div><div>Click below to open our review page</div></div>
-        <div class="popup-step"><div class="step-num blue">2</div><div>Leave an honest review</div></div>
-        <div class="popup-step"><div class="step-num blue">3</div><div>Copy the link to your review and paste it below</div></div>
-      </div>
-
-      <a href="https://g.page/r/CcaLxiFI_1IbEAE/review" target="_blank" class="popup-action action-blue" style="margin-bottom:20px; display:block; text-align:center; color:white; text-decoration:none;">
-        ⭐ Open Google Review Page →
-      </a>
-
-      <div id="form-review" class="claim-form" style="display:block;">
-        <input class="claim-input" id="rv-email" type="email" placeholder="Your Stockflow account email" required>
-        <input class="claim-input" id="rv-link" type="url" placeholder="Paste your Google review link here" required>
-        
-        <button id="submit-btn-review" class="popup-action action-blue" onclick="submitClaim('review')" style="width:100%;">
-          Submit for $10 Credit →
-        </button>
-      </div>
-
-      <div class="claim-success" style="display:none; margin-top:16px; padding:12px; background:rgba(16,185,129,0.1); border:1px solid #10B981; border-radius:8px; color:#10B981; text-align:center;"></div>
-      <div class="claim-error" style="display:none; margin-top:16px; padding:12px; background:rgba(239,68,68,0.1); border:1px solid #EF4444; border-radius:8px; color:#EF4444; text-align:center;"></div>
-
-      <button class="popup-action action-ghost" onclick="closeOffer('review')" style="margin-top:12px; width:100%;">Close</button>
-    </div>
-  </div>
-</div>
-
-    
 <!-- ── BANNER SCRIPTS ── -->
 <script>
   // ── Banner Persistence ──
