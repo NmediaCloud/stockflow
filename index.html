@@ -1306,57 +1306,6 @@ document.querySelectorAll('.offer-overlay').forEach(o => {
     </div>
   </div>
 </div>
-<!-- ══════════════════════════════════════════ -->
-<!-- POPUP 3 — YOUTUBE $100 -->
-<!-- ══════════════════════════════════════════ -->
-<div class="offer-overlay" id="overlay-youtube">
-  <div class="offer-popup">
-    <button class="popup-close" onclick="closeOffer('youtube')">×</button>
-    <div class="popup-accent orange"></div>
-    <div class="popup-body">
-      <div class="popup-reward-badge badge-orange">🎬 $100 Credit</div>
-      <div class="popup-title">Feature Us on<br><span class="hi">YouTube. Earn $100.</span></div>
-      <div class="popup-desc">
-        Create a YouTube video featuring Stockflow.media — a review, tutorial, or showcase — with our link in the description. We'll reward you with <strong style="color:#F3F4F6;">$100 wallet credit</strong>.
-      </div>
-      <div class="popup-steps">
-        <div class="popup-step">
-          <div class="step-num orange">1</div>
-          <div>Create a YouTube video mentioning <strong>Stockflow.media</strong> (review, tutorial, or showcase)</div>
-        </div>
-        <div class="popup-step">
-          <div class="step-num orange">2</div>
-          <div>Include <strong>https://stockflow.media</strong> as a clickable link in description</div>
-        </div>
-        <div class="popup-step">
-          <div class="step-num orange">3</div>
-          <div>Submit below — we'll review and credit <strong>$100 within 48 hours</strong></div>
-        </div>
-      </div>
-      <div class="popup-note">
-        ✔ One reward per creator. Video must be public, 2+ minutes, with clickable link in description.
-      </div>
-
-      <div id="form-youtube" class="claim-form open">
-        <input class="claim-input" id="yt-email" type="email" placeholder="Your Stockflow account email" required>
-        <input class="claim-input" id="yt-url" type="url" placeholder="Your YouTube video URL" required>
-        <input class="claim-input" id="yt-channel" type="text" placeholder="Your channel name (optional)">
-        <button class="popup-action action-orange" onclick="submitClaim('youtube')">Submit for $100 Credit →</button>
-      </div>
-
-      <!-- SUCCESS & ERROR MESSAGES – MOVED OUTSIDE FORM FOR RELIABLE ACCESS -->
-      <div class="claim-success" id="success-youtube" style="display:none; margin-top:16px; padding:14px; background:rgba(16,185,129,0.2); border:1px solid #10B981; border-radius:8px; color:#065F46; text-align:center; font-weight:500;">
-        🎬 Submission received! We'll review your video and credit $100 within 48 hours.
-      </div>
-      <div class="claim-error" id="error-youtube" style="display:none; margin-top:16px; padding:14px; background:rgba(239,68,68,0.2); border:1px solid #EF4444; border-radius:8px; color:#991B1B; text-align:center; font-weight:500;">
-        <!-- Error messages appear here -->
-      </div>
-
-      <button class="popup-action action-ghost" onclick="closeOffer('youtube')">Maybe Later</button>
-    </div>
-  </div>
-</div>    
-
 
     
 <!-- ── BANNER SCRIPTS ── -->
