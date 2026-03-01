@@ -161,15 +161,14 @@ nav {
     #walletAmount { font-size: 15px !important; }
 
     /* Transform "My Purchases" into icon-only to save horizontal width */
+    /* Transform "My Purchases" into icon-only to save horizontal width */
+    button[onclick="showPurchaseHistory()"] .btn-text {
+        display: none !important;
+    }
     button[onclick="showPurchaseHistory()"] {
-        font-size: 0 !important;
         padding: 8px !important;
+        justify-content: center !important;
     }
-    button[onclick="showPurchaseHistory()"]::before {
-        content: '📜';
-        font-size: 16px;
-    }
-
     /* Recalculate heights for the frozen stack */
     #offerBanner { top: 60px !important; height: 42px !important; }
     body { padding-top: 102px !important; }
