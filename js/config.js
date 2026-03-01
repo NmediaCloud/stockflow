@@ -12,7 +12,7 @@ const CONFIG = {
   API_URL: 'https://script.google.com/macros/s/AKfycbzH0eSdqxNxAUFNw1BT9BsthQf4XJs54Q1Raiec40JptWxK846ra9iJPvwXNRY2NSUL/exec',
   
   // Stripe Publishable Key (injected by GitHub Actions)
-  STRIPE_PUBLISHABLE_KEY: '__STRIPE_PUBLISHABLE_KEY__',
+  STRIPE_PUBLISHABLE_KEY: 'pk_live_51T1UnqLzE6HNp6WvbNGBawVgCF6eJMY5UtgCBe1pPWuvOxhKdQCTjK7tMRi9Bo5GMEVHTDDqKVSPxZccDp7gNfpk00FPgUygsr',
   
   // Top-up amounts
   TOPUP_AMOUNTS: [1, 5, 10, 20, 30],
