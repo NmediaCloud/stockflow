@@ -75,19 +75,17 @@ nav {
     }
 
     /* FIXED: DOUBLE ICON GLITCH */
-    /* We hide the existing icon inside the button and use only the new emoji icon */
+    /* FIXED: MOBILE PURCHASE BUTTON (SVG ONLY) */
+    /* We hide the text label on mobile, but keep the new SVG visible */
+    button[onclick="showPurchaseHistory()"] .btn-text { 
+        display: none !important; 
+    }
     button[onclick="showPurchaseHistory()"] { 
-        font-size: 0 !important; 
-        padding: 6px 10px !important; 
+        padding: 8px 10px !important; 
+        justify-content: center !important;
     }
-    button[onclick="showPurchaseHistory()"] i, 
-    button[onclick="showPurchaseHistory()"] svg,
-    button[onclick="showPurchaseHistory()"] img { 
-        display: none !important; /* Hides original icons to prevent doubling */
-    }
-    button[onclick="showPurchaseHistory()"]::before { 
-        content: '📜'; 
-        font-size: 16px; 
+    button[onclick="showPurchaseHistory()"] svg { 
+        display: block !important; /* Forces the beautiful new SVG to stay visible */
     }
 
     /* Minimalist Wallet & User Settings */
