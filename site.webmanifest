@@ -1,0 +1,21 @@
+{
+  "name": "Stockflow.media",
+  "short_name": "Stockflow",
+  "description": "Premium 4K Stock Footage",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1F2933",
+  "theme_color": "#F97316",
+  "icons": [
+    {
+      "src": "/assets/Favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/apple-touch-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
