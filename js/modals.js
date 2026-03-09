@@ -41,24 +41,30 @@ function openModal(video) {
         });
     }
 
-    // Logic for handling File URL (MP4 vs Image)
+    // ⭐ SMART LOGIC FOR HANDLING FILE URL (MP4 vs WebP/Image) ⭐
     if (video.preview) {
-        const fileUrl = video.preview.toLowerCase();
+        // Clean the URL to ignore things like "?alt=media" at the end of the link
+        const cleanUrl = video.preview.split('?')[0].toLowerCase();
         
-        if (fileUrl.endsWith(".mp4") || fileUrl.endsWith(".webm") || fileUrl.endsWith(".mov")) {
+        if (cleanUrl.endsWith(".mp4") || cleanUrl.endsWith(".webm") || cleanUrl.endsWith(".mov")) {
+            // Render Video
             container.innerHTML = `
-                <video id="modalVideo" controls class="w-full h-full object-contain" autoplay>
+                <video id="modalVideo" controls class="w-full h-full object-contain" autoplay loop muted playsinline>
                     <source src="${video.preview}">
+                    Your browser does not support the video tag.
                 </video>`;
         } else {
+            // Render WebP, JPG, GIF, or PNG
             container.innerHTML = `
-                <img src="${video.preview}" alt="Preview" class="w-full h-full object-contain" />`;
+                <img src="${video.preview}" alt="${video.title}" class="w-full h-full object-contain" />`;
         }
 
+        // Force the modal to display properly
         modal.classList.remove('modal-hidden');
         modal.classList.add('modal-visible');
+        modal.style.display = 'flex'; 
     } else {
-        alert('Preview not available for this footage.');
+        alert('Preview not available for this asset.');
     }
 }
 
@@ -70,13 +76,18 @@ function closeModal() {
     const videoPlayer = document.getElementById('modalVideo');
     if (videoPlayer) {
         videoPlayer.pause();
-        videoPlayer.src = "";
+        videoPlayer.removeAttribute('src'); 
+        videoPlayer.load();
     }
 
     container.innerHTML = '';
     modal.classList.remove('modal-visible');
     modal.classList.add('modal-hidden');
+    modal.style.display = 'none'; // Force hide it completely
 }
+
+
+// ---------------------------------------------------
 
 function scrollToSearch() {
     const searchInput = document.getElementById('searchInput');
