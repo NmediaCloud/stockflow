@@ -461,7 +461,7 @@ function filterVideos() {
     
     loadMore();
     
-    document.getElementById('resultCount').textContent = `${filteredVideos.length} videos`;
+    document.getElementById('resultCount').textContent = `${filteredVideos.length} Assets`;
     
     const statusEl = document.getElementById('status-text');
     if (filteredVideos.length === 0) {
