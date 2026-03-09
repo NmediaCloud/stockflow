@@ -126,12 +126,12 @@ async function init() {
         }
 
         const featuredCount = allVideos.filter(v => v.featured).length;
-        console.log(`✅ Loaded ${allVideos.length} videos (${featuredCount} featured)`);
+        console.log(`✅ Loaded ${allVideos.length} Assets (${featuredCount} featured)`);
         
     } catch (error) {
         console.error('❌ Init error:', error);
         document.getElementById('status-text').innerHTML = 
-            `<span class="text-red-500 flex items-center gap-1.5"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg> Error loading videos. Please refresh the page.</span>`;
+            `<span class="text-red-500 flex items-center gap-1.5"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg> Error loading Assets. Please refresh the page.</span>`;
         document.getElementById('video-grid').innerHTML = `
             <div class="col-span-full bg-red-50 p-8 rounded-xl">
                 <h3 class="text-red-800 font-bold text-xl mb-3">Error Loading Videos</h3>
@@ -221,13 +221,13 @@ async function loadVideosFromSheet() {
         }
         
         if (allVideos.length === 0) {
-            throw new Error('No valid videos found in sheet');
+            throw new Error('No valid Assets found in sheet');
         }
         
-        console.log(`✅ Successfully loaded ${allVideos.length} videos`);
+        console.log(`✅ Successfully loaded ${allVideos.length} Assets`);
         
     } catch (error) {
-        console.error('❌ Error loading videos:', error);
+        console.error('❌ Error loading Assets:', error);
         throw error;
     }
 }
@@ -465,7 +465,7 @@ function filterVideos() {
     
     const statusEl = document.getElementById('status-text');
     if (filteredVideos.length === 0) {
-        statusEl.innerHTML = `<span class="text-gray-400 flex items-center gap-1.5"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776" /></svg> No videos match your filters</span>`;
+        statusEl.innerHTML = `<span class="text-gray-400 flex items-center gap-1.5"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776" /></svg> No Assets match your filters</span>`;
     } else {
         // THE FIX: Removed the duplicate } else { that was right here!
         statusEl.innerHTML = `<span class="inline-block w-2 h-2 bg-teal-500 rounded-full mr-2"></span>${displayedVideos.length} of ${filteredVideos.length} videos loaded`;
@@ -510,7 +510,7 @@ function loadMore() {
     }
     
     document.getElementById('status-text').innerHTML = 
-        `<span class="inline-block w-2 h-2 bg-teal-500 rounded-full mr-2"></span>${displayedVideos.length} of ${filteredVideos.length} videos loaded`;
+        `<span class="inline-block w-2 h-2 bg-teal-500 rounded-full mr-2"></span>${displayedVideos.length} of ${filteredVideos.length} Assets loaded`;
 }
 
 function createVideoCard(video) {
