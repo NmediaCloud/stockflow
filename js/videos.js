@@ -118,18 +118,13 @@ async function init() {
                 selectCategory(catToOpen, { currentTarget: catBtn });
             }
             
-            // ⏳ Give the DOM 50 milliseconds to render the sub-buttons before trying to click one
             if (subToOpen) {
-                setTimeout(() => {
-                    const subBtn = Array.from(document.querySelectorAll('.subcategory-btn')).find(b => b.textContent.trim() === subToOpen.trim());
-                    
-                    if (subBtn) {
-                        selectSubcategory(subToOpen, { currentTarget: subBtn });
-                        console.log("✅ Highlighted sub-button:", subToOpen);
-                    } else {
-                        console.warn("⚠️ Could not find sub-button to highlight:", subToOpen);
-                    }
-                }, 50);
+                // Find the subcategory button using .trim() to ignore accidental spaces
+                const subBtn = Array.from(document.querySelectorAll('.subcategory-btn')).find(b => b.textContent.trim() === subToOpen.trim());
+                
+                // Run IMMEDIATELY (no timeout) so the URL and videos don't break. 
+                // Pass the subBtn if found for the highlight, or null as a safe fallback.
+                selectSubcategory(subToOpen, subBtn ? { currentTarget: subBtn } : null);
             }
         }
         // 2. Handle Individual Video Deep Links
