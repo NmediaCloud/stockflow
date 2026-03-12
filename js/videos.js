@@ -103,24 +103,26 @@ async function init() {
         const videoIdToOpen = urlParams.get('v');
         
         // 1. Handle Category/Subcategory Deep Links
-        if (catToOpen) {
+       if (catToOpen) {
             console.log("🔗 Category Deep Link:", catToOpen);
+            selectedCategory = catToOpen;
+            if (subToOpen) selectedSubcategory = subToOpen;
             
-            // 1. Build the main category buttons
+            // Re-build buttons to show the correct sub-row
             buildCategoryButtons();
             
-            // 2. Run selectCategory FIRST (this updates the videos but resets the URL/Subcategory)
+            // Find the category button and click it safely
             const catBtn = Array.from(document.querySelectorAll('.category-btn')).find(b => b.textContent.trim() === catToOpen.trim());
-            selectCategory(catToOpen, catBtn ? { currentTarget: catBtn } : null);
+            if (catBtn) {
+                selectCategory(catToOpen, { currentTarget: catBtn });
+            }
             
-            // 3. Run selectSubcategory IMMEDIATELY AFTER
             if (subToOpen) {
-                // We MUST search for the subBtn *after* selectCategory runs, 
-                // because selectCategory likely just created the sub-buttons in the HTML!
+                // Find the subcategory button using .trim() to ignore accidental spaces
                 const subBtn = Array.from(document.querySelectorAll('.subcategory-btn')).find(b => b.textContent.trim() === subToOpen.trim());
                 
-                // By passing { currentTarget: subBtn }, your function will add the orange highlight,
-                // and it will instantly overwrite the URL back to ?cat=...&sub=...
+                // Run IMMEDIATELY (no timeout) so the URL and videos don't break. 
+                // Pass the subBtn if found for the highlight, or null as a safe fallback.
                 selectSubcategory(subToOpen, subBtn ? { currentTarget: subBtn } : null);
             }
         }
