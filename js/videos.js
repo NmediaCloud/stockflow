@@ -105,34 +105,23 @@ async function init() {
         // 1. Handle Category/Subcategory Deep Links
         if (catToOpen) {
             console.log("🔗 Category Deep Link:", catToOpen);
-            selectedCategory = catToOpen;
-            if (subToOpen) selectedSubcategory = subToOpen;
             
-            // Re-build buttons to show the correct sub-row
+            // 1. Build the main category buttons
             buildCategoryButtons();
             
-            // Find the category button and trigger your function
+            // 2. Run selectCategory FIRST (this updates the videos but resets the URL/Subcategory)
             const catBtn = Array.from(document.querySelectorAll('.category-btn')).find(b => b.textContent.trim() === catToOpen.trim());
-            if (catBtn) {
-                selectCategory(catToOpen, { currentTarget: catBtn });
-            }
+            selectCategory(catToOpen, catBtn ? { currentTarget: catBtn } : null);
             
+            // 3. Run selectSubcategory IMMEDIATELY AFTER
             if (subToOpen) {
-                // Find the subcategory button
+                // We MUST search for the subBtn *after* selectCategory runs, 
+                // because selectCategory likely just created the sub-buttons in the HTML!
                 const subBtn = Array.from(document.querySelectorAll('.subcategory-btn')).find(b => b.textContent.trim() === subToOpen.trim());
                 
-                if (subBtn) {
-                    // 🖱️ FAKE THE CLICK! 
-                    // This triggers your event listener naturally, adding the highlight and fixing the URL
-                    subBtn.click();
-                } else {
-                    // Fallback: If the DOM needs a split-second to render the button, 
-                    // requestAnimationFrame waits exactly 1 frame (no arbitrary timeouts)
-                    requestAnimationFrame(() => {
-                        const delayedBtn = Array.from(document.querySelectorAll('.subcategory-btn')).find(b => b.textContent.trim() === subToOpen.trim());
-                        if (delayedBtn) delayedBtn.click();
-                    });
-                }
+                // By passing { currentTarget: subBtn }, your function will add the orange highlight,
+                // and it will instantly overwrite the URL back to ?cat=...&sub=...
+                selectSubcategory(subToOpen, subBtn ? { currentTarget: subBtn } : null);
             }
         }
         // 2. Handle Individual Video Deep Links
