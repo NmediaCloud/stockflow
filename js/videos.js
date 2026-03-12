@@ -103,6 +103,7 @@ async function init() {
         const videoIdToOpen = urlParams.get('v');
         
         // 1. Handle Category/Subcategory Deep Links
+        
         if (catToOpen) {
             console.log("🔗 Category Deep Link:", catToOpen);
             selectedCategory = catToOpen;
@@ -111,16 +112,26 @@ async function init() {
             // Re-build buttons to show the correct sub-row
             buildCategoryButtons();
             
-            // Manually trigger the category logic to show sub-buttons
-            const fakeEvent = { currentTarget: Array.from(document.querySelectorAll('.category-btn')).find(b => b.textContent === catToOpen) };
-            selectCategory(catToOpen, fakeEvent);
-            // Restore the sub-category if it was in the deep link
+            // Find the category button and click it safely
+            const catBtn = Array.from(document.querySelectorAll('.category-btn')).find(b => b.textContent.trim() === catToOpen.trim());
+            if (catBtn) {
+                selectCategory(catToOpen, { currentTarget: catBtn });
+            }
+            
+            // ⏳ Give the DOM 50 milliseconds to render the sub-buttons before trying to click one
             if (subToOpen) {
-                const fakeSubEvent = { currentTarget: Array.from(document.querySelectorAll('.subcategory-btn')).find(b => b.textContent === subToOpen) };
-                selectSubcategory(subToOpen, fakeSubEvent);
+                setTimeout(() => {
+                    const subBtn = Array.from(document.querySelectorAll('.subcategory-btn')).find(b => b.textContent.trim() === subToOpen.trim());
+                    
+                    if (subBtn) {
+                        selectSubcategory(subToOpen, { currentTarget: subBtn });
+                        console.log("✅ Highlighted sub-button:", subToOpen);
+                    } else {
+                        console.warn("⚠️ Could not find sub-button to highlight:", subToOpen);
+                    }
+                }, 50);
             }
         }
-
         // 2. Handle Individual Video Deep Links
         if (videoIdToOpen) {
             const targetVideo = allVideos.find(v => v.id == videoIdToOpen);
