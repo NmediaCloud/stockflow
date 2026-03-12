@@ -114,6 +114,11 @@ async function init() {
             // Manually trigger the category logic to show sub-buttons
             const fakeEvent = { currentTarget: Array.from(document.querySelectorAll('.category-btn')).find(b => b.textContent === catToOpen) };
             selectCategory(catToOpen, fakeEvent);
+            // Restore the sub-category if it was in the deep link
+            if (subToOpen) {
+                const fakeSubEvent = { currentTarget: Array.from(document.querySelectorAll('.subcategory-btn')).find(b => b.textContent === subToOpen) };
+                selectSubcategory(subToOpen, fakeSubEvent);
+            }
         }
 
         // 2. Handle Individual Video Deep Links
