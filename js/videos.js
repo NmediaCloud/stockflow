@@ -103,7 +103,6 @@ async function init() {
         const videoIdToOpen = urlParams.get('v');
         
         // 1. Handle Category/Subcategory Deep Links
-        
         if (catToOpen) {
             console.log("🔗 Category Deep Link:", catToOpen);
             selectedCategory = catToOpen;
@@ -112,19 +111,28 @@ async function init() {
             // Re-build buttons to show the correct sub-row
             buildCategoryButtons();
             
-            // Find the category button and click it safely
+            // Find the category button and trigger your function
             const catBtn = Array.from(document.querySelectorAll('.category-btn')).find(b => b.textContent.trim() === catToOpen.trim());
             if (catBtn) {
                 selectCategory(catToOpen, { currentTarget: catBtn });
             }
             
             if (subToOpen) {
-                // Find the subcategory button using .trim() to ignore accidental spaces
+                // Find the subcategory button
                 const subBtn = Array.from(document.querySelectorAll('.subcategory-btn')).find(b => b.textContent.trim() === subToOpen.trim());
                 
-                // Run IMMEDIATELY (no timeout) so the URL and videos don't break. 
-                // Pass the subBtn if found for the highlight, or null as a safe fallback.
-                selectSubcategory(subToOpen, subBtn ? { currentTarget: subBtn } : null);
+                if (subBtn) {
+                    // 🖱️ FAKE THE CLICK! 
+                    // This triggers your event listener naturally, adding the highlight and fixing the URL
+                    subBtn.click();
+                } else {
+                    // Fallback: If the DOM needs a split-second to render the button, 
+                    // requestAnimationFrame waits exactly 1 frame (no arbitrary timeouts)
+                    requestAnimationFrame(() => {
+                        const delayedBtn = Array.from(document.querySelectorAll('.subcategory-btn')).find(b => b.textContent.trim() === subToOpen.trim());
+                        if (delayedBtn) delayedBtn.click();
+                    });
+                }
             }
         }
         // 2. Handle Individual Video Deep Links
