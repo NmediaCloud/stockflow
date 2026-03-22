@@ -49,7 +49,7 @@ function openModal(video) {
         if (cleanUrl.endsWith(".mp4") || cleanUrl.endsWith(".webm") || cleanUrl.endsWith(".mov")) {
             // Render Video
             container.innerHTML = `
-                <video id="modalVideo" controls class="w-full h-full object-contain" autoplay loop muted playsinline>
+                <video id="modalVideo" controls controlsList="nodownload" oncontextmenu="return false;" class="w-full h-full object-contain" autoplay loop muted playsinline>
                     <source src="${video.preview}">
                     Your browser does not support the video tag.
                 </video>`;
