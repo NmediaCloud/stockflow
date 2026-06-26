@@ -2,9 +2,66 @@
 // modals.js - Master UI & Notification Controller
 // ============================================
 
+// ---- SEO / SHARE META (per-item, updated when a modal opens) ----
+const _DEFAULT_META = { saved: false };
+function _setMeta(kind, key, val) {
+    if (val == null) return;
+    const sel = kind === 'property' ? `meta[property="${key}"]` : `meta[name="${key}"]`;
+    let el = document.querySelector(sel);
+    if (!el) { el = document.createElement('meta'); el.setAttribute(kind, key); document.head.appendChild(el); }
+    el.setAttribute('content', val);
+}
+function _saveDefaultMeta() {
+    if (_DEFAULT_META.saved) return;
+    _DEFAULT_META.title = document.title;
+    const can = document.querySelector('link[rel="canonical"]');
+    _DEFAULT_META.canonical = can ? can.href : location.href;
+    ['og:title', 'og:description', 'og:image', 'og:url'].forEach(p => {
+        const el = document.querySelector(`meta[property="${p}"]`); _DEFAULT_META[p] = el ? el.content : '';
+    });
+    ['twitter:title', 'twitter:description', 'twitter:image', 'twitter:url'].forEach(n => {
+        const el = document.querySelector(`meta[name="${n}"]`); _DEFAULT_META[n] = el ? el.content : '';
+    });
+    _DEFAULT_META.saved = true;
+}
+function updateMetaForVideo(v) {
+    _saveDefaultMeta();
+    const url = `${location.origin}${location.pathname}?v=${v.id}`;
+    const img = v.thumbnail || v.preview || '';
+    const desc = v.description || '';
+    document.title = `${v.title} | Stockflow.media`;
+    let can = document.querySelector('link[rel="canonical"]');
+    if (!can) { can = document.createElement('link'); can.rel = 'canonical'; document.head.appendChild(can); }
+    can.href = url;
+    _setMeta('property', 'og:title', v.title);
+    _setMeta('property', 'og:description', desc);
+    _setMeta('property', 'og:image', img);
+    _setMeta('property', 'og:url', url);
+    _setMeta('name', 'twitter:title', v.title);
+    _setMeta('name', 'twitter:description', desc);
+    _setMeta('name', 'twitter:image', img);
+    _setMeta('name', 'twitter:url', url);
+    try { const u = new URL(location.href); u.searchParams.set('v', v.id); history.replaceState({}, '', u); } catch (e) {}
+}
+function resetMeta() {
+    if (!_DEFAULT_META.saved) return;
+    document.title = _DEFAULT_META.title;
+    const can = document.querySelector('link[rel="canonical"]'); if (can) can.href = _DEFAULT_META.canonical;
+    _setMeta('property', 'og:title', _DEFAULT_META['og:title']);
+    _setMeta('property', 'og:description', _DEFAULT_META['og:description']);
+    _setMeta('property', 'og:image', _DEFAULT_META['og:image']);
+    _setMeta('property', 'og:url', _DEFAULT_META['og:url']);
+    _setMeta('name', 'twitter:title', _DEFAULT_META['twitter:title']);
+    _setMeta('name', 'twitter:description', _DEFAULT_META['twitter:description']);
+    _setMeta('name', 'twitter:image', _DEFAULT_META['twitter:image']);
+    _setMeta('name', 'twitter:url', _DEFAULT_META['twitter:url']);
+    try { const u = new URL(location.href); u.searchParams.delete('v'); history.replaceState({}, '', u); } catch (e) {}
+}
+
 // ---- PREVIEW MODAL ----
 function openModal(video) {
     window.currentVideo = video; // 'window.' makes it accessible to wallet.js!
+    updateMetaForVideo(video);   // per-item title/OG/canonical + address-bar ?v=
     const modal = document.getElementById('previewModal');
     const container = document.getElementById('modalMediaContainer');
 
@@ -69,6 +126,7 @@ function openModal(video) {
 }
 
 function closeModal() {
+    resetMeta();   // restore homepage title/OG/canonical + clear ?v= from the URL
     const modal = document.getElementById('previewModal');
     const container = document.getElementById('modalMediaContainer');
     

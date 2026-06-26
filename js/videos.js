@@ -126,7 +126,7 @@ async function init() {
             const targetVideo = allVideos.find(v => v.id == videoIdToOpen);
             if (targetVideo) {
                 console.log("🔗 Video Deep Link: Auto-opening", targetVideo.title);
-                setTimeout(() => openModal(targetVideo), 800);
+                openModal(targetVideo);   // open instantly on a deep link (no delay)
             }
         }
         const featuredCount = allVideos.filter(v => v.featured).length;
