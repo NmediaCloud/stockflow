@@ -161,8 +161,8 @@
     </script>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/styles.css?v=2">
+    <link rel="stylesheet" href="css/theme.css?v=2">
     <style>
         /* ===== DESKTOP WIDTH CONSTRAINT ===== */
         @media (min-width: 1280px) {
@@ -734,40 +734,37 @@ async function verifyNewsletterReply() {
             </button>
             <div id="walletWidget">
                 <button id="loginButton" onclick="showLoginModal()"
-                    style="background:#F97316;color:white;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;">
+                    style="background:#F97316;color:white;padding:8px 18px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;font-size:13px;">
                     Sign In
                 </button>
 
                 <div id="walletDisplay" style="display:none;">
-                    <div style="display:flex;align-items:center;gap:15px;">
-                        <div style="background:#E0F2FE;padding:8px 15px;border-radius:6px;">
-                            <div onclick="refreshWalletBalance()" class="cursor-pointer transition-colors" title="Click to refresh balance">
-                                <span style="font-size:14px;color:#0369A1;">Wallet:</span>
-                                <span id="walletAmount" style="color:#F97316;font-size:18px;font-weight:500;">$0.00</span>
-                             </div>
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;">
+                        <div onclick="refreshWalletBalance()" title="Click to refresh balance"
+                             style="display:inline-flex;align-items:center;gap:6px;background:#2A2F36;border:1px solid #3A3F46;padding:7px 12px;border-radius:6px;cursor:pointer;white-space:nowrap;">
+                            <span style="font-size:11px;color:#9CA3AF;text-transform:uppercase;letter-spacing:.4px;">Wallet</span>
+                            <span id="walletAmount" style="color:#F97316;font-size:14px;font-weight:700;">$0.00</span>
                         </div>
-                        <!-- ============================================= -->
-                        <!-- ============================================= -->
-                            <button onclick="showPurchaseHistory()" style="display: inline-flex; align-items: center; gap: 10px; padding: 8px 16px; font-size: 14px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 18px; height: 18px;">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                                </svg> 
-                                <span class="btn-text">My Purchases</span>
-                            </button>
-
-                            <button onclick="showTopUpModal()"
-                                style="background:#F97316;color:white;padding:8px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:500;">
-                                Add Funds
-                            </button>                        
+                        <button onclick="showPurchaseHistory()"
+                            style="display:inline-flex;align-items:center;gap:6px;background:#2A2F36;border:1px solid #3A3F46;color:#F3F4F6;padding:7px 12px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;transition:all .2s;white-space:nowrap;">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:15px;height:15px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                            </svg>
+                            <span class="btn-text">My Purchases</span>
+                        </button>
+                        <button onclick="showTopUpModal()"
+                            style="background:#F97316;color:white;padding:7px 14px;border:none;border-radius:6px;cursor:pointer;font-weight:700;font-size:12px;white-space:nowrap;">
+                            Add Funds
+                        </button>
                         <div style="position:relative;">
                             <button id="userMenuButton" onclick="toggleUserMenu()"
-                                style="background:#F3F4F6;padding:8px 12px;border:none;border-radius:6px;cursor:pointer;">
-                                <span id="userEmailDisplay"></span> ▼
+                                style="display:inline-flex;align-items:center;gap:5px;background:#2A2F36;border:1px solid #3A3F46;color:#9CA3AF;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12px;max-width:180px;min-width:90px;">
+                                <span id="userEmailDisplay" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span> ▼
                             </button>
                             <div id="userMenu"
-                                style="display:none;position:absolute;right:0;top:100%;margin-top:5px;background:white;border:1px solid #E5E7EB;border-radius:6px;box-shadow:0 4px 6px rgba(0,0,0,0.1);min-width:200px;z-index:100;">
+                                style="display:none;position:absolute;right:0;top:100%;margin-top:5px;background:#1F2933;border:1px solid #3A3F46;border-radius:6px;box-shadow:0 6px 14px rgba(0,0,0,0.4);min-width:180px;z-index:100;">
                                 <a href="#" onclick="logout();return false;"
-                                    style="display:block;padding:10px 15px;color:#EF4444;text-decoration:none;">
+                                    style="display:block;padding:10px 15px;color:#EF4444;text-decoration:none;font-size:13px;">
                                       Logout
                                 </a>
                             </div>
@@ -1473,16 +1470,12 @@ async function submitClaim(type) {
         <div class="absolute inset-0 bg-black/35"></div>
     </div>
     <div class="relative max-w-4xl mx-auto text-center z-10">
-       <div class="mb-8 transform hover:scale-105 transition-transform duration-300">
-            <p class="text-white font-medium text-xs sm:text-sm mt-2 tracking-wide opacity-90">
-                Claim Free Signup Bonus, <span class="text-orange-500 font-semibold"> $5 Wallet Credit!</span>
-            </p>
+       <div class="mb-6 transform hover:scale-105 transition-transform duration-300">
             <p class="text-white font-medium text-xs sm:text-sm mt-2 tracking-wide opacity-90">
                 Start Downloading — <span class="text-orange-500 font-semibold">No Subscription Required!!</span>
             </p>
         </div>
-        <h2 class="text-3xl md:text-4xl font-bold mb-3 tracking-tight drop-shadow-lg">Premium Stock Images &amp; Footage</h2>
-        <p class="text-base md:text-lg text-orange-100 mb-8 font-normal">Discover high-quality assets for your creative projects</p>
+        <h2 class="text-3xl md:text-4xl font-bold mb-8 tracking-tight drop-shadow-lg">Premium Stock Images &amp; Footage</h2>
         
         <div class="relative max-w-2xl mx-auto group">
             <input type="text" id="searchInput"

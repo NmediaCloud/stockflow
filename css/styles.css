@@ -213,9 +213,9 @@ nav {
     transition: all 0.3s ease;
 }
 .category-btn.active {
-    background: #14B8A6;
+    background: #F59E0B;
     color: white;
-    box-shadow: 0 4px 6px -1px rgba(20, 184, 166, 0.3);
+    box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.3);
 }
 .category-btn.active::after {
     content: '';
@@ -223,16 +223,16 @@ nav {
     bottom: -2px;
     left: 0; right: 0;
     height: 3px;
-    background: #14B8A6;
+    background: #F59E0B;
     border-radius: 2px;
 }
 .subcategory-btn.active {
-    background: #0D9488;
+    background: #D97706;
     color: white;
-    box-shadow: 0 2px 4px rgba(13, 148, 136, 0.3);
+    box-shadow: 0 2px 4px rgba(217, 119, 6, 0.3);
 }
 .format-btn.active {
-    background: #14B8A6;
+    background: #F59E0B;
     color: white;
 }
 
@@ -291,7 +291,7 @@ nav {
 
 .topup-button {
     background: white;
-    border: 2px solid #14B8A6;
+    border: 2px solid #F59E0B;
     padding: 20px;
     border-radius: 8px;
     cursor: pointer;
@@ -302,7 +302,7 @@ nav {
     width: 100%;
 }
 .topup-button:hover {
-    background: #14B8A6;
+    background: #F59E0B;
     color: white;
     transform: translateY(-2px);
 }
