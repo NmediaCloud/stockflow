@@ -71,6 +71,16 @@ async function init() {
     document.getElementById('status-text').innerHTML =
         '<span class="inline-block w-2 h-2 bg-orange-500 rounded-full animate-pulse mr-2"></span>Loading content...';
 
+    // INSTANT PAINT: tiny static catalog (few KB) renders category tiles
+    // immediately while the full asset data loads in the background.
+    try {
+        const c = await fetch('data/catalog.json', { cache: 'no-cache' });
+        if (c.ok) {
+            catalogData = await c.json();
+            renderCatalog();
+        }
+    } catch (e) { /* no catalog yet — grid stays empty until data loads */ }
+
     try {
         await loadVideosFromSheet();
 
@@ -82,7 +92,14 @@ async function init() {
 
         buildCategoryButtons();
         generateAssetFormatBar();
-        filterVideos();
+        // Default view = Catalog (category tiles). Deep links still take over below.
+        const urlParams0 = new URLSearchParams(window.location.search);
+        const hasDeepLink = urlParams0.get('cat') || urlParams0.get('v') || urlParams0.get('collection') || urlParams0.get('sub');
+        if (hasDeepLink) {
+            filterVideos();
+        } else {
+            renderCatalog();
+        }
         // --- DEEP LINKING: CATEGORIES, SUBCATEGORIES, COLLECTIONS & VIDEOS ---
         const urlParams = new URLSearchParams(window.location.search);
         const catToOpen = urlParams.get('cat');
@@ -145,8 +162,89 @@ async function init() {
         `;
     }
 }
+// ---- CATALOG VIEW: instant category tiles (from tiny data/catalog.json) ----
+// Painted BEFORE the asset data arrives, so visitors browse immediately.
+let catalogData = null;
+function buildCatalogFromVideos() {
+    const map = new Map();
+    allVideos.forEach(v => {
+        if (!v.category) return;
+        if (!map.has(v.category)) map.set(v.category, { name: v.category, cover: v.thumbnail, count: 0 });
+        const c = map.get(v.category);
+        c.count++;
+        if (v.featured && !c.hasFeaturedCover) { c.cover = v.thumbnail; c.hasFeaturedCover = true; }
+    });
+    return Array.from(map.values());
+}
+function renderCatalog() {
+    const grid = document.getElementById('video-grid');
+    const data = (catalogData && catalogData.length) ? catalogData : buildCatalogFromVideos();
+    if (!data || !data.length) return false;
+    grid.innerHTML = data.map(c => `
+        <div class="group cursor-pointer" onclick="selectCategoryByName('${c.name.replace(/'/g, "\\'")}')">
+            <div class="relative rounded-lg overflow-hidden border border-[#3A3F46] bg-[#2A2F36] transition-all duration-200 group-hover:-translate-y-1 group-hover:border-orange-500 group-hover:shadow-xl">
+                <div class="relative aspect-[4/3] bg-[#0b0b0b] overflow-hidden">
+                    <img src="${c.cover}" alt="${c.name} stock assets" loading="lazy" decoding="async"
+                         class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+                    <span class="absolute bottom-2 right-2 bg-black/70 text-white text-[11px] font-semibold px-2.5 py-1 rounded-md">${c.count.toLocaleString()} assets</span>
+                </div>
+                <div class="p-3">
+                    <h3 class="text-[15px] font-bold text-gray-100">${c.name}</h3>
+                    <p class="text-[12px] text-orange-500 font-semibold mt-0.5">Browse collection →</p>
+                </div>
+            </div>
+        </div>`).join('');
+    const lm = document.getElementById('loadMoreSection');
+    if (lm) lm.classList.add('hidden');
+    const total = data.reduce((s, c) => s + c.count, 0);
+    const rc = document.getElementById('resultCount');
+    if (rc) rc.textContent = `${total.toLocaleString()} Assets`;
+    const st = document.getElementById('status-text');
+    if (st) st.innerHTML = `<span class="inline-block w-2 h-2 bg-orange-500 rounded-full mr-2"></span>Catalog — pick a category to explore ${total.toLocaleString()} assets`;
+    return true;
+}
+function selectCategoryByName(name) {
+    const btn = Array.from(document.querySelectorAll('.category-btn')).find(b => b.textContent.trim() === name.trim());
+    selectCategory(name, btn ? { currentTarget: btn } : null);
+}
+window.selectCategoryByName = selectCategoryByName;
+
+// Build the category/subcategory/sub indexes from allVideos (used by both load paths)
+function indexVideos() {
+    categories = new Set();
+    subcategories = {};
+    subs = {};
+    allVideos.forEach(video => {
+        if (!video.category) return;
+        categories.add(video.category);
+        if (!subcategories[video.category]) subcategories[video.category] = new Set();
+        if (video.subcategory) subcategories[video.category].add(video.subcategory);
+        const catSubKey = `${video.category}|${video.subcategory}`;
+        if (!subs[catSubKey]) subs[catSubKey] = new Set();
+        if (video.sub) subs[catSubKey].add(video.sub);
+    });
+}
 async function loadVideosFromSheet() {
     allVideos = [];
+
+    // FAST PATH: static snapshot published with the site (same-origin CDN, gzipped,
+    // ~5x smaller than the sheet CSV export). cache:'no-cache' revalidates via ETag,
+    // so visitors always get fresh data right after a publish, at 304-speed otherwise.
+    try {
+        const snap = await fetch('data/assets.json', { cache: 'no-cache' });
+        if (snap.ok) {
+            const data = await snap.json();
+            if (Array.isArray(data) && data.length > 0) {
+                allVideos = data;
+                indexVideos();
+                console.log(`⚡ Loaded ${allVideos.length} assets from static snapshot`);
+                return;
+            }
+        }
+    } catch (e) {
+        console.warn('⚠️ Static snapshot unavailable, falling back to Sheet CSV:', e);
+    }
+
     const csvUrl = CONFIG.SHEET_CSV_URL;
 
     console.log('📡 Fetching from:', csvUrl);
@@ -278,24 +376,11 @@ function buildCategoryButtons() {
     const container = document.getElementById('categoryButtons');
     container.innerHTML = '';
 
-    const featuredCount = allVideos.filter(v => v.featured).length;
-
-    if (featuredCount > 0) {
-        const featuredBtn = document.createElement('button');
-        featuredBtn.className = 'category-btn active px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm';
-
-        // UPGRADED FEATURED STAR SVG
-        featuredBtn.innerHTML = `<span class="flex items-center gap-1.5"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-orange-500"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09l2.846.813-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.428-1.428L13.5 18.75l1.178-.394a2.25 2.25 0 001.428-1.428l.394-1.183.394 1.183a2.25 2.25 0 001.428 1.428l1.178.394-1.178.394a2.25 2.25 0 00-1.428 1.428z" /></svg> Featured</span>`;
-
-        featuredBtn.onclick = (e) => selectCategory(null, e);
-        container.appendChild(featuredBtn);
-    } else {
-        const allBtn = document.createElement('button');
-        allBtn.className = 'category-btn active px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm';
-        allBtn.textContent = 'All Videos';
-        allBtn.onclick = (e) => selectCategory(null, e);
-        container.appendChild(allBtn);
-    }
+    const catalogBtn = document.createElement('button');
+    catalogBtn.className = 'category-btn active px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm';
+    catalogBtn.innerHTML = `<span class="flex items-center gap-1.5"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-orange-500"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg> Catalog</span>`;
+    catalogBtn.onclick = (e) => selectCategory(null, e);
+    container.appendChild(catalogBtn);
 
     const sortedCategories = Array.from(categories).sort();
     sortedCategories.forEach(cat => {
@@ -347,7 +432,11 @@ function selectCategory(category, e) {
         subSubSection.classList.add('hidden');
     }
 
-    filterVideos();
+    if (category === null) {
+        renderCatalog();          // Catalog button -> back to category tiles
+    } else {
+        filterVideos();
+    }
 }
 function buildSubcategoryButtons(category) {
     const container = document.getElementById('subcategoryButtons');
@@ -439,7 +528,9 @@ function filterVideos() {
     const searchTerm = document.getElementById('searchInput')?.value?.toLowerCase() || '';
 
     filteredVideos = allVideos.filter(video => {
-        if (selectedCategory === null) {
+        // No category picked: show featured only — EXCEPT when searching,
+        // a search from the Catalog view must cover the whole library.
+        if (selectedCategory === null && !searchTerm) {
             const hasFeatured = allVideos.some(v => v.featured);
             if (hasFeatured && !video.featured) return false;
         }

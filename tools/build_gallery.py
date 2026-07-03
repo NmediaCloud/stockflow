@@ -498,6 +498,67 @@ def build(tree):
     return page_urls, asset_urls, img_entries, total_assets
 
 
+def write_assets_json(rows):
+    """Slim static snapshot of the Sheet for the storefront SPA (data/assets.json).
+
+    The SPA used to download the ENTIRE sheet CSV (26+ MB, slow on-demand
+    export from docs.google.com) on every visit. This snapshot keeps only the
+    fields js/videos.js actually uses, in the exact object shape it builds,
+    and is served same-origin from the GitHub Pages CDN (gzipped, cacheable).
+    """
+    out = []
+    for r in rows:
+        fid = (r.get("File_ID") or "").strip()
+        title = (r.get("Title") or "").strip()
+        thumb = (r.get("Thumbnail_URL") or "").strip()
+        preview = (r.get("Preview_URL") or "").strip()
+        if not (fid and title and thumb and preview):
+            continue
+        hr_name = (r.get("HighRes_Filename") or "").strip()
+        m = re.search(r"_([^_]+)_\.[a-z0-9]+$", hr_name, re.I)
+        try:
+            price = float((r.get("Price") or "").strip())
+        except Exception:
+            price = 1
+        out.append({
+            "id": fid,
+            "title": title,
+            "category": (r.get("Category") or "").strip(),
+            "subcategory": (r.get("Catagory_Sub") or "").strip(),
+            "sub": (r.get("Sub") or "").strip(),
+            "description": (r.get("Description") or "").strip(),
+            "thumbnail": thumb,
+            "preview": preview,
+            "price": price,
+            "format": (r.get("Format") or "16:9").strip(),
+            "resolution": (r.get("Resolution") or "").strip(),
+            "tags": (r.get("Tags") or "").strip(),
+            "highResUrl": (r.get("HighRes_DriveURL") or "").strip(),
+            "featured": (r.get("Featured") or "").strip().lower() in ("true", "1"),
+            "fileFormat": m.group(1) if m else "",
+            "assetFormat": (r.get("Assets Format") or "").strip(),
+        })
+    ddir = ROOT / "data"
+    ddir.mkdir(exist_ok=True)
+    payload = json.dumps(out, ensure_ascii=False, separators=(",", ":"))
+    wfile(ddir / "assets.json", payload)
+    print(f"data/assets.json: {len(out):,} assets · {len(payload.encode('utf-8'))/1e6:.1f} MB raw", flush=True)
+
+
+def write_catalog_json(tree):
+    """Tiny category index (name/cover/count) — the storefront paints these
+    tiles instantly on load while the full assets.json arrives in background."""
+    cats = []
+    for cat, subs in tree.items():
+        assets = [a for lst in subs.values() for a in lst]
+        cover = next((a["thumb"] for a in assets if a["featured"]), assets[0]["thumb"])
+        cats.append({"name": cat, "cover": cover, "count": len(assets)})
+    ddir = ROOT / "data"
+    ddir.mkdir(exist_ok=True)
+    wfile(ddir / "catalog.json", json.dumps(cats, ensure_ascii=False, separators=(",", ":")))
+    print(f"data/catalog.json: {len(cats)} categories", flush=True)
+
+
 def xml_esc(s):
     return (str(s or "").replace("&", "&amp;").replace("<", "&lt;")
             .replace(">", "&gt;").replace('"', "&quot;"))
@@ -553,7 +614,10 @@ def main():
     ap.add_argument("--csv", default="", help="build from a saved CSV instead of fetching")
     args = ap.parse_args()
 
-    tree = load_assets(fetch_rows(args.csv or None))
+    rows = fetch_rows(args.csv or None)
+    write_assets_json(rows)
+    tree = load_assets(rows)
+    write_catalog_json(tree)
     cats = len(tree)
     subs = sum(len(s) for s in tree.values())
     print(f"Hierarchy: {cats} categories, {subs} subcategories", flush=True)
