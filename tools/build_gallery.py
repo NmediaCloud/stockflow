@@ -3,24 +3,29 @@ build_gallery.py — Generate the crawlable static /gallery/ for stockflow.media
 
 Why this exists: the storefront is a JS SPA, so crawlers see zero images.
 This reads the SAME Google Sheet the storefront uses and emits fully static,
-SEO-complete HTML — one page per category and per subcategory (paginated) —
-where every asset is a real <img> linking to its ?v= buy deep-link.
+SEO-complete HTML — a gallery landing page, one page per category, one per
+subcategory (paginated), and ONE PAGE PER ASSET — where every asset is a real
+<img> and every buy action deep-links to the storefront modal (?v=<File_ID>).
 
-Each page carries: unique <title>/description/canonical/OG, BreadcrumbList,
-and an ImageObject/VideoObject graph with license + copyrightNotice +
-acquireLicensePage (mirrors the help-site fix, keeps GSC licensing happy).
+Every page carries: unique <title>/description/canonical/OG, BreadcrumbList,
+and ImageObject/VideoObject JSON-LD with license + copyrightNotice +
+acquireLicensePage. Asset pages add Product+Offer JSON-LD with the real price.
 
 Outputs (repo root):
-  gallery/index.html
-  gallery/<cat>/index.html
-  gallery/<cat>/<sub>/index.html (+ page-2.html … when large)
+  gallery/index.html                     landing (category tiles)
+  gallery/<cat>/index.html               category (collection tiles)
+  gallery/<cat>/<sub>/index.html…        asset grids (paginated ×PER_PAGE)
+  gallery/a/<File_ID>.html               per-asset landing pages
   gallery/gallery.css
-  sitemap-gallery.xml          (page URLs)
-  sitemap-images-gallery.xml   (Google image sitemap)
-  robots.txt                   (lists all sitemaps)
+  sitemap-gallery.xml                    category/subcategory page URLs
+  sitemap-assets.xml                     per-asset page URLs
+  sitemap-images-gallery.xml             Google image sitemap
+  robots.txt
 
-Usage:  python tools/build_gallery.py            (fetch sheet + build)
+Usage:  python tools/build_gallery.py             (fetch sheet + build)
         python tools/build_gallery.py --csv x.csv (build from a saved CSV)
+
+Files are only rewritten when content changed, so repeat syncs keep git fast.
 """
 from __future__ import annotations
 
@@ -48,7 +53,23 @@ LICENSE_URL = "https://help.stockflow.media/license/"
 COPYRIGHT = "© NMedia Services & Stockflow.media — All rights reserved."
 CREDIT = "Stockflow.media"
 PER_PAGE = 200          # assets per subcategory page (keeps HTML + JSON-LD lean)
+RELATED_N = 8           # related assets shown on each asset page
 VIDEO_EXTS = (".mp4", ".mov", ".m4v", ".webm")
+
+_written = {"new": 0, "same": 0}
+
+
+def wfile(path: Path, content: str):
+    """Write only when changed — keeps git status/commits cheap on re-syncs."""
+    if path.exists():
+        try:
+            if path.read_text(encoding="utf-8") == content:
+                _written["same"] += 1
+                return
+        except Exception:
+            pass
+    path.write_text(content, encoding="utf-8")
+    _written["new"] += 1
 
 
 # ---------------------------------------------------------------- helpers
@@ -70,6 +91,13 @@ def upload_date(file_id: str) -> str:
     return f"{m.group(1)}-{m.group(2)}-{m.group(3)}" if m else "2026-01-01"
 
 
+def price_fmt(p: str) -> str:
+    try:
+        return f"${float(p):,.2f}"
+    except Exception:
+        return p
+
+
 def fetch_rows(csv_path: str | None):
     if csv_path:
         text = Path(csv_path).read_text(encoding="utf-8-sig")
@@ -86,15 +114,17 @@ def load_assets(rows):
     """Rows -> asset dicts, grouped Category -> Subcategory -> [assets]."""
     tree: "OrderedDict[str, OrderedDict[str, list]]" = OrderedDict()
     skipped = 0
+    seen_ids = set()
     for r in rows:
         fid = (r.get("File_ID") or "").strip()
         thumb = (r.get("Thumbnail_URL") or "").strip()
         preview = (r.get("Preview_URL") or "").strip()
         cat = (r.get("Category") or "").strip()
         sub = (r.get("Catagory_Sub") or "").strip()
-        if not (fid and (thumb or preview) and cat and sub):
+        if not (fid and (thumb or preview) and cat and sub) or fid in seen_ids:
             skipped += 1
             continue
+        seen_ids.add(fid)
         a = {
             "id": fid,
             "title": (r.get("SEO_Title") or r.get("Title") or fid).strip(),
@@ -110,45 +140,65 @@ def load_assets(rows):
             "featured": (r.get("Featured") or "").strip().lower() in ("1", "true", "yes", "y"),
             "video": is_video(preview),
             "buy": f"{SITE}/?v={fid}",
+            "page": f"{SITE}/gallery/a/{fid}.html",
         }
         tree.setdefault(cat, OrderedDict()).setdefault(sub, []).append(a)
     if skipped:
-        print(f"Skipped {skipped} rows missing id/urls/category", flush=True)
+        print(f"Skipped {skipped} rows (missing id/urls/category or duplicate id)", flush=True)
     return tree
 
 
-# ---------------------------------------------------------------- markup
-def jsonld_assets(assets):
-    graph = []
-    for a in assets:
-        node = {
-            "@type": "VideoObject" if a["video"] else "ImageObject",
-            "name": a["title"],
-            "description": a["desc"] or a["title"],
-            "contentUrl": a["preview"],
-            "thumbnailUrl": a["thumb"],
+# ---------------------------------------------------------------- json-ld
+def media_node(a):
+    node = {
+        "@type": "VideoObject" if a["video"] else "ImageObject",
+        "name": a["title"],
+        "description": a["desc"] or a["title"],
+        "contentUrl": a["preview"],
+        "thumbnailUrl": a["thumb"],
+        "url": a["buy"],
+        "acquireLicensePage": a["buy"],
+        "license": LICENSE_URL,
+        "copyrightNotice": COPYRIGHT,
+        "creditText": CREDIT,
+        "creator": {"@type": "Organization", "name": CREDIT},
+    }
+    if a["keywords"]:
+        node["keywords"] = a["keywords"]
+    if a["video"]:
+        node["uploadDate"] = upload_date(a["id"])
+    return node
+
+
+def product_node(a):
+    try:
+        price = f"{float(a['price']):.2f}"
+    except Exception:
+        return None
+    return {
+        "@type": "Product",
+        "name": a["title"],
+        "image": a["preview"],
+        "description": a["desc"] or a["title"],
+        "sku": a["id"],
+        "brand": {"@type": "Brand", "name": CREDIT},
+        "offers": {
+            "@type": "Offer",
             "url": a["buy"],
-            "acquireLicensePage": a["buy"],
-            "license": LICENSE_URL,
-            "copyrightNotice": COPYRIGHT,
-            "creditText": CREDIT,
-            "creator": {"@type": "Organization", "name": CREDIT},
-        }
-        if a["keywords"]:
-            node["keywords"] = a["keywords"]
-        if a["video"]:
-            node["uploadDate"] = upload_date(a["id"])
-        graph.append(node)
-    return graph
+            "price": price,
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock",
+        },
+    }
 
 
 def jsonld_breadcrumb(parts):
-    items = []
-    for i, (name, url) in enumerate(parts, 1):
-        items.append({"@type": "ListItem", "position": i, "name": name, "item": url})
-    return {"@type": "BreadcrumbList", "itemListElement": items}
+    return {"@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": i, "name": n, "item": u}
+        for i, (n, u) in enumerate(parts, 1)]}
 
 
+# ---------------------------------------------------------------- markup
 def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_graph=None,
                prev_url=None, next_url=None, depth=2):
     rel = "../" * depth
@@ -202,14 +252,15 @@ def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_grap
 
 
 def card(a):
+    """Grid card: image+caption -> asset page (SEO), License pill -> buy modal."""
     badge = '<span class="g-badge">▶ video</span>' if a["video"] else ""
     meta_bits = " · ".join(b for b in (a["res"], a["fmt"].upper() if a["fmt"] else "") if b)
-    price = f'<span class="g-price">{esc(a["price"])}</span>' if a["price"] else ""
-    return f"""<a class="g-card" href="{esc(a['buy'])}" title="License: {esc(a['title'])}">
-  <img src="{esc(a['thumb'])}" alt="{esc(a['alt'] or a['title'])}" loading="lazy" decoding="async">
-  {badge}
-  <span class="g-cap"><span class="g-t">{esc(a['title'])}</span><span class="g-m">{esc(meta_bits)}{price}</span></span>
-</a>"""
+    price = f'<span class="g-price">{esc(price_fmt(a["price"]))}</span>' if a["price"] else ""
+    return f"""<div class="g-card">
+  <a class="g-img" href="{esc(a['page'])}"><img src="{esc(a['thumb'])}" alt="{esc(a['alt'] or a['title'])}" loading="lazy" decoding="async">{badge}</a>
+  <a class="g-lic" href="{esc(a['buy'])}" title="License this asset now">License</a>
+  <a class="g-cap" href="{esc(a['page'])}"><span class="g-t">{esc(a['title'])}</span><span class="g-m">{esc(meta_bits)}{price}</span></a>
+</div>"""
 
 
 def tile(name, url, cover, count, kind):
@@ -228,6 +279,38 @@ def pager(base_url, page, pages):
         cls = ' class="on"' if p == page else ""
         links.append(f'<a{cls} href="{esc(u)}">{p}</a>')
     return f'<nav class="g-pager">Page: {" ".join(links)}</nav>'
+
+
+def asset_body(a, cat, cat_url, sub, sub_url, related):
+    kind = "4K Stock Video" if a["video"] else "Stock Image"
+    chips = "".join(f"<span>{esc(k.strip())}</span>"
+                    for k in (a["keywords"] or "").split(",") if k.strip())
+    meta_rows = "".join(
+        f"<tr><td>{esc(k)}</td><td>{esc(v)}</td></tr>"
+        for k, v in (("Asset ID", a["id"]), ("Resolution", a["res"]),
+                     ("Format", a["fmt"].upper()), ("Type", "Video" if a["video"] else "Image"),
+                     ("Collection", a["leaf"] or sub)) if v)
+    price_line = f' — <b>{esc(price_fmt(a["price"]))}</b>' if a["price"] else ""
+    media = (f'<video controls preload="metadata" poster="{esc(a["thumb"])}" src="{esc(a["preview"])}"></video>'
+             if a["video"] else
+             f'<img src="{esc(a["preview"])}" alt="{esc(a["alt"] or a["title"])}" fetchpriority="high">')
+    rel_cards = "".join(card(r) for r in related)
+    rel_block = (f'<h2 class="g-sec">Related assets in {esc(sub)}</h2>'
+                 f'<div class="g-grid">{rel_cards}</div>') if related else ""
+    return f"""<div class="g-hero">
+  <div class="g-media">{media}</div>
+  <div class="g-info">
+    <h1>{esc(a['title'])}</h1>
+    <p class="lead">{esc(a['desc'] or a['title'])}</p>
+    <a class="g-buy" href="{esc(a['buy'])}">License this {('clip' if a['video'] else 'image')}{price_line}</a>
+    <p class="g-note">Royalty-free · pay once, use forever · instant full-resolution download ·
+    <a href="{LICENSE_URL}">license terms</a></p>
+    <table class="g-meta">{meta_rows}</table>
+    <p class="g-note">Browse more: <a href="{esc(sub_url)}">{esc(sub)}</a> · <a href="{esc(cat_url)}">{esc(cat)}</a></p>
+  </div>
+</div>
+<div class="g-chips">{chips}</div>
+{rel_block}"""
 
 
 GALLERY_CSS = """/* Stockflow gallery — static, matches theme.css (dark charcoal + burnt orange) */
@@ -249,7 +332,10 @@ a{color:var(--acc);text-decoration:none}a:hover{color:var(--acch)}
 .g-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
 .g-card,.g-tile{position:relative;display:block;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;transition:transform .15s,border-color .15s}
 .g-card:hover,.g-tile:hover{transform:translateY(-3px);border-color:var(--acc)}
+.g-img{display:block;position:relative}
 .g-card img,.g-tile img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#0b0b0b}
+.g-lic{position:absolute;top:8px;right:8px;background:var(--acc);color:#fff !important;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;z-index:2;opacity:.92}
+.g-lic:hover{background:var(--acch)}
 .g-cap{display:block;padding:9px 11px}
 .g-t{display:block;color:var(--txt);font-size:13px;font-weight:600;line-height:1.35;max-height:2.7em;overflow:hidden}
 .g-m{display:block;color:var(--mut);font-size:11.5px;margin-top:3px}
@@ -259,6 +345,19 @@ a{color:var(--acc);text-decoration:none}a:hover{color:var(--acch)}
 .g-pager a{background:var(--card);border:1px solid var(--line);color:var(--txt);padding:5px 11px;border-radius:6px}
 .g-pager a.on{background:var(--acc);border-color:var(--acc);color:#fff}
 .g-foot{border-top:1px solid var(--line);color:var(--mut);font-size:12.5px;padding:18px 24px;text-align:center}
+/* asset landing page */
+.g-hero{display:grid;grid-template-columns:minmax(0,7fr) minmax(300px,4fr);gap:26px;align-items:start}
+@media(max-width:900px){.g-hero{grid-template-columns:1fr}}
+.g-media img,.g-media video{width:100%;border:1px solid var(--line);border-radius:12px;background:#0b0b0b;display:block}
+.g-info h1{font-size:24px;line-height:1.3}
+.g-buy{display:inline-block;background:var(--acc);color:#fff !important;font-size:17px;font-weight:800;padding:14px 26px;border-radius:10px;margin:10px 0 4px}
+.g-buy:hover{background:var(--acch)}
+.g-buy b{font-weight:800}
+.g-note{color:var(--mut);font-size:12.5px;margin:8px 0}
+.g-meta{border-collapse:collapse;margin:14px 0;font-size:13px;width:100%}
+.g-meta td{border:1px solid var(--line);padding:7px 10px}.g-meta td:first-child{color:var(--mut);width:38%}
+.g-chips{display:flex;gap:7px;flex-wrap:wrap;margin:22px 0 4px}
+.g-chips span{background:var(--card);border:1px solid var(--line);color:var(--mut);font-size:12px;padding:4px 11px;border-radius:14px}
 """
 
 
@@ -266,10 +365,13 @@ a{color:var(--acc);text-decoration:none}a:hover{color:var(--acch)}
 def build(tree):
     out = ROOT / "gallery"
     out.mkdir(exist_ok=True)
-    (out / "gallery.css").write_text(GALLERY_CSS, encoding="utf-8")
+    wfile(out / "gallery.css", GALLERY_CSS)
+    adir = out / "a"
+    adir.mkdir(exist_ok=True)
 
-    page_urls = []          # (url, has_images)
-    img_entries = []        # (page_url, [(img, title, caption), ...])
+    page_urls = []
+    asset_urls = []
+    img_entries = []
     total_assets = 0
 
     home_crumb = ("Home", f"{SITE}/")
@@ -303,10 +405,10 @@ def build(tree):
             body=body, depth=2)
         d = out / cslug
         d.mkdir(exist_ok=True)
-        (d / "index.html").write_text(pg, encoding="utf-8")
+        wfile(d / "index.html", pg)
         page_urls.append(cat_url)
 
-        # ---- subcategory pages (paginated asset grids)
+        # ---- subcategory pages + per-asset pages
         sub_names = list(subs.keys())
         for sub, assets in subs.items():
             sslug = slug(sub)
@@ -326,7 +428,7 @@ def build(tree):
                 suffix = f" — Page {p}" if p > 1 else ""
                 body = (f"<h1>{esc(sub)} — {esc(cat)} Stock Assets{suffix}</h1>"
                         f'<p class="lead">{len(assets):,} royalty-free {esc(sub)} images &amp; clips (up to 8K). '
-                        f'Click any preview to license it instantly on Stockflow.media.</p>'
+                        f'Open any preview for details, or hit License to buy it instantly.</p>'
                         f'<div class="g-tabs">{tabs}</div>'
                         f'<div class="g-grid">{"".join(card(a) for a in chunk)}</div>'
                         f'{pager(base, p, pages)}')
@@ -336,11 +438,35 @@ def build(tree):
                          f"royalty-free license, instant download from $1.",
                     canonical=url, og_image=chunk[0]["preview"],
                     breadcrumb=[home_crumb, gal_crumb, (cat, cat_url), (sub, base)],
-                    body=body, extra_graph=jsonld_assets(chunk),
+                    body=body, extra_graph=[media_node(a) for a in chunk],
                     prev_url=prev_u, next_url=next_u, depth=3)
-                (sd / ("index.html" if p == 1 else f"page-{p}.html")).write_text(pg, encoding="utf-8")
+                wfile(sd / ("index.html" if p == 1 else f"page-{p}.html"), pg)
                 page_urls.append(url)
                 img_entries.append((url, [(a["thumb"], a["title"], a["desc"] or a["alt"]) for a in chunk if not a["video"]]))
+
+            # ---- per-asset landing pages
+            by_leaf = {}
+            for a in assets:
+                by_leaf.setdefault(a["leaf"], []).append(a)
+            for i, a in enumerate(assets):
+                rel = [r for r in by_leaf.get(a["leaf"], []) if r["id"] != a["id"]]
+                if len(rel) < RELATED_N:
+                    rel += [r for r in assets if r["id"] != a["id"] and r not in rel]
+                related = rel[:RELATED_N]
+                kind = "4K Stock Video" if a["video"] else "8K Stock Image"
+                graph = [media_node(a)]
+                pn = product_node(a)
+                if pn:
+                    graph.append(pn)
+                pg = page_shell(
+                    title=f"{a['title']} — Royalty-Free {kind} | Stockflow.media",
+                    desc=(a["desc"] or a["title"])[:150] + f" Royalty-free {sub} stock, instant download.",
+                    canonical=a["page"], og_image=a["preview"],
+                    breadcrumb=[home_crumb, gal_crumb, (cat, cat_url), (sub, base), (a["title"], a["page"])],
+                    body=asset_body(a, cat, cat_url, sub, base, related),
+                    extra_graph=graph, depth=2)
+                wfile(adir / f"{a['id']}.html", pg)
+                asset_urls.append(a["page"])
 
     # ---- gallery landing page
     body = ("<h1>Stock Image &amp; Footage Gallery</h1>"
@@ -356,10 +482,20 @@ def build(tree):
              "up to 8K, instant download from $1 at Stockflow.media.",
         canonical=f"{SITE}/gallery/", og_image=first_cover,
         breadcrumb=[home_crumb, gal_crumb], body=body, depth=1)
-    (out / "index.html").write_text(pg, encoding="utf-8")
+    wfile(out / "index.html", pg)
     page_urls.insert(0, f"{SITE}/gallery/")
 
-    return page_urls, img_entries, total_assets
+    # prune asset pages for ids no longer in the sheet
+    live = {u.rsplit("/", 1)[1] for u in asset_urls}
+    pruned = 0
+    for f in adir.glob("*.html"):
+        if f.name not in live:
+            f.unlink()
+            pruned += 1
+    if pruned:
+        print(f"Pruned {pruned} stale asset pages", flush=True)
+
+    return page_urls, asset_urls, img_entries, total_assets
 
 
 def xml_esc(s):
@@ -367,13 +503,17 @@ def xml_esc(s):
             .replace(">", "&gt;").replace('"', "&quot;"))
 
 
-def write_sitemaps(page_urls, img_entries):
-    lines = ['<?xml version="1.0" encoding="UTF-8"?>',
-             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    for u in page_urls:
-        lines.append(f"  <url><loc>{xml_esc(u)}</loc><changefreq>weekly</changefreq></url>")
-    lines.append("</urlset>")
-    (ROOT / "sitemap-gallery.xml").write_text("\n".join(lines), encoding="utf-8")
+def write_sitemaps(page_urls, asset_urls, img_entries):
+    def urlset(urls, freq):
+        lines = ['<?xml version="1.0" encoding="UTF-8"?>',
+                 '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+        for u in urls:
+            lines.append(f"  <url><loc>{xml_esc(u)}</loc><changefreq>{freq}</changefreq></url>")
+        lines.append("</urlset>")
+        return "\n".join(lines)
+
+    wfile(ROOT / "sitemap-gallery.xml", urlset(page_urls, "weekly"))
+    wfile(ROOT / "sitemap-assets.xml", urlset(asset_urls, "monthly"))
 
     lines = ['<?xml version="1.0" encoding="UTF-8"?>',
              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
@@ -394,18 +534,18 @@ def write_sitemaps(page_urls, img_entries):
             n += 1
         lines.append("  </url>")
     lines.append("</urlset>")
-    (ROOT / "sitemap-images-gallery.xml").write_text("\n".join(lines), encoding="utf-8")
+    wfile(ROOT / "sitemap-images-gallery.xml", "\n".join(lines))
     return n
 
 
 def write_robots():
-    (ROOT / "robots.txt").write_text(
-        "User-agent: *\n"
-        "Allow: /\n\n"
-        f"Sitemap: {SITE}/sitemap.xml\n"
-        f"Sitemap: {SITE}/sitemap-gallery.xml\n"
-        f"Sitemap: {SITE}/sitemap-images-gallery.xml\n",
-        encoding="utf-8")
+    wfile(ROOT / "robots.txt",
+          "User-agent: *\n"
+          "Allow: /\n\n"
+          f"Sitemap: {SITE}/sitemap.xml\n"
+          f"Sitemap: {SITE}/sitemap-gallery.xml\n"
+          f"Sitemap: {SITE}/sitemap-assets.xml\n"
+          f"Sitemap: {SITE}/sitemap-images-gallery.xml\n")
 
 
 def main():
@@ -418,11 +558,12 @@ def main():
     subs = sum(len(s) for s in tree.values())
     print(f"Hierarchy: {cats} categories, {subs} subcategories", flush=True)
 
-    page_urls, img_entries, total = build(tree)
-    n_imgs = write_sitemaps(page_urls, img_entries)
+    page_urls, asset_urls, img_entries, total = build(tree)
+    n_imgs = write_sitemaps(page_urls, asset_urls, img_entries)
     write_robots()
-    print(f"DONE: {len(page_urls)} pages · {total:,} assets · {n_imgs:,} images in sitemap", flush=True)
-    print("Wrote: gallery/, sitemap-gallery.xml, sitemap-images-gallery.xml, robots.txt", flush=True)
+    print(f"DONE: {len(page_urls)} listing pages · {len(asset_urls):,} asset pages · "
+          f"{total:,} assets · {n_imgs:,} images in sitemap", flush=True)
+    print(f"Files written: {_written['new']:,} changed, {_written['same']:,} unchanged", flush=True)
 
 
 if __name__ == "__main__":

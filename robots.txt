@@ -3,4 +3,5 @@ Allow: /
 
 Sitemap: https://stockflow.media/sitemap.xml
 Sitemap: https://stockflow.media/sitemap-gallery.xml
+Sitemap: https://stockflow.media/sitemap-assets.xml
 Sitemap: https://stockflow.media/sitemap-images-gallery.xml
