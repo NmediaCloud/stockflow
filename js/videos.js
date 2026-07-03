@@ -69,7 +69,7 @@ async function init() {
     console.log('🎬 Initializing Stockflow...');
 
     document.getElementById('status-text').innerHTML =
-        '<span class="inline-block w-2 h-2 bg-teal-500 rounded-full animate-pulse mr-2"></span>Loading content...';
+        '<span class="inline-block w-2 h-2 bg-orange-500 rounded-full animate-pulse mr-2"></span>Loading content...';
 
     try {
         await loadVideosFromSheet();
@@ -472,7 +472,7 @@ function filterVideos() {
         statusEl.innerHTML = `<span class="text-gray-400 flex items-center gap-1.5"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776" /></svg> No Assets match your filters</span>`;
     } else {
         // THE FIX: Removed the duplicate } else { that was right here!
-        statusEl.innerHTML = `<span class="inline-block w-2 h-2 bg-teal-500 rounded-full mr-2"></span>${displayedVideos.length} of ${filteredVideos.length} assets loaded`;
+        statusEl.innerHTML = `<span class="inline-block w-2 h-2 bg-orange-500 rounded-full mr-2"></span>${displayedVideos.length} of ${filteredVideos.length} assets loaded`;
     }
 }
 function filterByFormat(format, e) {
@@ -512,42 +512,38 @@ function loadMore() {
     }
 
     document.getElementById('status-text').innerHTML =
-        `<span class="inline-block w-2 h-2 bg-teal-500 rounded-full mr-2"></span>${displayedVideos.length} of ${filteredVideos.length} Assets loaded`;
+        `<span class="inline-block w-2 h-2 bg-orange-500 rounded-full mr-2"></span>${displayedVideos.length} of ${filteredVideos.length} Assets loaded`;
 }
 function createVideoCard(video) {
+    // Gallery-style card: dark tile, object-cover image, orange accents, quick lazy load.
+    // Click still opens the buy/preview modal (storefront behaviour unchanged).
     const card = document.createElement('div');
-    card.className = 'group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl rounded-xl overflow-hidden bg-white border border-gray-200';
+    card.className = 'group cursor-pointer';
     card.onclick = () => openModal(video);
-    const formatBadge = {
-        '9:16': `<span class="flex items-center gap-1.5"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg> 9:16</span>`,
-
-        '1:1': `<span class="flex items-center gap-1.5"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.25h13.5v13.5H5.25V5.25Z" /></svg> 1:1</span>`,
-
-        '16:9': `<span class="flex items-center gap-1.5"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0V12a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 12V5.25" /></svg> 16:9</span>`
-    }[video.format] || video.format;
-    const extensionTag = video.fileFormat
-        ? `<span class="ml-2 bg-gray-700 text-white px-1.5 py-0.5 rounded text-[10px] border border-gray-600">${video.fileFormat}</span>`
-        : "";
+    const isVideo = (video.fileFormat || '').toLowerCase().includes('mp4') ||
+                    (video.type || '').toLowerCase() === 'video';
+    const fmtBadge = video.format
+        ? `<span class="absolute top-2 left-2 bg-black/70 text-white px-2 py-0.5 rounded text-[11px] font-medium">${video.format}</span>`
+        : '';
+    const playBadge = isVideo
+        ? `<span class="absolute bottom-2 left-2 bg-black/70 text-white px-2 py-0.5 rounded text-[11px] font-medium">▶ video</span>`
+        : '';
+    const ext = video.fileFormat
+        ? `<span class="ml-1.5 text-[10px] text-gray-500 uppercase">${video.fileFormat}</span>`
+        : '';
     card.innerHTML = `
-        <div class="relative overflow-hidden aspect-video bg-gray-900">
-            <span class="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded-md text-xs font-medium">${formatBadge}</span>
-            <img src="${video.thumbnail}" alt="${video.title}" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110" loading="lazy">
-            <div class="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div class="bg-white/95 p-4 rounded-full shadow-xl">
-                    <svg class="w-8 h-8 text-teal-500 ml-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path>
-                    </svg>
-                </div>
+        <div class="relative rounded-lg overflow-hidden border border-[#3A3F46] bg-[#2A2F36] transition-all duration-200 group-hover:-translate-y-1 group-hover:border-orange-500 group-hover:shadow-xl">
+            <div class="relative aspect-[4/3] bg-[#0b0b0b] overflow-hidden">
+                ${fmtBadge}${playBadge}
+                <img src="${video.thumbnail}" alt="${video.title}" loading="lazy" decoding="async"
+                     class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+                <span class="absolute top-2 right-2 bg-orange-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-md shadow opacity-95 group-hover:opacity-100">License</span>
             </div>
-        </div>
-        <div class="p-4">
-            <h3 class="font-bold text-gray-900 text-sm mb-1 line-clamp-2 group-hover:text-teal-600 transition">${video.title}</h3>
-            <p class="text-xs text-gray-500 mb-2">${video.category} • ${video.subcategory || ''}</p>
-            <div class="flex items-center justify-between">
-                <span class="text-teal-600 font-bold text-lg">$${video.price}</span>
-                <div class="flex items-center">
-                    <span class="text-xs text-gray-400">${video.resolution || 'HD'}</span>
-                    ${extensionTag}
+            <div class="p-2.5">
+                <h3 class="text-[13px] font-semibold text-gray-100 leading-snug line-clamp-2">${video.title}</h3>
+                <div class="flex items-center justify-between mt-1.5">
+                    <span class="text-[11.5px] text-gray-400">${video.resolution || ''}${ext}</span>
+                    <span class="text-orange-500 font-bold text-sm">$${video.price}</span>
                 </div>
             </div>
         </div>
