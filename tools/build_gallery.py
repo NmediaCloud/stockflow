@@ -254,12 +254,16 @@ def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_grap
   <link rel="stylesheet" href="/css/theme.css?v=2">
   <link rel="stylesheet" href="{rel}gallery/gallery.css">
   <link rel="stylesheet" href="{rel}gallery/shop.css">
-  <script src="/gallery/shop.js" defer></script>
+  <script src="/gallery/shop.js?v=3" defer></script>
   <script type="application/ld+json">{ld}</script>
 </head>
 <body>
 {NAV_HTML}
 <div class="g-crumbbar">
+  <a class="g-brand" href="{SITE}/gallery/">
+    <img src="/assets/logo_SF.webp" alt="Stockflow.media logo" onerror="this.style.display='none'">
+    <span>Stockflow<b>.media</b></span>
+  </a>
   <nav class="g-crumbs">{" <span>›</span> ".join(f'<a href="{esc(u)}">{esc(n)}</a>' for n, u in breadcrumb)}</nav>
   <a class="g-cta" href="{SITE}/">Browse &amp; Buy</a>
 </div>
@@ -356,7 +360,9 @@ GALLERY_CSS = """/* Stockflow gallery — static, matches theme.css (dark charco
 :root{--bg:#111;--panel:#1F2933;--card:#2A2F36;--line:#3A3F46;--txt:#F3F4F6;--mut:#9CA3AF;--acc:#F97316;--acch:#FB923C}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:ui-sans-serif,system-ui,"Segoe UI",sans-serif}
 a{color:var(--acc);text-decoration:none}a:hover{color:var(--acch)}
-.g-crumbbar{display:flex;align-items:center;gap:14px;padding:10px 24px;background:#0b0b0b;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.g-crumbbar{display:flex;align-items:center;gap:14px;padding:9px 24px;background:#0b0b0b;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.g-brand{display:flex;align-items:center;gap:9px;color:var(--txt);font-size:16px;font-weight:700;white-space:nowrap}
+.g-brand img{height:28px;width:auto}.g-brand b{color:var(--acc)}
 .g-crumbs{flex:1;font-size:13px;color:var(--mut);display:flex;gap:6px;flex-wrap:wrap}.g-crumbs span{color:var(--mut)}
 .g-cta{background:var(--acc);color:#fff !important;padding:8px 18px;border-radius:8px;font-weight:700;font-size:14px}
 .g-cta:hover{background:var(--acch)}
@@ -364,7 +370,7 @@ a{color:var(--acc);text-decoration:none}a:hover{color:var(--acch)}
 .g-main h1{font-size:26px;margin:0 0 6px}.g-main .lead{color:var(--mut);font-size:14px;margin:0 0 22px;max-width:900px}
 .g-sec{font-size:19px;margin:30px 0 12px;border-left:4px solid var(--acc);padding-left:10px}
 .g-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px}
-.g-tabs a{background:var(--card);border:1px solid var(--line);color:var(--txt);padding:7px 14px;border-radius:20px;font-size:13px}
+.g-tabs a{background:var(--card);border:1px solid var(--line);color:var(--txt);padding:5px 20px;border-radius:16px;font-size:13px}
 .g-tabs a.on,.g-tabs a:hover{background:var(--acc);border-color:var(--acc);color:#fff}
 .g-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
 .g-card,.g-tile{position:relative;display:block;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;transition:transform .15s,border-color .15s}
@@ -805,13 +811,4 @@ def main():
     n_imgs = write_sitemaps(page_urls, asset_urls, img_entries)
     write_merchant_feed(tree)
     write_rss(tree)
-    write_search_index(tree)
-    write_llms_txt(total)
-    write_robots()
-    print(f"DONE: {len(page_urls)} listing pages · {len(asset_urls):,} asset pages · "
-          f"{total:,} assets · {n_imgs:,} images in sitemap", flush=True)
-    print(f"Files written: {_written['new']:,} changed, {_written['same']:,} unchanged", flush=True)
-
-
-if __name__ == "__main__":
-    main()
+    write_

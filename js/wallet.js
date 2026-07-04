@@ -318,8 +318,9 @@ async function purchaseVideo(videoId, videoTitle, price, purchaseBtn, originalBt
 
     } catch (error) {
         console.error('Fulfillment Pipeline Error:', error);
-        unlockButton(); 
-        window.showNotification('Error connecting to wallet system', 'error');
+        unlockButton();
+        const why = (error && error.message) ? error.message : 'connection failed';
+        window.showNotification('Wallet error: ' + why + ' — please try again', 'error');
     }
 }
 

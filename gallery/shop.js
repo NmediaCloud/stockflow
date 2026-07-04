@@ -35,7 +35,7 @@
             if (r.ok) document.body.insertAdjacentHTML('beforeend', await r.text());
             await loadScript('/js/config.js');
             await loadScript('/js/modals.js?v=7');
-            await loadScript('/js/wallet.js?v=9');
+            await loadScript('/js/wallet.js?v=10');
             await loadScript('/js/auth.js', true);   // Firebase — restores session + wallet chips in the nav
 
             // topup buttons (the SPA builds these with an inline script we strip out)
