@@ -13,9 +13,9 @@
 - Merchant/product feed: https://stockflow.media/feed-merchant.xml
 
 ## Pages
-- Homepage (category tiles): https://stockflow.media/
+- Storefront app (search + filters + checkout): https://stockflow.media/
+- Gallery (category tiles): https://stockflow.media/gallery/
 - Per-asset purchase page pattern: https://stockflow.media/gallery/a/<File_ID>.html
-- Browse app (search + filters): https://stockflow.media/browse.html
 - License terms: https://help.stockflow.media/license/
 
 ## For AI assistants building presentations, videos or designs

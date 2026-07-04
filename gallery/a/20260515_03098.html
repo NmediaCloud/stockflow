@@ -14,21 +14,92 @@
   <meta property="og:site_name" content="Stockflow.media">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../../assets/SF_Favicon.webp">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/styles.css?v=2">
+  <link rel="stylesheet" href="/css/theme.css?v=2">
   <link rel="stylesheet" href="../../gallery/gallery.css">
   <link rel="stylesheet" href="../../gallery/shop.css">
   <script src="/gallery/shop.js" defer></script>
   <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://stockflow.media/"}, {"@type": "ListItem", "position": 2, "name": "Gallery", "item": "https://stockflow.media/gallery/"}, {"@type": "ListItem", "position": 3, "name": "Catering Events", "item": "https://stockflow.media/gallery/catering-events/"}, {"@type": "ListItem", "position": 4, "name": "Wedding Fusion", "item": "https://stockflow.media/gallery/catering-events/wedding-fusion/"}, {"@type": "ListItem", "position": 5, "name": "Beverages fusion cocktails Square Image 5760x5760", "item": "https://stockflow.media/gallery/a/20260515_03098.html"}]}, {"@type": "ImageObject", "name": "Beverages fusion cocktails Square Image 5760x5760", "description": "three glasses of iced tea garnished with flowers and greenery", "contentUrl": "https://storage.googleapis.com/stockflow-previews/04_Catering-Events/05_Wedding-fusion/Jpeg/20260515_00002_01_Beverages-fusion-cocktails_S_02_5760x5760_jpeg__preview.webp", "thumbnailUrl": "https://storage.googleapis.com/stockflow-thumbnails/04_Catering-Events/05_Wedding-fusion/Jpeg/20260515_00002_01_Beverages-fusion-cocktails_S_02_5760x5760_jpeg__thumbnail.webp", "url": "https://stockflow.media/gallery/a/20260515_03098.html", "acquireLicensePage": "https://stockflow.media/gallery/a/20260515_03098.html", "license": "https://help.stockflow.media/license/", "copyrightNotice": "© NMedia Services & Stockflow.media — All rights reserved.", "creditText": "Stockflow.media", "creator": {"@type": "Organization", "name": "Stockflow.media"}, "keywords": "iced tea, flower garnish, beverage, refreshing drink, cocktail, party, event, floral decoration, summer, drink presentation, glassware, table setting, natural light, elegant, fresh ingredients, non-alcoholic, beverage photography, stock photo, colorful, celebration, catering, drink styling, close-up, food photography, lifestyle"}, {"@type": "Product", "name": "Beverages fusion cocktails Square Image 5760x5760", "image": "https://storage.googleapis.com/stockflow-previews/04_Catering-Events/05_Wedding-fusion/Jpeg/20260515_00002_01_Beverages-fusion-cocktails_S_02_5760x5760_jpeg__preview.webp", "description": "three glasses of iced tea garnished with flowers and greenery", "sku": "20260515_03098", "brand": {"@type": "Brand", "name": "Stockflow.media"}, "offers": {"@type": "Offer", "url": "https://stockflow.media/?v=20260515_03098", "price": "1.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock"}}]}</script>
 </head>
 <body>
-<header class="g-top">
-  <a class="g-brand" href="https://stockflow.media/">
-    <img src="../../assets/logo_SF.webp" alt="Stockflow.media logo" onerror="this.style.display='none'">
-    <span>Stockflow<b>.media</b></span>
-  </a>
+<nav class="bg-white border-b border-gray-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="/assets/logo_SF.webp" alt="Nmediaservices Stockflow Logo"
+                     class="h-12 w-auto max-w-[160px]" onerror="this.style.display='none'">
+                <h1 class="text-xl font-bold tracking-tight text-gray-900">
+                    Nmediaservices<span class="text-orange-500">Stockflow.media</span>
+                </h1>
+            </div>
+                <a href="#" onclick="showHelpModal(); return false;" 
+                   style="text-decoration: none; font-size: 24px; margin-right: 15px; color: #9CA3AF; transition: all 0.3s; display: inline-flex; align-items: center; cursor: pointer;"
+                   onmouseover="this.style.color='#F97316'; this.style.transform='scale(1.1)';" 
+                   onmouseout="this.style.color='#9CA3AF'; this.style.transform='scale(1)';">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                  </svg>
+         </a>
+            <a href="/gallery/" class="flex items-center gap-2 px-3 py-2 bg-gray-100 hover:bg-orange-500 hover:text-white text-gray-700 rounded-lg transition-all duration-300 group" style="text-decoration:none;">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span class="text-xs font-bold uppercase tracking-wider hidden sm:inline">Gallery</span>
+            </a>
+            <button onclick="scrollToSearch()" class="flex items-center gap-2 px-3 py-2 bg-gray-100 hover:bg-orange-500 hover:text-white text-gray-700 rounded-lg transition-all duration-300 group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <span class="text-xs font-bold uppercase tracking-wider hidden sm:inline">Search</span>
+            </button>
+            <div id="walletWidget">
+                <button id="loginButton" onclick="showLoginModal()"
+                    style="background:#F97316;color:white;padding:8px 18px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;font-size:13px;">
+                    Sign In
+                </button>
+
+                <div id="walletDisplay" style="display:none;">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;">
+                        <div onclick="refreshWalletBalance()" title="Click to refresh balance"
+                             style="display:inline-flex;align-items:center;gap:6px;background:#2A2F36;border:1px solid #3A3F46;padding:7px 12px;border-radius:6px;cursor:pointer;white-space:nowrap;">
+                            <span style="font-size:11px;color:#9CA3AF;text-transform:uppercase;letter-spacing:.4px;">Wallet</span>
+                            <span id="walletAmount" style="color:#F97316;font-size:14px;font-weight:700;">$0.00</span>
+                        </div>
+                        <button onclick="showPurchaseHistory()"
+                            style="display:inline-flex;align-items:center;gap:6px;background:#2A2F36;border:1px solid #3A3F46;color:#F3F4F6;padding:7px 12px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;transition:all .2s;white-space:nowrap;">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:15px;height:15px;">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                            </svg>
+                            <span class="btn-text">My Purchases</span>
+                        </button>
+                        <button onclick="showTopUpModal()"
+                            style="background:#F97316;color:white;padding:7px 14px;border:none;border-radius:6px;cursor:pointer;font-weight:700;font-size:12px;white-space:nowrap;">
+                            Add Funds
+                        </button>
+                        <div style="position:relative;">
+                            <button id="userMenuButton" onclick="toggleUserMenu()"
+                                style="display:inline-flex;align-items:center;gap:5px;background:#2A2F36;border:1px solid #3A3F46;color:#9CA3AF;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12px;max-width:180px;min-width:90px;">
+                                <span id="userEmailDisplay" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span> ▼
+                            </button>
+                            <div id="userMenu"
+                                style="display:none;position:absolute;right:0;top:100%;margin-top:5px;background:#1F2933;border:1px solid #3A3F46;border-radius:6px;box-shadow:0 6px 14px rgba(0,0,0,0.4);min-width:180px;z-index:100;">
+                                <a href="#" onclick="logout();return false;"
+                                    style="display:block;padding:10px 15px;color:#EF4444;text-decoration:none;font-size:13px;">
+                                      Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+<div class="g-crumbbar">
   <nav class="g-crumbs"><a href="https://stockflow.media/">Home</a> <span>›</span> <a href="https://stockflow.media/gallery/">Gallery</a> <span>›</span> <a href="https://stockflow.media/gallery/catering-events/">Catering Events</a> <span>›</span> <a href="https://stockflow.media/gallery/catering-events/wedding-fusion/">Wedding Fusion</a> <span>›</span> <a href="https://stockflow.media/gallery/a/20260515_03098.html">Beverages fusion cocktails Square Image 5760x5760</a></nav>
-  <div id="accountBar" class="g-account"></div>
-  <a class="g-cta" href="https://stockflow.media/browse.html">Browse &amp; Buy</a>
-</header>
+  <a class="g-cta" href="https://stockflow.media/">Browse &amp; Buy</a>
+</div>
 <main class="g-main">
 <div class="g-hero">
   <div class="g-media"><img src="https://storage.googleapis.com/stockflow-previews/04_Catering-Events/05_Wedding-fusion/Jpeg/20260515_00002_01_Beverages-fusion-cocktails_S_02_5760x5760_jpeg__preview.webp" alt="Beverages fusion cocktails stock footage image in square format for commercial use" fetchpriority="high"></div>
@@ -76,14 +147,14 @@
   <a class="g-lic" href="https://stockflow.media/gallery/a/20260515_03105.html" title="View &amp; license this asset">License</a>
   <a class="g-cap" href="https://stockflow.media/gallery/a/20260515_03105.html"><span class="g-t">Beverages fusion cocktails Vertical Image 4320x7680</span><span class="g-m">4320x7680 · 9:16<span class="g-price">$1.00</span></span></a>
 </div></div>
-<script type="application/json" id="assetData">{"id": "20260515_03098", "title": "Beverages fusion cocktails Square Image 5760x5760", "price": "1", "description": "three glasses of iced tea garnished with flowers and greenery", "preview": "https://storage.googleapis.com/stockflow-previews/04_Catering-Events/05_Wedding-fusion/Jpeg/20260515_00002_01_Beverages-fusion-cocktails_S_02_5760x5760_jpeg__preview.webp", "thumbnail": "https://storage.googleapis.com/stockflow-thumbnails/04_Catering-Events/05_Wedding-fusion/Jpeg/20260515_00002_01_Beverages-fusion-cocktails_S_02_5760x5760_jpeg__thumbnail.webp", "fileFormat": "1:1"}</script>
+<script type="application/json" id="assetData">{"id": "20260515_03098", "title": "Beverages fusion cocktails Square Image 5760x5760", "price": "1", "category": "Catering Events", "subcategory": "Wedding Fusion", "sub": "Beverages fusion cocktails", "description": "three glasses of iced tea garnished with flowers and greenery", "thumbnail": "https://storage.googleapis.com/stockflow-thumbnails/04_Catering-Events/05_Wedding-fusion/Jpeg/20260515_00002_01_Beverages-fusion-cocktails_S_02_5760x5760_jpeg__thumbnail.webp", "preview": "https://storage.googleapis.com/stockflow-previews/04_Catering-Events/05_Wedding-fusion/Jpeg/20260515_00002_01_Beverages-fusion-cocktails_S_02_5760x5760_jpeg__preview.webp", "format": "1:1", "resolution": "5760x5760", "tags": "iced tea, flower garnish, beverage, refreshing drink, cocktail, party, event, floral decoration, summer, drink presentation, glassware, table setting, natural light, elegant, fresh ingredients, non-alcoholic, beverage photography, stock photo, colorful, celebration, catering, drink styling, close-up, food photography, lifestyle", "fileFormat": "jpeg"}</script>
 </main>
 <footer class="g-foot">
   <p>
     <a href="https://help.stockflow.media/mission/" onclick="shopOpen('about');return false;">About</a> ·
     <a href="https://help.stockflow.media/license/" onclick="shopOpen('license');return false;">License Terms</a> ·
     <a href="https://help.stockflow.media/">Help</a> ·
-    <a href="https://stockflow.media/browse.html">Browse &amp; Buy</a>
+    <a href="https://stockflow.media/">Browse &amp; Buy</a>
   </p>
   <p>All previews &amp; thumbnails © NMedia Services &amp; Stockflow.media — All rights reserved. — instant download, royalty-free.</p>
 </footer>
