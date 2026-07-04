@@ -5,7 +5,7 @@
 body{padding-top:0 !important}
 a{color:var(--acc);text-decoration:none}a:hover{color:var(--acch)}
 /* styles.css pins every <nav> fixed+white (site header) — our navs must stay in flow */
-nav.g-crumbs,nav.g-pager{position:static !important;top:auto !important;width:auto !important;height:auto !important;background:transparent !important;box-shadow:none !important;z-index:auto !important}
+nav.g-crumbs,nav.g-pager{position:static !important;top:auto !important;width:auto !important;height:auto !important;background:transparent !important;box-shadow:none !important;z-index:auto !important;border:0 !important}
 /* ROW 1 — brand banner (above all) */
 .g-banner{display:flex;align-items:center;gap:10px 14px;padding:11px 24px;background:#0b0b0b;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;flex-wrap:wrap}
 .g-brand{display:flex;align-items:center;gap:9px;color:var(--txt);font-size:18px;font-weight:700;white-space:nowrap}
@@ -50,7 +50,7 @@ nav.g-crumbs,nav.g-pager{position:static !important;top:auto !important;width:au
 .g-pager a{background:var(--card);border:1px solid var(--line);color:var(--txt);padding:4px 12px;border-radius:6px}
 .g-pager a.on{background:var(--acc);border-color:var(--acc);color:#fff}
 .g-main .g-pager{margin:24px 0 4px}   /* the copy at the bottom of long grids */
-.g-foot{border-top:1px solid var(--line);color:var(--mut);font-size:12.5px;padding:18px 24px;text-align:center}
+.g-foot{border-top:1px solid var(--line);color:var(--mut);font-size:12.5px;padding:18px 24px;text-align:center}.g-foot a{color:#E8834A}.g-foot a:hover{color:#F97316}
 /* asset landing page */
 .g-hero{display:grid;grid-template-columns:minmax(0,7fr) minmax(300px,4fr);gap:26px;align-items:start}
 @media(max-width:900px){.g-hero{grid-template-columns:1fr}}
