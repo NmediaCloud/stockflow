@@ -225,11 +225,15 @@ def account_bar():
     """Two-row gallery header (approved sample). Row 1 = logo + account chips +
     Browse&Buy; ids match js/wallet.js so the eager-loaded stack lights it up.
     All chips are grey (wallet-display theme); no bright-orange buttons."""
+    search_svg = ('<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" '
+                  'viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" '
+                  'stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>')
     return f"""<div class="g-banner">
   <a class="g-brand" href="{SITE}/gallery/">
     <img src="/assets/logo_SF.webp" alt="Stockflow.media logo" onerror="this.style.display='none'">
     <span>Stockflow<b>.media</b></span>
   </a>
+  <a class="g-chip g-navbtn" href="{SITE}/" title="Search all assets">{search_svg} Search</a>
   <div class="g-spacer"></div>
   <div class="g-acct">
     <button id="loginButton" class="g-chip" onclick="shopOpen('login')">Sign In</button>
@@ -251,7 +255,6 @@ def account_bar():
       </div>
     </div>
   </div>
-  <a class="g-cta" href="{SITE}/">🔍 Search</a>
 </div>"""
 
 
@@ -288,7 +291,7 @@ def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_grap
   <link rel="stylesheet" href="/css/theme.css?v=3">
   <link rel="stylesheet" href="{rel}gallery/gallery.css?v=3">
   <link rel="stylesheet" href="{rel}gallery/shop.css?v=2">
-  <script src="/gallery/shop.js?v=4" defer></script>
+  <script src="/gallery/shop.js?v=5" defer></script>
   <script type="application/ld+json">{ld}</script>
 </head>
 <body>
@@ -408,9 +411,9 @@ nav.g-crumbs,nav.g-pager{position:static !important;top:auto !important;width:au
 .g-chip.accent{color:var(--acc)}
 .g-chip.accent .plus{font-size:15px;font-weight:800;line-height:1}
 .g-acct .email{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-/* Search — grey chip with orange text (wallet-display theme) */
-.g-cta{background:var(--card);color:var(--acc) !important;border:1px solid var(--line);padding:7px 15px;border-radius:7px;font-weight:600;font-size:12.5px;white-space:nowrap}
-.g-cta:hover{border-color:var(--acc)}
+/* Search nav-button — grey chip, white text + lens line icon (matches My Purchases / home Gallery button) */
+.g-navbtn{color:var(--txt) !important;text-decoration:none}
+.g-navbtn svg{display:block}
 /* ROW 2 — breadcrumb (left) + pager (right) */
 .g-subbar{display:flex;align-items:center;gap:14px;padding:8px 24px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
 .g-crumbs{flex:1;font-size:13px;color:var(--mut);display:flex;gap:6px;flex-wrap:wrap;align-items:center}.g-crumbs span{color:var(--mut)}

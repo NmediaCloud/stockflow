@@ -290,10 +290,17 @@ onAuthStateChanged(auth, async (user) => {
       localStorage.setItem('sf_unverified_' + user.email, 'true');
     }
     
-    // Load user data
-    await window.loadUserData(user.email);
+    // Load user data — but SKIP the Apps Script calls if we already have a
+    // fresh cached session for this email (avoids a query storm when browsing
+    // many static gallery pages). Cache is refreshed on purchase / manual sync.
+    if (typeof window.sessionFresh === 'function' && window.sessionFresh(user.email)
+        && typeof window.restoreSession === 'function' && window.restoreSession()) {
+      console.log('⚡ Using cached wallet session (skipped API refetch)');
+    } else {
+      await window.loadUserData(user.email);
+    }
     window.updateWalletDisplay();
-    
+
   } else {
     console.log('🔓 User signed out');
     

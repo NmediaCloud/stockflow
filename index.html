@@ -720,18 +720,12 @@ async function verifyNewsletterReply() {
                     <line x1="12" y1="8" x2="12.01" y2="8"></line>
                   </svg>
          </a>
-            <a href="/gallery/" class="flex items-center gap-2 px-3 py-2 bg-gray-100 hover:bg-orange-500 hover:text-white text-gray-700 rounded-lg transition-all duration-300 group" style="text-decoration:none;">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <a href="/gallery/" style="display:inline-flex;align-items:center;gap:6px;background:#2A2F36;border:1px solid #3A3F46;color:#F3F4F6;padding:7px 13px;font-size:12.5px;font-weight:600;border-radius:6px;text-decoration:none;white-space:nowrap;" onmouseover="this.style.borderColor='#F97316'" onmouseout="this.style.borderColor='#3A3F46'">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <span class="text-xs font-bold uppercase tracking-wider hidden sm:inline">Gallery</span>
+                <span class="hidden sm:inline">Gallery</span>
             </a>
-            <button onclick="scrollToSearch()" class="flex items-center gap-2 px-3 py-2 bg-gray-100 hover:bg-orange-500 hover:text-white text-gray-700 rounded-lg transition-all duration-300 group">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <span class="text-xs font-bold uppercase tracking-wider hidden sm:inline">Search</span>
-            </button>
             <div id="walletWidget">
                 <button id="loginButton" onclick="showLoginModal()"
                     style="background:#F97316;color:white;padding:8px 18px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;font-size:13px;">
@@ -1468,8 +1462,8 @@ async function submitClaim(type) {
     </div>
     <div class="relative max-w-4xl mx-auto text-center z-10">
        <div class="mb-6 transform hover:scale-105 transition-transform duration-300">
-            <p class="text-white font-medium text-xs sm:text-sm mt-2 tracking-wide opacity-90">
-                Start Downloading — <span class="text-orange-500 font-semibold">No Subscription Required!!</span>
+            <p class="text-gray-300 font-medium text-xs sm:text-sm mt-2 tracking-wide">
+                Start Downloading - No Subscription Required!
             </p>
         </div>
         <h2 class="text-3xl md:text-4xl font-bold mb-8 tracking-tight drop-shadow-lg">Premium Stock Images &amp; Footage</h2>
@@ -2009,8 +2003,8 @@ async function submitClaim(type) {
     
   
     <script src="js/config.js"></script>
-    <script type="module" src="js/auth.js"></script>
-    <script src="js/wallet.js?v=11"></script>
+    <script type="module" src="js/auth.js?v=2"></script>
+    <script src="js/wallet.js?v=12"></script>
     <script src="js/videos.js?v=10"></script>
     <script src="js/modals.js?v=7"></script>
 

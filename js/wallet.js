@@ -27,6 +27,51 @@ async function apiFetch(url, tries = 3) {
     throw lastErr;
 }
 
+// ---- SESSION CACHE ----
+// Every gallery page is its own static HTML file, so navigating re-runs this
+// script and (previously) re-hit the Apps Script API for the wallet on EVERY
+// page — a query storm that Google throttles, which then read back as $0 and
+// broke purchases. We now cache the session in localStorage: each page shows
+// the wallet INSTANTLY from cache with zero API calls, and only revalidates
+// occasionally / at purchase time. Pages stay static → no SEO impact.
+const SF_SESSION_KEY = 'sf_session_v1';
+const SF_SESSION_TTL = 10 * 60 * 1000;   // 10 min: fresh enough to skip a refetch
+
+function saveSession() {
+    try {
+        if (!currentUser.isLoggedIn || !currentUser.email) return;
+        localStorage.setItem(SF_SESSION_KEY, JSON.stringify({
+            email: currentUser.email,
+            wallet: currentUser.wallet,
+            purchases: currentUser.purchases || [],
+            t: Date.now()
+        }));
+    } catch (e) {}
+}
+function readSession() {
+    try {
+        const s = JSON.parse(localStorage.getItem(SF_SESSION_KEY) || 'null');
+        if (s && s.email) return s;
+    } catch (e) {}
+    return null;
+}
+function sessionFresh(email) {
+    const s = readSession();
+    return !!(s && s.email === email && (Date.now() - s.t) < SF_SESSION_TTL);
+}
+function restoreSession() {
+    const s = readSession();
+    if (!s) return false;
+    currentUser.email = s.email;
+    currentUser.wallet = typeof s.wallet === 'number' ? s.wallet : 0;
+    currentUser.purchases = Array.isArray(s.purchases) ? s.purchases : [];
+    currentUser.isLoggedIn = true;
+    return true;
+}
+function clearSession() {
+    try { localStorage.removeItem(SF_SESSION_KEY); } catch (e) {}
+}
+
 // ---- DISPLAY ----
 
 function updateWalletDisplay() {
@@ -34,17 +79,25 @@ function updateWalletDisplay() {
     const walletDisplay = document.getElementById('walletDisplay');
     const walletAmount = document.getElementById('walletAmount');
     const userEmailDisplay = document.getElementById('userEmailDisplay');
+    if (!loginButton || !walletDisplay) return;   // header not on this page
 
     if (currentUser.isLoggedIn) {
         loginButton.style.display = 'none';
         walletDisplay.style.display = 'block';
-        walletAmount.textContent = '$' + currentUser.wallet.toFixed(2);
-        userEmailDisplay.textContent = currentUser.email;
+        if (walletAmount) walletAmount.textContent = '$' + Number(currentUser.wallet || 0).toFixed(2);
+        if (userEmailDisplay) userEmailDisplay.textContent = currentUser.email || '';
     } else {
         loginButton.style.display = 'block';
         walletDisplay.style.display = 'none';
     }
 }
+
+// Instant paint from cache the moment this script loads (before Firebase/API).
+(function () {
+    if (restoreSession()) {
+        try { updateWalletDisplay(); } catch (e) {}
+    }
+})();
 // ---- MANUAL WALLET REFRESH ----
 async function refreshWalletBalance() {
     // Only run if the user is actually logged in
@@ -116,6 +169,7 @@ async function loadUserData(email) {
 
         // Load user's purchase history to check for duplicates
         await loadUserPurchases(email);
+        saveSession();   // cache fresh session so other pages skip the API
 
     } catch (error) {
         console.error('Error loading user data:', error);
@@ -143,6 +197,7 @@ async function loadUserPurchases(email) {
 
 function logout() {
     localStorage.removeItem(CONFIG.STORAGE_KEY);
+    clearSession();
     currentUser = { email: null, wallet: 0, isLoggedIn: false, purchases: [] };
     updateWalletDisplay();
     showNotification('Logged out successfully');
@@ -331,9 +386,10 @@ async function purchaseVideo(videoId, videoTitle, price, purchaseBtn, originalBt
 
         if (result.success) {
             currentUser.wallet = result.newBalance;
-            await loadUserPurchases(currentUser.email); 
+            await loadUserPurchases(currentUser.email);
             updateWalletDisplay();
-            
+            saveSession();   // cache the post-purchase balance
+
             if (typeof window.closeModal === 'function') window.closeModal();
             window.showNotification('✔️ Purchase successful!', 'success');
             showDownloadModal(videoTitle, result.downloadLink);
@@ -494,6 +550,9 @@ window.toggleUserMenu = toggleUserMenu;
 window.closeDownloadModal = closeDownloadModal;
 window.loadUserData = loadUserData;
 window.updateWalletDisplay = updateWalletDisplay;
+window.sessionFresh = sessionFresh;
+window.restoreSession = restoreSession;
+window.saveSession = saveSession;
 window.logout = logout;
 window.showPurchaseHistory = showPurchaseHistory;
 window.closeHistoryModal = closeHistoryModal;

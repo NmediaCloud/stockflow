@@ -20,9 +20,9 @@ nav.g-crumbs,nav.g-pager{position:static !important;top:auto !important;width:au
 .g-chip.accent{color:var(--acc)}
 .g-chip.accent .plus{font-size:15px;font-weight:800;line-height:1}
 .g-acct .email{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-/* Search — grey chip with orange text (wallet-display theme) */
-.g-cta{background:var(--card);color:var(--acc) !important;border:1px solid var(--line);padding:7px 15px;border-radius:7px;font-weight:600;font-size:12.5px;white-space:nowrap}
-.g-cta:hover{border-color:var(--acc)}
+/* Search nav-button — grey chip, white text + lens line icon (matches My Purchases / home Gallery button) */
+.g-navbtn{color:var(--txt) !important;text-decoration:none}
+.g-navbtn svg{display:block}
 /* ROW 2 — breadcrumb (left) + pager (right) */
 .g-subbar{display:flex;align-items:center;gap:14px;padding:8px 24px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
 .g-crumbs{flex:1;font-size:13px;color:var(--mut);display:flex;gap:6px;flex-wrap:wrap;align-items:center}.g-crumbs span{color:var(--mut)}

@@ -35,8 +35,8 @@
             if (r.ok) document.body.insertAdjacentHTML('beforeend', await r.text());
             await loadScript('/js/config.js');
             await loadScript('/js/modals.js?v=7');
-            await loadScript('/js/wallet.js?v=11');
-            await loadScript('/js/auth.js', true);   // Firebase — restores session + wallet chips in the nav
+            await loadScript('/js/wallet.js?v=12');
+            await loadScript('/js/auth.js?v=2', true);   // Firebase — restores session + wallet chips in the nav
 
             // topup buttons (the SPA builds these with an inline script we strip out)
             const CFG = (typeof CONFIG !== 'undefined') ? CONFIG : window.CONFIG;
