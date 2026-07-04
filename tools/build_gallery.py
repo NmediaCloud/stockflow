@@ -156,8 +156,8 @@ def media_node(a):
         "description": a["desc"] or a["title"],
         "contentUrl": a["preview"],
         "thumbnailUrl": a["thumb"],
-        "url": a["buy"],
-        "acquireLicensePage": a["buy"],
+        "url": a["page"],
+        "acquireLicensePage": a["page"],
         "license": LICENSE_URL,
         "copyrightNotice": COPYRIGHT,
         "creditText": CREDIT,
@@ -200,7 +200,7 @@ def jsonld_breadcrumb(parts):
 
 # ---------------------------------------------------------------- markup
 def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_graph=None,
-               prev_url=None, next_url=None, depth=2):
+               prev_url=None, next_url=None, depth=2, head_extra=""):
     rel = "../" * depth
     graph = [jsonld_breadcrumb(breadcrumb)]
     if extra_graph:
@@ -216,7 +216,7 @@ def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_grap
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{esc(title)}</title>
+  {head_extra}<title>{esc(title)}</title>
   <meta name="description" content="{esc(desc)}">
   <link rel="canonical" href="{esc(canonical)}">
   {links}<meta property="og:type" content="website">
@@ -228,6 +228,8 @@ def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_grap
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="{rel}assets/SF_Favicon.webp">
   <link rel="stylesheet" href="{rel}gallery/gallery.css">
+  <link rel="stylesheet" href="{rel}gallery/shop.css">
+  <script src="/gallery/shop.js" defer></script>
   <script type="application/ld+json">{ld}</script>
 </head>
 <body>
@@ -237,14 +239,20 @@ def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_grap
     <span>Stockflow<b>.media</b></span>
   </a>
   <nav class="g-crumbs">{" <span>›</span> ".join(f'<a href="{esc(u)}">{esc(n)}</a>' for n, u in breadcrumb)}</nav>
-  <a class="g-cta" href="{SITE}/">Browse &amp; Buy</a>
+  <div id="accountBar" class="g-account"></div>
+  <a class="g-cta" href="{SITE}/browse.html">Browse &amp; Buy</a>
 </header>
 <main class="g-main">
 {body}
 </main>
 <footer class="g-foot">
-  <p>All previews &amp; thumbnails {esc(COPYRIGHT)} · <a href="{LICENSE_URL}">Content License</a> ·
-  License any asset at <a href="{SITE}/">stockflow.media</a> — instant download, royalty-free.</p>
+  <p>
+    <a href="https://help.stockflow.media/mission/" onclick="shopOpen('about');return false;">About</a> ·
+    <a href="{LICENSE_URL}" onclick="shopOpen('license');return false;">License Terms</a> ·
+    <a href="https://help.stockflow.media/">Help</a> ·
+    <a href="{SITE}/browse.html">Browse &amp; Buy</a>
+  </p>
+  <p>All previews &amp; thumbnails {esc(COPYRIGHT)} — instant download, royalty-free.</p>
 </footer>
 </body>
 </html>
@@ -258,7 +266,7 @@ def card(a):
     price = f'<span class="g-price">{esc(price_fmt(a["price"]))}</span>' if a["price"] else ""
     return f"""<div class="g-card">
   <a class="g-img" href="{esc(a['page'])}"><img src="{esc(a['thumb'])}" alt="{esc(a['alt'] or a['title'])}" loading="lazy" decoding="async">{badge}</a>
-  <a class="g-lic" href="{esc(a['buy'])}" title="License this asset now">License</a>
+  <a class="g-lic" href="{esc(a['page'])}" title="View &amp; license this asset">License</a>
   <a class="g-cap" href="{esc(a['page'])}"><span class="g-t">{esc(a['title'])}</span><span class="g-m">{esc(meta_bits)}{price}</span></a>
 </div>"""
 
@@ -297,20 +305,27 @@ def asset_body(a, cat, cat_url, sub, sub_url, related):
     rel_cards = "".join(card(r) for r in related)
     rel_block = (f'<h2 class="g-sec">Related assets in {esc(sub)}</h2>'
                  f'<div class="g-grid">{rel_cards}</div>') if related else ""
+    # data for the in-page purchase flow (js/wallet.js handlePurchase reads window.currentVideo)
+    asset_json = json.dumps({
+        "id": a["id"], "title": a["title"], "price": a["price"] or "1",
+        "description": a["desc"], "preview": a["preview"], "thumbnail": a["thumb"],
+        "fileFormat": a["fmt"],
+    }, ensure_ascii=False).replace("</", "<\\/")
     return f"""<div class="g-hero">
   <div class="g-media">{media}</div>
   <div class="g-info">
     <h1>{esc(a['title'])}</h1>
     <p class="lead">{esc(a['desc'] or a['title'])}</p>
-    <a class="g-buy" href="{esc(a['buy'])}">License this {('clip' if a['video'] else 'image')}{price_line}</a>
+    <a class="g-buy" id="buyBtn" href="{esc(a['buy'])}">License this {('clip' if a['video'] else 'image')}{price_line}</a>
     <p class="g-note">Royalty-free · pay once, use forever · instant full-resolution download ·
-    <a href="{LICENSE_URL}">license terms</a></p>
+    <a href="{LICENSE_URL}" onclick="shopOpen('license');return false;">license terms</a></p>
     <table class="g-meta">{meta_rows}</table>
     <p class="g-note">Browse more: <a href="{esc(sub_url)}">{esc(sub)}</a> · <a href="{esc(cat_url)}">{esc(cat)}</a></p>
   </div>
 </div>
 <div class="g-chips">{chips}</div>
-{rel_block}"""
+{rel_block}
+<script type="application/json" id="assetData">{asset_json}</script>"""
 
 
 GALLERY_CSS = """/* Stockflow gallery — static, matches theme.css (dark charcoal + burnt orange) */
@@ -480,10 +495,11 @@ def build(tree):
         title=f"Stock Gallery — {total_assets:,} Royalty-Free 8K Images & 4K Videos | Stockflow.media",
         desc=f"Browse {total_assets:,} premium stock images and footage by category. Royalty-free, "
              "up to 8K, instant download from $1 at Stockflow.media.",
-        canonical=f"{SITE}/gallery/", og_image=first_cover,
+        canonical=f"{SITE}/",   # /gallery/ mirrors the root homepage — root is canonical
+        og_image=first_cover,
         breadcrumb=[home_crumb, gal_crumb], body=body, depth=1)
     wfile(out / "index.html", pg)
-    page_urls.insert(0, f"{SITE}/gallery/")
+    page_urls.insert(0, f"{SITE}/")   # the root homepage (gallery) leads the sitemap
 
     # prune asset pages for ids no longer in the sheet
     live = {u.rsplit("/", 1)[1] for u in asset_urls}
@@ -494,6 +510,8 @@ def build(tree):
             pruned += 1
     if pruned:
         print(f"Pruned {pruned} stale asset pages", flush=True)
+
+    write_root_home(tree, cat_tiles, total_assets, first_cover)
 
     return page_urls, asset_urls, img_entries, total_assets
 
@@ -543,6 +561,51 @@ def write_assets_json(rows):
     payload = json.dumps(out, ensure_ascii=False, separators=(",", ":"))
     wfile(ddir / "assets.json", payload)
     print(f"data/assets.json: {len(out):,} assets · {len(payload.encode('utf-8'))/1e6:.1f} MB raw", flush=True)
+
+
+def extract_shop_ui():
+    """Pull the modal stack (login/top-up/download/history/help/about/license…)
+    out of browse.html into gallery/shop-ui.html, so the gallery's purchase
+    layer always uses the SAME markup as the browse app — single source, no
+    drift. Inline <script> blocks are stripped (shop.js re-implements them)."""
+    src = ROOT / "browse.html"
+    if not src.exists():
+        print("WARN: browse.html not found — shop-ui.html not regenerated", flush=True)
+        return
+    html_text = src.read_text(encoding="utf-8")
+    start = html_text.find('<div id="previewModal"')
+    n_anchor = html_text.find('id="notificationMessage"')
+    if start == -1 or n_anchor == -1:
+        print("WARN: modal markers not found in browse.html — shop-ui.html not regenerated", flush=True)
+        return
+    end = html_text.find("</div>", html_text.find("</p>", n_anchor)) + len("</div>")
+    chunk = html_text[start:end]
+    chunk = re.sub(r"<script\b.*?</script>", "", chunk, flags=re.S)
+    wfile(ROOT / "gallery" / "shop-ui.html",
+          "<!-- AUTO-GENERATED from browse.html by tools/build_gallery.py — do not edit -->\n" + chunk)
+    print(f"gallery/shop-ui.html: {len(chunk)/1024:.0f} KB extracted from browse.html", flush=True)
+
+
+def write_root_home(tree, cat_tiles, total_assets, first_cover):
+    """The gallery landing IS the homepage now. Handles legacy deep links:
+    ?v= -> asset page; ?cat/collection/success/canceled -> browse.html (the app)."""
+    redirect = ("<script>(function(){var q=new URLSearchParams(location.search);"
+                "var v=q.get('v');if(v){location.replace('/gallery/a/'+v.replace(/[^0-9A-Za-z_-]/g,'')+'.html');return;}"
+                "if(q.get('cat')||q.get('collection')||q.get('sub')||q.get('success')||q.get('canceled'))"
+                "{location.replace('/browse.html'+location.search);}})();</script>\n  ")
+    body = ('<h1>Premium Stock Images &amp; Footage — Royalty-Free</h1>'
+            f'<p class="lead">Explore {total_assets:,} premium assets — 8K images and 4K footage across backgrounds, '
+            f'food &amp; beverage, microscopy, events and retail. Pay once, use forever, instant download from $1. '
+            f'Pick a category below, or <a href="{SITE}/browse.html">open the full browser with search &amp; filters</a>.</p>'
+            f'<div class="g-grid">{"".join(cat_tiles)}</div>')
+    pg = page_shell(
+        title=f"Premium Stock Images & Footage — 8K Photos, 4K Videos, {total_assets:,} Assets | Stockflow.media",
+        desc=f"Browse {total_assets:,} royalty-free stock assets: 8K images and 4K footage. "
+             "All aspect ratios, instant download from $1 at Stockflow.media.",
+        canonical=f"{SITE}/", og_image=first_cover,
+        breadcrumb=[("Home", f"{SITE}/")], body=body, depth=0,
+        head_extra=redirect)
+    wfile(ROOT / "index.html", pg)
 
 
 def write_catalog_json(tree):
@@ -599,6 +662,122 @@ def write_sitemaps(page_urls, asset_urls, img_entries):
     return n
 
 
+def write_search_index(tree):
+    """Compact search index for AI agents / the stockflow-mcp server.
+    Short keys keep it ~4x smaller than assets.json:
+      i=id t=title k=keywords c=category s=subcategory f=aspect r=resolution
+      v=is_video pr=price th=thumbnail p=preview u=asset(purchase) page"""
+    out = []
+    for cat, subs in tree.items():
+        for sub, assets in subs.items():
+            for a in assets:
+                out.append({
+                    "i": a["id"], "t": a["title"], "k": a["keywords"][:400],
+                    "c": cat, "s": sub, "f": a.get("fmt", ""), "r": a["res"],
+                    "v": 1 if a["video"] else 0, "pr": a["price"] or "1",
+                    "th": a["thumb"], "p": a["preview"], "u": a["page"],
+                })
+    payload = json.dumps(out, ensure_ascii=False, separators=(",", ":"))
+    wfile(ROOT / "data" / "search-index.json", payload)
+    print(f"data/search-index.json: {len(out):,} assets · {len(payload.encode('utf-8'))/1e6:.1f} MB raw", flush=True)
+
+
+def write_llms_txt(total_assets):
+    """llms.txt — machine-readable front door so any AI agent can discover and
+    use the catalog (previews are watermarked; full-res requires a license)."""
+    wfile(ROOT / "llms.txt", f"""# Stockflow.media
+
+> Royalty-free stock media library: {total_assets:,} premium assets — 8K images and 4K video
+> across backgrounds, food & beverage, microscopy, events and retail. Pay once, use forever.
+> Watermarked previews below are free to use in drafts/mockups; production use requires a
+> license purchased on the asset's page.
+
+## Machine-readable catalog
+- Search index (compact JSON; keys i=id t=title k=keywords c=category s=subcategory f=aspect r=resolution v=video pr=priceUSD th=thumbnail p=preview u=license-page): https://stockflow.media/data/search-index.json
+- Categories with counts: https://stockflow.media/data/catalog.json
+- Full data: https://stockflow.media/data/assets.json
+- Newest assets (RSS): https://stockflow.media/feed.xml
+- Merchant/product feed: https://stockflow.media/feed-merchant.xml
+
+## Pages
+- Homepage (category tiles): https://stockflow.media/
+- Per-asset purchase page pattern: https://stockflow.media/gallery/a/<File_ID>.html
+- Browse app (search + filters): https://stockflow.media/browse.html
+- License terms: {LICENSE_URL}
+
+## For AI assistants building presentations, videos or designs
+1. Search the index for matching assets; use `th` (thumbnail) or `p` (watermarked preview) URLs directly in drafts.
+2. Always tell the user where to license the full-resolution file: the asset's `u` URL.
+3. MCP server / Claude Code plugin: https://github.com/NmediaCloud/stockflow-mcp
+""")
+
+
+def write_merchant_feed(tree):
+    """Google Merchant Center product feed (RSS 2.0 + g: namespace) -> feed-merchant.xml.
+    NB: digital downloads are often unsupported for Shopping ads; submitted for
+    free listings — worst case Google disapproves items, nothing breaks."""
+    items = []
+    for cat, subs in tree.items():
+        for sub, assets in subs.items():
+            for a in assets:
+                try:
+                    price = f"{float(a['price'] or 1):.2f}"
+                except Exception:
+                    price = "1.00"
+                kind = "Stock Video Clip" if a["video"] else "Stock Image"
+                desc = (a["desc"] or a["title"])[:4900]
+                items.append(
+                    "  <item>\n"
+                    f"    <g:id>{xml_esc(a['id'])}</g:id>\n"
+                    f"    <g:title>{xml_esc(a['title'][:150])}</g:title>\n"
+                    f"    <g:description>{xml_esc(desc)}</g:description>\n"
+                    f"    <g:link>{xml_esc(a['page'])}</g:link>\n"
+                    f"    <g:image_link>{xml_esc(a['thumb'] if a['video'] else a['preview'])}</g:image_link>\n"
+                    f"    <g:price>{price} USD</g:price>\n"
+                    "    <g:availability>in_stock</g:availability>\n"
+                    "    <g:condition>new</g:condition>\n"
+                    "    <g:brand>Stockflow.media</g:brand>\n"
+                    "    <g:identifier_exists>no</g:identifier_exists>\n"
+                    f"    <g:product_type>{xml_esc(cat)} &gt; {xml_esc(sub)}</g:product_type>\n"
+                    f"    <g:custom_label_0>{xml_esc(kind)}</g:custom_label_0>\n"
+                    "  </item>")
+    feed = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">\n<channel>\n'
+            "  <title>Stockflow.media — Royalty-Free Stock Images &amp; Footage</title>\n"
+            f"  <link>{SITE}/</link>\n"
+            "  <description>Premium 8K stock images and 4K footage, royalty-free, instant download.</description>\n"
+            + "\n".join(items) + "\n</channel>\n</rss>")
+    wfile(ROOT / "feed-merchant.xml", feed)
+    print(f"feed-merchant.xml: {len(items):,} products", flush=True)
+
+
+def write_rss(tree, newest_n=100):
+    """Plain RSS of the newest assets -> feed.xml (Pinterest auto-publish,
+    FeedHive, Zapier, readers). Sorted by File_ID (date-prefixed) descending."""
+    flat = [a for subs in tree.values() for assets in subs.values() for a in assets]
+    flat.sort(key=lambda a: a["id"], reverse=True)
+    items = []
+    for a in flat[:newest_n]:
+        d = upload_date(a["id"])
+        items.append(
+            "  <item>\n"
+            f"    <title>{xml_esc(a['title'])}</title>\n"
+            f"    <link>{xml_esc(a['page'])}</link>\n"
+            f"    <guid isPermaLink=\"true\">{xml_esc(a['page'])}</guid>\n"
+            f"    <description>{xml_esc((a['desc'] or a['title'])[:500])}</description>\n"
+            f"    <pubDate>{d}T00:00:00Z</pubDate>\n"
+            f"    <enclosure url=\"{xml_esc(a['thumb'])}\" type=\"image/webp\" length=\"0\"/>\n"
+            "  </item>")
+    feed = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<rss version="2.0">\n<channel>\n'
+            "  <title>Stockflow.media — New Stock Assets</title>\n"
+            f"  <link>{SITE}/</link>\n"
+            "  <description>Newest royalty-free 8K images and 4K footage on Stockflow.media.</description>\n"
+            + "\n".join(items) + "\n</channel>\n</rss>")
+    wfile(ROOT / "feed.xml", feed)
+    print(f"feed.xml: newest {min(newest_n, len(flat))} assets", flush=True)
+
+
 def write_robots():
     wfile(ROOT / "robots.txt",
           "User-agent: *\n"
@@ -623,7 +802,12 @@ def main():
     print(f"Hierarchy: {cats} categories, {subs} subcategories", flush=True)
 
     page_urls, asset_urls, img_entries, total = build(tree)
+    extract_shop_ui()
     n_imgs = write_sitemaps(page_urls, asset_urls, img_entries)
+    write_merchant_feed(tree)
+    write_rss(tree)
+    write_search_index(tree)
+    write_llms_txt(total)
     write_robots()
     print(f"DONE: {len(page_urls)} listing pages · {len(asset_urls):,} asset pages · "
           f"{total:,} assets · {n_imgs:,} images in sitemap", flush=True)

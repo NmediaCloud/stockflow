@@ -1,0 +1,23 @@
+/* Stockflow gallery — purchase layer (modal base copied from css/styles.css so
+   the injected shop-ui.html renders identically without loading the whole SPA CSS) */
+.modal { display:none; position:fixed; z-index:11000; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.55); }
+.modal-content { background-color:#fff; color:#1F2937; margin:10% auto; padding:30px; border-radius:12px; width:90%; max-width:400px; box-shadow:0 4px 20px rgba(0,0,0,0.3); }
+.modal-content h2 { margin-top:0; color:#111; }
+.close-modal { color:#aaa; float:right; font-size:28px; font-weight:bold; cursor:pointer; }
+.close-modal:hover { color:#000; }
+.modal-hidden { display:none !important; }
+.modal-visible { display:flex !important; }
+.topup-button { background:#fff; border:2px solid #F59E0B; padding:20px; border-radius:8px; cursor:pointer; display:flex; flex-direction:column; align-items:center; transition:all .3s; width:100%; }
+.topup-button:hover { background:#F59E0B; color:#fff; transform:translateY(-2px); }
+.topup-button:hover span { color:#fff !important; }
+
+/* Account bar (compact chips, same look as the storefront header) */
+.g-account { display:flex; align-items:center; gap:8px; flex-wrap:nowrap; }
+.g-account .chip { display:inline-flex; align-items:center; gap:6px; background:#2A2F36; border:1px solid #3A3F46; color:#F3F4F6; padding:7px 12px; font-size:12px; font-weight:600; border-radius:6px; cursor:pointer; white-space:nowrap; }
+.g-account .chip:hover { border-color:#F97316; }
+.g-account .chip .lbl { font-size:11px; color:#9CA3AF; text-transform:uppercase; letter-spacing:.4px; }
+.g-account .chip .amt { color:#F97316; font-size:14px; font-weight:700; }
+.g-account .chip.solid { background:#F97316; border-color:#F97316; color:#fff; font-weight:700; }
+.g-account .chip.solid:hover { background:#FB923C; }
+.g-account .email { color:#9CA3AF; max-width:150px; overflow:hidden; text-overflow:ellipsis; }
+#userMenu a:hover { background:rgba(239,68,68,0.08); }

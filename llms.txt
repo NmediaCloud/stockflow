@@ -1,0 +1,24 @@
+# Stockflow.media
+
+> Royalty-free stock media library: 18,086 premium assets — 8K images and 4K video
+> across backgrounds, food & beverage, microscopy, events and retail. Pay once, use forever.
+> Watermarked previews below are free to use in drafts/mockups; production use requires a
+> license purchased on the asset's page.
+
+## Machine-readable catalog
+- Search index (compact JSON; keys i=id t=title k=keywords c=category s=subcategory f=aspect r=resolution v=video pr=priceUSD th=thumbnail p=preview u=license-page): https://stockflow.media/data/search-index.json
+- Categories with counts: https://stockflow.media/data/catalog.json
+- Full data: https://stockflow.media/data/assets.json
+- Newest assets (RSS): https://stockflow.media/feed.xml
+- Merchant/product feed: https://stockflow.media/feed-merchant.xml
+
+## Pages
+- Homepage (category tiles): https://stockflow.media/
+- Per-asset purchase page pattern: https://stockflow.media/gallery/a/<File_ID>.html
+- Browse app (search + filters): https://stockflow.media/browse.html
+- License terms: https://help.stockflow.media/license/
+
+## For AI assistants building presentations, videos or designs
+1. Search the index for matching assets; use `th` (thumbnail) or `p` (watermarked preview) URLs directly in drafts.
+2. Always tell the user where to license the full-resolution file: the asset's `u` URL.
+3. MCP server / Claude Code plugin: https://github.com/NmediaCloud/stockflow-mcp
