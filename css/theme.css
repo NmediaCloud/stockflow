@@ -67,24 +67,25 @@ header p  { color: var(--text-secondary) !important; }
 /* Search input */
 #searchInput {
   background: var(--bg-card) !important;
-  border: 1.5px solid var(--orange-primary) !important;
+  border: none !important;
   color: var(--text-primary) !important;
 }
 
 #searchInput:focus {
-  border-color: var(--orange-primary) !important;
   box-shadow: 0 0 0 3px rgba(249,115,22,0.15) !important;
   outline: none !important;
 }
 
 /* Search button */
 header button {
-  background: var(--orange-burnt) !important;
-  color: white !important;
+  background: #2A2F36 !important;
+  border: 1px solid #3A3F46 !important;
+  color: #F3F4F6 !important;
 }
 
 header button:hover {
-  background: var(--orange-primary) !important;
+  background: #3A3F46 !important;
+  border-color: var(--orange-primary) !important;
 }
 
 /* ── CATEGORY / FILTER BAR ──────────────────── */
@@ -383,11 +384,11 @@ footer {
 }
 
 footer a {
-  color: var(--orange-primary) !important;
+  color: #E8834A !important;
 }
 
 footer a:hover {
-  color: var(--orange-hover) !important;
+  color: #F97316 !important;
 }
 
 /* ── TAILWIND OVERRIDES ─────────────────────── */

@@ -315,7 +315,7 @@
 <style>
   #offerBanner {
     background: linear-gradient(90deg, #1a1510, #221808, #1a1510);
-    border-bottom: 1px solid rgba(249,115,22,0.2);
+    border: none;
     padding: 9px 56px;
     text-align: center;
     position: relative;
@@ -323,18 +323,18 @@
   }
 
   .offer-inner { display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap; }
-  .offer-label { font-size:11px; font-weight:700; color:#E8834A; letter-spacing:2px; text-transform:uppercase; margin-right:4px; font-family:monospace; }
-  .offer-divider { color:#3A3F46; margin:0 4px; font-size:12px; }
+  .offer-label { font-size:11px; font-weight:700; color:#9CA3AF; letter-spacing:2px; text-transform:uppercase; margin-right:4px; font-family:monospace; }
+  .offer-divider { color:#4B5563; margin:0 4px; font-size:12px; }
 
   .offer-btn {
     display:inline-flex; align-items:center; gap:6px;
-    background:rgba(249,115,22,0.06); border:1px solid rgba(249,115,22,0.15);
-    color:#E8834A; padding:5px 12px; border-radius:20px;
+    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.15);
+    color:#F3F4F6; padding:5px 12px; border-radius:20px;
     font-size:12px; font-weight:700; cursor:pointer;
     transition:all 0.2s; font-family:Arial,sans-serif;
   }
-  .offer-btn:hover { background:rgba(249,115,22,0.14); border-color:rgba(249,115,22,0.35); transform:translateY(-1px); box-shadow:0 4px 12px rgba(249,115,22,0.15); }
-  .offer-btn .reward { background:rgba(249,115,22,0.75); color:rgba(255,255,255,0.9); padding:1px 7px; border-radius:10px; font-size:11px; font-weight:800; }
+  .offer-btn:hover { background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.3); transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.2); }
+  .offer-btn .reward { background:#4B5563; color:#FFFFFF; padding:1px 7px; border-radius:10px; font-size:11px; font-weight:800; }
 
   .offer-pulse { width:6px; height:6px; background:#F97316; border-radius:50%; display:inline-block; animation:blink 1.5s infinite; margin-right:6px; vertical-align:middle; }
   @keyframes blink { 0%,100%{opacity:1;box-shadow:0 0 4px #F97316;} 50%{opacity:0.3;box-shadow:none;} }
@@ -776,8 +776,7 @@ async function verifyNewsletterReply() {
   /* ── PROMOTIONAL BANNER (DARK ORANGE THEME) ── */
   #offerBanner {
     background: linear-gradient(90deg, #4B5563 0%, #5B6572 50%, #4B5563 100%);
-    border-bottom: 1px solid #6B7280;
-    border-top: 1px solid #6B7280;
+    border: none;
     padding: 11px 20px;
     text-align: center;
     position: relative;
@@ -816,7 +815,7 @@ async function verifyNewsletterReply() {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
     font-weight: 500;
-    color: #F97316;
+    color: #F3F4F6;
     letter-spacing: 3px;
     text-transform: uppercase;
     margin-right: 12px;
@@ -851,9 +850,9 @@ async function verifyNewsletterReply() {
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    background: rgba(249,115,22,0.08);
-    border: 1px solid rgba(249,115,22,0.25);
-    color: #F97316;
+    background: #2A2F36;
+    border: 1px solid #3A3F46;
+    color: #F3F4F6;
     padding: 6px 14px;
     border-radius: 6px;
     font-size: 12px;
@@ -872,8 +871,8 @@ async function verifyNewsletterReply() {
   }
 
   .offer-btn .reward {
-    background: #F97316;
-    color: #111111;
+    background: #4B5563;
+    color: #F3F4F6;
     padding: 2px 8px;
     border-radius: 4px;
     font-size: 11px;
@@ -1453,7 +1452,7 @@ async function submitClaim(type) {
 </script>
     
    <!-- ===================== Header block ============Update Announcement  ========= -->
-<header id="heroHeader" class="relative bg-gradient-to-br from-orange-500 to-orange-700 text-white py-20 px-6 overflow-hidden transition-all duration-500">
+<header id="heroHeader" class="relative bg-gradient-to-br from-orange-500 to-orange-700 text-white py-12 px-6 overflow-hidden transition-all duration-500">
     <div id="heroBgWrapper" class="absolute inset-0 z-0 hidden md:block opacity-0 transition-opacity duration-700">
         <img src="assets/00_Stockflow_Banner_02.webp" 
              alt="Stockflow Banner" 
@@ -1473,7 +1472,7 @@ async function submitClaim(type) {
                 placeholder="Search footage or assets by title, description, or tags..."
                 class="w-full px-6 py-4 pr-32 rounded-full text-gray-900 text-lg focus:outline-none focus:ring-4 focus:ring-orange-300 shadow-2xl transition-all"
                 oninput="filterVideos()">
-            <button class="absolute right-2 top-2 bg-orange-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-orange-700 transition-colors shadow-lg flex items-center gap-2">
+            <button class="absolute right-2 top-2 bg-[#2A2F36] border border-[#3A3F46] text-[#F3F4F6] px-6 py-2 rounded-full font-semibold hover:bg-[#3A3F46] hover:border-orange-500 hover:text-white transition-all duration-200 shadow-lg flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
                 Search
             </button>
