@@ -110,6 +110,88 @@ def fetch_rows(csv_path: str | None):
     return rows
 
 
+# ================================================================
+# SEO metadata module — clean, keyword-rich title / alt / description /
+# keywords built from the structured Sheet fields (Category, Sub, Resolution).
+# Rule-based (no AI/cost). Emitted to data/metadata_seo.csv for reuse by the
+# file exporter later, and consumed in-process by the gallery build below.
+# ================================================================
+def res_label(res):
+    """Max pixel dimension -> '8K'/'4K'/'2K' marketing label (or '')."""
+    nums = [int(x) for x in re.findall(r"\d+", res or "")]
+    if not nums:
+        return ""
+    mx = max(nums)
+    if mx >= 6500:
+        return "8K"
+    if mx >= 3500:
+        return "4K"
+    if mx >= 1900:
+        return "2K"
+    return ""
+
+
+def orientation(res):
+    """First two dims -> 'landscape'/'portrait'/'square' (or '')."""
+    nums = re.findall(r"\d+", res or "")
+    if len(nums) >= 2:
+        w, h = int(nums[0]), int(nums[1])
+        if w > h * 1.05:
+            return "landscape"
+        if h > w * 1.05:
+            return "portrait"
+        return "square"
+    return ""
+
+
+def _title_case_subject(s):
+    """'fruit-tarts' / 'wine_champagne' -> 'Fruit Tarts' / 'Wine Champagne'."""
+    s = re.sub(r"[_\-]+", " ", (s or "")).strip()
+    s = re.sub(r"\s+", " ", s)
+    return " ".join(w if (w.isupper() and len(w) > 1) else w.capitalize() for w in s.split())
+
+
+def build_seo(r, cat, sub, kind, res):
+    """Return clean, keyword-rich {title, alt, desc, keywords} for one asset.
+    Built from structured fields so it's consistent across all assets and free of
+    filename cruft. Merges any Sheet Keywords/Tags in. `kind` is 'Image'/'Video'."""
+    is_vid = (kind == "Video")
+    rl = res_label(res)
+    orient = orientation(res)
+    subject = _title_case_subject((r.get("Sub") or "").strip() or sub)
+    medium = "footage" if is_vid else "photo"          # correct word per medium
+    catl = cat.lower()
+
+    # Title — "Fruit Tarts — 8K Royalty-Free Food & Beverage Stock Image"
+    tbits = [subject, "—"] + ([rl] if rl else []) + ["Royalty-Free", cat, "Stock", kind]
+    title = " ".join(b for b in tbits if b)
+
+    # Alt — natural, descriptive, correct medium + category + resolution
+    abits = [subject + ","] + ([rl] if rl else []) + ["royalty-free", catl, "stock", medium]
+    alt = " ".join(b for b in abits if b)
+    if orient:
+        alt += f", {orient} orientation"
+
+    # Meta description — benefit-led, conversion-friendly
+    rlp = (rl + " ") if rl else ""
+    desc = (f"{subject} — {rlp}royalty-free {cat} stock {medium}. "
+            f"Pay once, use forever with an instant full-resolution download from Stockflow.media.")
+
+    # Keywords — subject + taxonomy + resolution + medium + Sheet keywords, deduped
+    raw = [subject, sub, cat, catl,
+           (f"{rl} {medium}" if rl else medium), f"royalty-free stock {medium}",
+           "royalty-free", "stock", orient]
+    for extra in (r.get("Keywords"), r.get("Tags")):
+        raw += [k.strip() for k in re.split(r"[,;]", extra or "") if k.strip()]
+    seen, kws = set(), []
+    for k in raw:
+        k = re.sub(r"\s+", " ", (k or "")).strip()
+        if k and k.lower() not in seen:
+            seen.add(k.lower())
+            kws.append(k)
+    return {"title": title, "alt": alt, "desc": desc, "keywords": ", ".join(kws)}
+
+
 def load_assets(rows):
     """Rows -> asset dicts, grouped Category -> Subcategory -> [assets]."""
     tree: "OrderedDict[str, OrderedDict[str, list]]" = OrderedDict()
@@ -125,14 +207,17 @@ def load_assets(rows):
             skipped += 1
             continue
         seen_ids.add(fid)
+        _res = (r.get("Resolution") or "").strip()
+        _kind = "Video" if is_video(preview) else "Image"
+        _seo = build_seo(r, cat, sub, _kind, _res)
         a = {
             "id": fid,
-            "title": (r.get("SEO_Title") or r.get("Title") or fid).strip(),
-            "desc": (r.get("Meta_Description") or r.get("Description") or "").strip(),
-            "alt": (r.get("Alt_Text") or r.get("Title") or "").strip(),
+            "title": _seo["title"],
+            "desc": _seo["desc"],
+            "alt": _seo["alt"],
             "thumb": thumb or preview,
             "preview": preview or thumb,
-            "keywords": (r.get("Keywords") or r.get("Tags") or "").strip(),
+            "keywords": _seo["keywords"],
             "price": (r.get("Price") or "").strip(),
             "res": (r.get("Resolution") or "").strip(),
             "fmt": (r.get("Format") or "").strip(),
@@ -308,6 +393,9 @@ def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_grap
     <a href="https://help.stockflow.media/mission/" onclick="shopOpen('about');return false;">About</a> ·
     <a href="{LICENSE_URL}" onclick="shopOpen('license');return false;">License Terms</a> ·
     <a href="https://help.stockflow.media/">Help</a> ·
+    <a href="https://help.stockflow.media/features/">Features</a> ·
+    <a href="https://help.stockflow.media/browsing-and-buying/">How to Buy</a> ·
+    <a href="https://smithery.ai/servers/nmedia-cloud/stockflow-mcp">AI / MCP</a> ·
     <a href="{SITE}/">Search &amp; Buy</a>
   </p>
   <p>All previews &amp; thumbnails {esc(COPYRIGHT)} — instant download, royalty-free.</p>
@@ -741,6 +829,25 @@ def write_search_index(tree):
     print(f"data/search-index.json: {len(out):,} assets · {len(payload.encode('utf-8'))/1e6:.1f} MB raw", flush=True)
 
 
+def write_seo_metadata_csv(tree):
+    """Emit data/metadata_seo.csv — the rule-based SEO metadata for every asset,
+    keyed on File_ID. Same fields the Sheet/exporter use, so it can later feed the
+    file exporter (metadata_runner.py --overrides) or be pushed back to the Sheet."""
+    buf = io.StringIO()
+    w = csv.writer(buf)
+    w.writerow(["File_ID", "SEO_Title", "Alt_Text", "Meta_Description", "Keywords",
+                "Category", "Catagory_Sub", "Type", "Resolution"])
+    n = 0
+    for cat, subs in tree.items():
+        for sub, assets in subs.items():
+            for a in assets:
+                w.writerow([a["id"], a["title"], a["alt"], a["desc"], a["keywords"],
+                            cat, sub, "video" if a["video"] else "image", a["res"]])
+                n += 1
+    wfile(ROOT / "data" / "metadata_seo.csv", buf.getvalue())
+    print(f"data/metadata_seo.csv: {n:,} rows of rule-based SEO metadata", flush=True)
+
+
 def write_llms_txt(total_assets):
     """llms.txt — machine-readable front door so any AI agent can discover and
     use the catalog (previews are watermarked; full-res requires a license)."""
@@ -784,94 +891,4 @@ def write_merchant_feed(tree):
                 except Exception:
                     price = "1.00"
                 kind = "Stock Video Clip" if a["video"] else "Stock Image"
-                desc = (a["desc"] or a["title"])[:4900]
-                items.append(
-                    "  <item>\n"
-                    f"    <g:id>{xml_esc(a['id'])}</g:id>\n"
-                    f"    <g:title>{xml_esc(a['title'][:150])}</g:title>\n"
-                    f"    <g:description>{xml_esc(desc)}</g:description>\n"
-                    f"    <g:link>{xml_esc(a['page'])}</g:link>\n"
-                    f"    <g:image_link>{xml_esc(a['thumb'] if a['video'] else a['preview'])}</g:image_link>\n"
-                    f"    <g:price>{price} USD</g:price>\n"
-                    "    <g:availability>in_stock</g:availability>\n"
-                    "    <g:condition>new</g:condition>\n"
-                    "    <g:brand>Stockflow.media</g:brand>\n"
-                    "    <g:identifier_exists>no</g:identifier_exists>\n"
-                    f"    <g:product_type>{xml_esc(cat)} &gt; {xml_esc(sub)}</g:product_type>\n"
-                    f"    <g:custom_label_0>{xml_esc(kind)}</g:custom_label_0>\n"
-                    "  </item>")
-    feed = ('<?xml version="1.0" encoding="UTF-8"?>\n'
-            '<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">\n<channel>\n'
-            "  <title>Stockflow.media — Royalty-Free Stock Images &amp; Footage</title>\n"
-            f"  <link>{SITE}/</link>\n"
-            "  <description>Premium 8K stock images and 4K footage, royalty-free, instant download.</description>\n"
-            + "\n".join(items) + "\n</channel>\n</rss>")
-    wfile(ROOT / "feed-merchant.xml", feed)
-    print(f"feed-merchant.xml: {len(items):,} products", flush=True)
-
-
-def write_rss(tree, newest_n=100):
-    """Plain RSS of the newest assets -> feed.xml (Pinterest auto-publish,
-    FeedHive, Zapier, readers). Sorted by File_ID (date-prefixed) descending."""
-    flat = [a for subs in tree.values() for assets in subs.values() for a in assets]
-    flat.sort(key=lambda a: a["id"], reverse=True)
-    items = []
-    for a in flat[:newest_n]:
-        d = upload_date(a["id"])
-        items.append(
-            "  <item>\n"
-            f"    <title>{xml_esc(a['title'])}</title>\n"
-            f"    <link>{xml_esc(a['page'])}</link>\n"
-            f"    <guid isPermaLink=\"true\">{xml_esc(a['page'])}</guid>\n"
-            f"    <description>{xml_esc((a['desc'] or a['title'])[:500])}</description>\n"
-            f"    <pubDate>{d}T00:00:00Z</pubDate>\n"
-            f"    <enclosure url=\"{xml_esc(a['thumb'])}\" type=\"image/webp\" length=\"0\"/>\n"
-            "  </item>")
-    feed = ('<?xml version="1.0" encoding="UTF-8"?>\n'
-            '<rss version="2.0">\n<channel>\n'
-            "  <title>Stockflow.media — New Stock Assets</title>\n"
-            f"  <link>{SITE}/</link>\n"
-            "  <description>Newest royalty-free 8K images and 4K footage on Stockflow.media.</description>\n"
-            + "\n".join(items) + "\n</channel>\n</rss>")
-    wfile(ROOT / "feed.xml", feed)
-    print(f"feed.xml: newest {min(newest_n, len(flat))} assets", flush=True)
-
-
-def write_robots():
-    wfile(ROOT / "robots.txt",
-          "User-agent: *\n"
-          "Allow: /\n\n"
-          f"Sitemap: {SITE}/sitemap.xml\n"
-          f"Sitemap: {SITE}/sitemap-gallery.xml\n"
-          f"Sitemap: {SITE}/sitemap-assets.xml\n"
-          f"Sitemap: {SITE}/sitemap-images-gallery.xml\n")
-
-
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--csv", default="", help="build from a saved CSV instead of fetching")
-    args = ap.parse_args()
-
-    rows = fetch_rows(args.csv or None)
-    write_assets_json(rows)
-    tree = load_assets(rows)
-    write_catalog_json(tree)
-    cats = len(tree)
-    subs = sum(len(s) for s in tree.values())
-    print(f"Hierarchy: {cats} categories, {subs} subcategories", flush=True)
-
-    page_urls, asset_urls, img_entries, total = build(tree)
-    extract_shop_ui()
-    n_imgs = write_sitemaps(page_urls, asset_urls, img_entries)
-    write_merchant_feed(tree)
-    write_rss(tree)
-    write_search_index(tree)
-    write_llms_txt(total)
-    write_robots()
-    print(f"DONE: {len(page_urls)} listing pages · {len(asset_urls):,} asset pages · "
-          f"{total:,} assets · {n_imgs:,} images in sitemap", flush=True)
-    print(f"Files written: {_written['new']:,} changed, {_written['same']:,} unchanged", flush=True)
-
-
-if __name__ == "__main__":
-    main()
+                desc = (a["desc"] or a
