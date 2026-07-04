@@ -221,8 +221,42 @@ def extract_site_nav():
     print(f"site nav extracted: {len(NAV_HTML)/1024:.1f} KB (inlined into every gallery page)", flush=True)
 
 
+def account_bar():
+    """Two-row gallery header (approved sample). Row 1 = logo + account chips +
+    Browse&Buy; ids match js/wallet.js so the eager-loaded stack lights it up.
+    All chips are grey (wallet-display theme); no bright-orange buttons."""
+    return f"""<div class="g-banner">
+  <a class="g-brand" href="{SITE}/gallery/">
+    <img src="/assets/logo_SF.webp" alt="Stockflow.media logo" onerror="this.style.display='none'">
+    <span>Stockflow<b>.media</b></span>
+  </a>
+  <div class="g-spacer"></div>
+  <div class="g-acct">
+    <button id="loginButton" class="g-chip" onclick="shopOpen('login')">Sign In</button>
+    <div id="walletDisplay" style="display:none;">
+      <div class="g-acct-in">
+        <div class="g-chip" onclick="shopOpen('refresh')" title="Click to refresh balance">
+          <span class="lbl">Wallet</span><span id="walletAmount" class="amt">$0.00</span>
+        </div>
+        <button class="g-chip" onclick="shopOpen('history')" title="My Purchases &amp; downloads">My Purchases</button>
+        <button class="g-chip accent" onclick="shopOpen('topup')"><span class="plus">＋</span> Add Funds</button>
+        <div style="position:relative;">
+          <button id="userMenuButton" class="g-chip" onclick="toggleUserMenu()">
+            <span id="userEmailDisplay" class="email"></span> ▾
+          </button>
+          <div id="userMenu" style="display:none;position:absolute;right:0;top:100%;margin-top:5px;background:#1F2933;border:1px solid #3A3F46;border-radius:6px;box-shadow:0 6px 14px rgba(0,0,0,0.4);min-width:170px;z-index:100;">
+            <a href="#" onclick="logout();return false;" style="display:block;padding:10px 15px;color:#EF4444;text-decoration:none;font-size:13px;">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <a class="g-cta" href="{SITE}/">🔍 Search</a>
+</div>"""
+
+
 def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_graph=None,
-               prev_url=None, next_url=None, depth=2, head_extra=""):
+               prev_url=None, next_url=None, depth=2, head_extra="", pager_html=""):
     rel = "../" * depth
     graph = [jsonld_breadcrumb(breadcrumb)]
     if extra_graph:
@@ -250,22 +284,18 @@ def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_grap
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="{rel}assets/SF_Favicon.webp">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="/css/styles.css?v=2">
-  <link rel="stylesheet" href="/css/theme.css?v=2">
-  <link rel="stylesheet" href="{rel}gallery/gallery.css">
-  <link rel="stylesheet" href="{rel}gallery/shop.css">
-  <script src="/gallery/shop.js?v=3" defer></script>
+  <link rel="stylesheet" href="/css/styles.css?v=3">
+  <link rel="stylesheet" href="/css/theme.css?v=3">
+  <link rel="stylesheet" href="{rel}gallery/gallery.css?v=3">
+  <link rel="stylesheet" href="{rel}gallery/shop.css?v=2">
+  <script src="/gallery/shop.js?v=4" defer></script>
   <script type="application/ld+json">{ld}</script>
 </head>
 <body>
-{NAV_HTML}
-<div class="g-crumbbar">
-  <a class="g-brand" href="{SITE}/gallery/">
-    <img src="/assets/logo_SF.webp" alt="Stockflow.media logo" onerror="this.style.display='none'">
-    <span>Stockflow<b>.media</b></span>
-  </a>
+{account_bar()}
+<div class="g-subbar">
   <nav class="g-crumbs">{" <span>›</span> ".join(f'<a href="{esc(u)}">{esc(n)}</a>' for n, u in breadcrumb)}</nav>
-  <a class="g-cta" href="{SITE}/">Browse &amp; Buy</a>
+  {pager_html}
 </div>
 <main class="g-main">
 {body}
@@ -275,7 +305,7 @@ def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_grap
     <a href="https://help.stockflow.media/mission/" onclick="shopOpen('about');return false;">About</a> ·
     <a href="{LICENSE_URL}" onclick="shopOpen('license');return false;">License Terms</a> ·
     <a href="https://help.stockflow.media/">Help</a> ·
-    <a href="{SITE}/">Browse &amp; Buy</a>
+    <a href="{SITE}/">Search &amp; Buy</a>
   </p>
   <p>All previews &amp; thumbnails {esc(COPYRIGHT)} — instant download, royalty-free.</p>
 </footer>
@@ -360,12 +390,30 @@ GALLERY_CSS = """/* Stockflow gallery — static, matches theme.css (dark charco
 :root{--bg:#111;--panel:#1F2933;--card:#2A2F36;--line:#3A3F46;--txt:#F3F4F6;--mut:#9CA3AF;--acc:#F97316;--acch:#FB923C}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:ui-sans-serif,system-ui,"Segoe UI",sans-serif}
 a{color:var(--acc);text-decoration:none}a:hover{color:var(--acch)}
-.g-crumbbar{display:flex;align-items:center;gap:14px;padding:9px 24px;background:#0b0b0b;border-bottom:1px solid var(--line);flex-wrap:wrap}
-.g-brand{display:flex;align-items:center;gap:9px;color:var(--txt);font-size:16px;font-weight:700;white-space:nowrap}
-.g-brand img{height:28px;width:auto}.g-brand b{color:var(--acc)}
-.g-crumbs{flex:1;font-size:13px;color:var(--mut);display:flex;gap:6px;flex-wrap:wrap}.g-crumbs span{color:var(--mut)}
-.g-cta{background:var(--acc);color:#fff !important;padding:8px 18px;border-radius:8px;font-weight:700;font-size:14px}
-.g-cta:hover{background:var(--acch)}
+/* styles.css pins every <nav> fixed+white (site header) — our navs must stay in flow */
+nav.g-crumbs,nav.g-pager{position:static !important;top:auto !important;width:auto !important;height:auto !important;background:transparent !important;box-shadow:none !important;z-index:auto !important}
+/* ROW 1 — brand banner (above all) */
+.g-banner{display:flex;align-items:center;gap:10px 14px;padding:11px 24px;background:#0b0b0b;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;flex-wrap:wrap}
+.g-brand{display:flex;align-items:center;gap:9px;color:var(--txt);font-size:18px;font-weight:700;white-space:nowrap}
+.g-brand img{height:32px;width:auto}.g-brand b{color:var(--acc)}
+.g-spacer{flex:1}
+.g-acct{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
+.g-acct-in{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
+/* every account control = grey chip (wallet-display theme); no bright-orange buttons */
+.g-chip{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);color:var(--txt);padding:7px 13px;font-size:12.5px;font-weight:600;border-radius:7px;cursor:pointer;white-space:nowrap;line-height:1}
+.g-chip:hover{border-color:var(--acc)}
+.g-chip .lbl{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.4px}
+.g-chip .amt{color:var(--acc);font-size:14px;font-weight:700}
+/* actionable chips (Add Funds) = grey WALLET theme with orange text */
+.g-chip.accent{color:var(--acc)}
+.g-chip.accent .plus{font-size:15px;font-weight:800;line-height:1}
+.g-acct .email{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Search — grey chip with orange text (wallet-display theme) */
+.g-cta{background:var(--card);color:var(--acc) !important;border:1px solid var(--line);padding:7px 15px;border-radius:7px;font-weight:600;font-size:12.5px;white-space:nowrap}
+.g-cta:hover{border-color:var(--acc)}
+/* ROW 2 — breadcrumb (left) + pager (right) */
+.g-subbar{display:flex;align-items:center;gap:14px;padding:8px 24px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.g-crumbs{flex:1;font-size:13px;color:var(--mut);display:flex;gap:6px;flex-wrap:wrap;align-items:center}.g-crumbs span{color:var(--mut)}
 .g-main{max-width:1500px;margin:0 auto;padding:26px 24px 40px}
 .g-main h1{font-size:26px;margin:0 0 6px}.g-main .lead{color:var(--mut);font-size:14px;margin:0 0 22px;max-width:900px}
 .g-sec{font-size:19px;margin:30px 0 12px;border-left:4px solid var(--acc);padding-left:10px}
@@ -384,9 +432,10 @@ a{color:var(--acc);text-decoration:none}a:hover{color:var(--acch)}
 .g-m{display:block;color:var(--mut);font-size:11.5px;margin-top:3px}
 .g-price{color:var(--acc);font-weight:700;margin-left:8px}
 .g-badge{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.72);color:#fff;font-size:11px;padding:3px 8px;border-radius:6px}
-.g-pager{margin:26px 0 4px;font-size:14px;color:var(--mut);display:flex;gap:6px;flex-wrap:wrap}
-.g-pager a{background:var(--card);border:1px solid var(--line);color:var(--txt);padding:5px 11px;border-radius:6px}
+.g-pager{font-size:13px;color:var(--mut);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.g-pager a{background:var(--card);border:1px solid var(--line);color:var(--txt);padding:4px 12px;border-radius:6px}
 .g-pager a.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.g-main .g-pager{margin:24px 0 4px}   /* the copy at the bottom of long grids */
 .g-foot{border-top:1px solid var(--line);color:var(--mut);font-size:12.5px;padding:18px 24px;text-align:center}
 /* asset landing page */
 .g-hero{display:grid;grid-template-columns:minmax(0,7fr) minmax(300px,4fr);gap:26px;align-items:start}
@@ -469,12 +518,13 @@ def build(tree):
                 prev_u = None if p == 1 else (base if p == 2 else f"{base}page-{p-1}.html")
                 next_u = f"{base}page-{p+1}.html" if p < pages else None
                 suffix = f" — Page {p}" if p > 1 else ""
+                pgr = pager(base, p, pages)   # goes in the header subbar (top-right)
                 body = (f"<h1>{esc(sub)} — {esc(cat)} Stock Assets{suffix}</h1>"
                         f'<p class="lead">{len(assets):,} royalty-free {esc(sub)} images &amp; clips (up to 8K). '
                         f'Open any preview for details, or hit License to buy it instantly.</p>'
                         f'<div class="g-tabs">{tabs}</div>'
                         f'<div class="g-grid">{"".join(card(a) for a in chunk)}</div>'
-                        f'{pager(base, p, pages)}')
+                        f'{pgr}')
                 pg = page_shell(
                     title=f"{sub} — {cat} Stock Images & Videos{suffix} | Stockflow.media",
                     desc=f"{len(assets):,} {sub} stock assets in the {cat} category. Up to 8K resolution, "
@@ -482,7 +532,7 @@ def build(tree):
                     canonical=url, og_image=chunk[0]["preview"],
                     breadcrumb=[home_crumb, gal_crumb, (cat, cat_url), (sub, base)],
                     body=body, extra_graph=[media_node(a) for a in chunk],
-                    prev_url=prev_u, next_url=next_u, depth=3)
+                    prev_url=prev_u, next_url=next_u, depth=3, pager_html=pgr)
                 wfile(sd / ("index.html" if p == 1 else f"page-{p}.html"), pg)
                 page_urls.append(url)
                 img_entries.append((url, [(a["thumb"], a["title"], a["desc"] or a["alt"]) for a in chunk if not a["video"]]))
@@ -797,7 +847,6 @@ def main():
     ap.add_argument("--csv", default="", help="build from a saved CSV instead of fetching")
     args = ap.parse_args()
 
-    extract_site_nav()
     rows = fetch_rows(args.csv or None)
     write_assets_json(rows)
     tree = load_assets(rows)
@@ -811,4 +860,13 @@ def main():
     n_imgs = write_sitemaps(page_urls, asset_urls, img_entries)
     write_merchant_feed(tree)
     write_rss(tree)
-    write_
+    write_search_index(tree)
+    write_llms_txt(total)
+    write_robots()
+    print(f"DONE: {len(page_urls)} listing pages · {len(asset_urls):,} asset pages · "
+          f"{total:,} assets · {n_imgs:,} images in sitemap", flush=True)
+    print(f"Files written: {_written['new']:,} changed, {_written['same']:,} unchanged", flush=True)
+
+
+if __name__ == "__main__":
+    main()

@@ -161,8 +161,8 @@
     </script>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="css/styles.css?v=2">
-    <link rel="stylesheet" href="css/theme.css?v=2">
+    <link rel="stylesheet" href="css/styles.css?v=3">
+    <link rel="stylesheet" href="css/theme.css?v=3">
     <style>
         /* ===== DESKTOP WIDTH CONSTRAINT ===== */
         @media (min-width: 1280px) {
@@ -746,15 +746,12 @@ async function verifyNewsletterReply() {
                             <span id="walletAmount" style="color:#F97316;font-size:14px;font-weight:700;">$0.00</span>
                         </div>
                         <button onclick="showPurchaseHistory()"
-                            style="display:inline-flex;align-items:center;gap:6px;background:#2A2F36;border:1px solid #3A3F46;color:#F3F4F6;padding:7px 12px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;transition:all .2s;white-space:nowrap;">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:15px;height:15px;">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                            </svg>
+                            style="display:inline-flex;align-items:center;background:#2A2F36;border:1px solid #3A3F46;color:#F3F4F6;padding:7px 13px;font-size:12.5px;font-weight:600;border-radius:6px;cursor:pointer;transition:all .2s;white-space:nowrap;">
                             <span class="btn-text">My Purchases</span>
                         </button>
                         <button onclick="showTopUpModal()"
-                            style="background:#F97316;color:white;padding:7px 14px;border:none;border-radius:6px;cursor:pointer;font-weight:700;font-size:12px;white-space:nowrap;">
-                            Add Funds
+                            style="display:inline-flex;align-items:center;gap:5px;background:#2A2F36;border:1px solid #3A3F46;color:#F97316;padding:7px 13px;border-radius:6px;cursor:pointer;font-weight:600;font-size:12.5px;white-space:nowrap;">
+                            <span style="font-size:15px;font-weight:800;line-height:1;">＋</span> Add Funds
                         </button>
                         <div style="position:relative;">
                             <button id="userMenuButton" onclick="toggleUserMenu()"
@@ -2013,7 +2010,7 @@ async function submitClaim(type) {
   
     <script src="js/config.js"></script>
     <script type="module" src="js/auth.js"></script>
-    <script src="js/wallet.js?v=10"></script>
+    <script src="js/wallet.js?v=11"></script>
     <script src="js/videos.js?v=10"></script>
     <script src="js/modals.js?v=7"></script>
 

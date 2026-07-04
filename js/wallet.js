@@ -9,6 +9,24 @@ let currentUser = {
     purchases: [] // Track user's purchased videos
 };
 
+// Apps Script endpoints cold-start and occasionally drop a request. Retry a
+// couple of times with short backoff so a transient blip doesn't surface as a
+// "wallet error" or wipe a known-good balance to $0.
+async function apiFetch(url, tries = 3) {
+    let lastErr;
+    for (let i = 0; i < tries; i++) {
+        try {
+            const r = await fetch(url);
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r;
+        } catch (e) {
+            lastErr = e;
+            if (i < tries - 1) await new Promise(res => setTimeout(res, 500 * (i + 1)));
+        }
+    }
+    throw lastErr;
+}
+
 // ---- DISPLAY ----
 
 function updateWalletDisplay() {
@@ -81,7 +99,7 @@ function closeLoginModal() {
 async function loadUserData(email) {
     try {
         const url = `${CONFIG.API_URL}?action=getUser&email=${encodeURIComponent(email)}`;
-        const response = await fetch(url);
+        const response = await apiFetch(url);
         const user = await response.json();
 
         if (user && user.email) {
@@ -89,30 +107,37 @@ async function loadUserData(email) {
             currentUser.wallet = user.wallet || 0;
             currentUser.isLoggedIn = true;
         } else {
+            // API reachable but returned no record — keep any balance we already
+            // knew for this email rather than flashing it to $0.
             currentUser.email = email;
-            currentUser.wallet = 0;
+            if (currentUser.email !== email || typeof currentUser.wallet !== 'number') currentUser.wallet = 0;
             currentUser.isLoggedIn = true;
         }
-        
+
         // Load user's purchase history to check for duplicates
         await loadUserPurchases(email);
-        
+
     } catch (error) {
         console.error('Error loading user data:', error);
-        currentUser = { email: email, wallet: 0, isLoggedIn: true, purchases: [] };
-        showNotification('Signed in (offline mode)', 'info');
+        // Transient network/API failure: DON'T wipe a known-good wallet to $0.
+        // Preserve the last balance and stay signed in; the next refresh recovers.
+        currentUser.email = currentUser.email || email;
+        currentUser.isLoggedIn = true;
+        if (typeof currentUser.wallet !== 'number') currentUser.wallet = 0;
+        if (!Array.isArray(currentUser.purchases)) currentUser.purchases = [];
+        showNotification('Wallet sync delayed — using last known balance', 'info');
     }
 }
 
 async function loadUserPurchases(email) {
     try {
         const url = `${CONFIG.API_URL}?action=getPurchases&email=${encodeURIComponent(email)}`;
-        const response = await fetch(url);
+        const response = await apiFetch(url);
         const purchases = await response.json();
         currentUser.purchases = purchases || [];
     } catch (error) {
         console.error('Error loading purchases:', error);
-        currentUser.purchases = [];
+        if (!Array.isArray(currentUser.purchases)) currentUser.purchases = [];
     }
 }
 
@@ -298,8 +323,8 @@ async function purchaseVideo(videoId, videoTitle, price, purchaseBtn, originalBt
         // 3. EXECUTION: PROCESSING STATE
         window.showNotification('🔄 Processing transaction...', 'info');
         const url = `${CONFIG.API_URL}?action=purchase&email=${encodeURIComponent(currentUser.email)}&videoId=${encodeURIComponent(videoId)}&videoTitle=${encodeURIComponent(videoTitle)}&amount=${numPrice}`;
-        
-        const response = await fetch(url);
+
+        const response = await apiFetch(url);
         const result = await response.json();
 
         unlockButton();

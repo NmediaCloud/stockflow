@@ -2,15 +2,35 @@
 :root{--bg:#111;--panel:#1F2933;--card:#2A2F36;--line:#3A3F46;--txt:#F3F4F6;--mut:#9CA3AF;--acc:#F97316;--acch:#FB923C}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:ui-sans-serif,system-ui,"Segoe UI",sans-serif}
 a{color:var(--acc);text-decoration:none}a:hover{color:var(--acch)}
-.g-crumbbar{display:flex;align-items:center;gap:14px;padding:10px 24px;background:#0b0b0b;border-bottom:1px solid var(--line);flex-wrap:wrap}
-.g-crumbs{flex:1;font-size:13px;color:var(--mut);display:flex;gap:6px;flex-wrap:wrap}.g-crumbs span{color:var(--mut)}
-.g-cta{background:var(--acc);color:#fff !important;padding:8px 18px;border-radius:8px;font-weight:700;font-size:14px}
-.g-cta:hover{background:var(--acch)}
+/* styles.css pins every <nav> fixed+white (site header) — our navs must stay in flow */
+nav.g-crumbs,nav.g-pager{position:static !important;top:auto !important;width:auto !important;height:auto !important;background:transparent !important;box-shadow:none !important;z-index:auto !important}
+/* ROW 1 — brand banner (above all) */
+.g-banner{display:flex;align-items:center;gap:10px 14px;padding:11px 24px;background:#0b0b0b;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;flex-wrap:wrap}
+.g-brand{display:flex;align-items:center;gap:9px;color:var(--txt);font-size:18px;font-weight:700;white-space:nowrap}
+.g-brand img{height:32px;width:auto}.g-brand b{color:var(--acc)}
+.g-spacer{flex:1}
+.g-acct{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
+.g-acct-in{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
+/* every account control = grey chip (wallet-display theme); no bright-orange buttons */
+.g-chip{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);color:var(--txt);padding:7px 13px;font-size:12.5px;font-weight:600;border-radius:7px;cursor:pointer;white-space:nowrap;line-height:1}
+.g-chip:hover{border-color:var(--acc)}
+.g-chip .lbl{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.4px}
+.g-chip .amt{color:var(--acc);font-size:14px;font-weight:700}
+/* actionable chips (Add Funds) = grey WALLET theme with orange text */
+.g-chip.accent{color:var(--acc)}
+.g-chip.accent .plus{font-size:15px;font-weight:800;line-height:1}
+.g-acct .email{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Search — grey chip with orange text (wallet-display theme) */
+.g-cta{background:var(--card);color:var(--acc) !important;border:1px solid var(--line);padding:7px 15px;border-radius:7px;font-weight:600;font-size:12.5px;white-space:nowrap}
+.g-cta:hover{border-color:var(--acc)}
+/* ROW 2 — breadcrumb (left) + pager (right) */
+.g-subbar{display:flex;align-items:center;gap:14px;padding:8px 24px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.g-crumbs{flex:1;font-size:13px;color:var(--mut);display:flex;gap:6px;flex-wrap:wrap;align-items:center}.g-crumbs span{color:var(--mut)}
 .g-main{max-width:1500px;margin:0 auto;padding:26px 24px 40px}
 .g-main h1{font-size:26px;margin:0 0 6px}.g-main .lead{color:var(--mut);font-size:14px;margin:0 0 22px;max-width:900px}
 .g-sec{font-size:19px;margin:30px 0 12px;border-left:4px solid var(--acc);padding-left:10px}
 .g-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px}
-.g-tabs a{background:var(--card);border:1px solid var(--line);color:var(--txt);padding:7px 14px;border-radius:20px;font-size:13px}
+.g-tabs a{background:var(--card);border:1px solid var(--line);color:var(--txt);padding:5px 20px;border-radius:16px;font-size:13px}
 .g-tabs a.on,.g-tabs a:hover{background:var(--acc);border-color:var(--acc);color:#fff}
 .g-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
 .g-card,.g-tile{position:relative;display:block;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;transition:transform .15s,border-color .15s}
@@ -24,9 +44,10 @@ a{color:var(--acc);text-decoration:none}a:hover{color:var(--acch)}
 .g-m{display:block;color:var(--mut);font-size:11.5px;margin-top:3px}
 .g-price{color:var(--acc);font-weight:700;margin-left:8px}
 .g-badge{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.72);color:#fff;font-size:11px;padding:3px 8px;border-radius:6px}
-.g-pager{margin:26px 0 4px;font-size:14px;color:var(--mut);display:flex;gap:6px;flex-wrap:wrap}
-.g-pager a{background:var(--card);border:1px solid var(--line);color:var(--txt);padding:5px 11px;border-radius:6px}
+.g-pager{font-size:13px;color:var(--mut);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.g-pager a{background:var(--card);border:1px solid var(--line);color:var(--txt);padding:4px 12px;border-radius:6px}
 .g-pager a.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.g-main .g-pager{margin:24px 0 4px}   /* the copy at the bottom of long grids */
 .g-foot{border-top:1px solid var(--line);color:var(--mut);font-size:12.5px;padding:18px 24px;text-align:center}
 /* asset landing page */
 .g-hero{display:grid;grid-template-columns:minmax(0,7fr) minmax(300px,4fr);gap:26px;align-items:start}

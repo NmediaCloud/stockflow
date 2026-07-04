@@ -74,18 +74,12 @@ nav {
         padding-top: 6px;
     }
 
-    /* FIXED: DOUBLE ICON GLITCH */
-    /* FIXED: MOBILE PURCHASE BUTTON (SVG ONLY) */
-    /* We hide the text label on mobile, but keep the new SVG visible */
-    button[onclick="showPurchaseHistory()"] .btn-text { 
-        display: none !important; 
+    /* My Purchases = slim text chip (icon removed), same font as WALLET */
+    button[onclick="showPurchaseHistory()"] .btn-text {
+        display: inline !important;
     }
-    button[onclick="showPurchaseHistory()"] { 
-        padding: 8px 10px !important; 
-        justify-content: center !important;
-    }
-    button[onclick="showPurchaseHistory()"] svg { 
-        display: block !important; /* Forces the beautiful new SVG to stay visible */
+    button[onclick="showPurchaseHistory()"] {
+        padding: 7px 13px !important;
     }
 
     /* Minimalist Wallet & User Settings */
@@ -160,14 +154,12 @@ nav {
     /* Shrink the Wallet amount to fit next to buttons */
     #walletAmount { font-size: 15px !important; }
 
-    /* Transform "My Purchases" into icon-only to save horizontal width */
-    /* Transform "My Purchases" into icon-only to save horizontal width */
+    /* My Purchases = slim text chip (icon removed), same font as WALLET */
     button[onclick="showPurchaseHistory()"] .btn-text {
-        display: none !important;
+        display: inline !important;
     }
     button[onclick="showPurchaseHistory()"] {
-        padding: 8px !important;
-        justify-content: center !important;
+        padding: 7px 11px !important;
     }
     /* Recalculate heights for the frozen stack */
     #offerBanner { top: 60px !important; height: 42px !important; }

@@ -201,16 +201,18 @@ header button:hover {
   border: 1px solid var(--bg-border) !important;
 }
 
-/* Add Funds button */
+/* Add Funds button — grey WALLET-display theme with orange text */
 button[onclick="showTopUpModal()"] {
-  background: var(--orange-primary) !important;
-  color: white !important;
-  box-shadow: 0 0 18px rgba(249,115,22,0.25) !important;
+  background: var(--bg-card) !important;
+  color: var(--orange-primary) !important;
+  border: 1px solid var(--bg-border) !important;
+  box-shadow: none !important;
 }
 
 button[onclick="showTopUpModal()"]:hover {
-  background: var(--orange-hover) !important;
-  box-shadow: 0 0 28px rgba(249,115,22,0.4) !important;
+  background: var(--bg-card) !important;
+  border-color: var(--orange-primary) !important;
+  box-shadow: none !important;
 }
 
 /* My Purchases button */
