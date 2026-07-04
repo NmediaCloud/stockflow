@@ -13,7 +13,7 @@ nav {
     position: fixed !important;
     left: 0; width: 100%;
     z-index: 10004;
-    background: linear-gradient(90deg, #1F2933 0%, #2A2F36 50%, #1F2933 100%) !important;
+    background: linear-gradient(90deg, #4B5563 0%, #5B6572 50%, #4B5563 100%) !important;
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;

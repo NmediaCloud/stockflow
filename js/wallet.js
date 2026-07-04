@@ -188,7 +188,9 @@ async function loadUserPurchases(email) {
         const url = `${CONFIG.API_URL}?action=getPurchases&email=${encodeURIComponent(email)}`;
         const response = await apiFetch(url);
         const purchases = await response.json();
-        currentUser.purchases = purchases || [];
+        // API can return an error object / non-array on a bad response — never
+        // let currentUser.purchases become a non-array (breaks .find at purchase).
+        currentUser.purchases = Array.isArray(purchases) ? purchases : [];
     } catch (error) {
         console.error('Error loading purchases:', error);
         if (!Array.isArray(currentUser.purchases)) currentUser.purchases = [];
@@ -346,7 +348,8 @@ async function purchaseVideo(videoId, videoTitle, price, purchaseBtn, originalBt
         
         // 1. DUPLICATE CHECK
         await loadUserPurchases(currentUser.email);
-        const alreadyOwned = currentUser.purchases.find(p => p.videoId == videoId);
+        const purchaseList = Array.isArray(currentUser.purchases) ? currentUser.purchases : [];
+        const alreadyOwned = purchaseList.find(p => p.videoId == videoId);
         
         if (alreadyOwned) {
             const purchaseDate = new Date(alreadyOwned.date).toLocaleDateString();

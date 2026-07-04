@@ -67,7 +67,7 @@ header p  { color: var(--text-secondary) !important; }
 /* Search input */
 #searchInput {
   background: var(--bg-card) !important;
-  border: 1px solid var(--bg-border) !important;
+  border: 1.5px solid var(--orange-primary) !important;
   color: var(--text-primary) !important;
 }
 
@@ -111,6 +111,13 @@ header button:hover {
   background: var(--orange-primary) !important;
   color: white !important;
   border-color: var(--orange-primary) !important;
+}
+
+/* Types / Subcategory panels — neutral grey (was bluish Tailwind bg-gray-900) */
+#subcategorySection > div,
+#subSection > div {
+  background: #26282c !important;
+  border: 1px solid var(--bg-border) !important;
 }
 
 /* Format buttons */

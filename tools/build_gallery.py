@@ -287,9 +287,9 @@ def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_grap
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="{rel}assets/SF_Favicon.webp">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="/css/styles.css?v=3">
-  <link rel="stylesheet" href="/css/theme.css?v=3">
-  <link rel="stylesheet" href="{rel}gallery/gallery.css?v=3">
+  <link rel="stylesheet" href="/css/styles.css?v=4">
+  <link rel="stylesheet" href="/css/theme.css?v=4">
+  <link rel="stylesheet" href="{rel}gallery/gallery.css?v=4">
   <link rel="stylesheet" href="{rel}gallery/shop.css?v=2">
   <script src="/gallery/shop.js?v=5" defer></script>
   <script type="application/ld+json">{ld}</script>
@@ -392,6 +392,8 @@ def asset_body(a, cat, cat_url, sub, sub_url, related):
 GALLERY_CSS = """/* Stockflow gallery — static, matches theme.css (dark charcoal + burnt orange) */
 :root{--bg:#111;--panel:#1F2933;--card:#2A2F36;--line:#3A3F46;--txt:#F3F4F6;--mut:#9CA3AF;--acc:#F97316;--acch:#FB923C}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:ui-sans-serif,system-ui,"Segoe UI",sans-serif}
+/* styles.css adds body padding-top for the home's fixed nav — gallery has no fixed nav, kill the blank gap */
+body{padding-top:0 !important}
 a{color:var(--acc);text-decoration:none}a:hover{color:var(--acch)}
 /* styles.css pins every <nav> fixed+white (site header) — our navs must stay in flow */
 nav.g-crumbs,nav.g-pager{position:static !important;top:auto !important;width:auto !important;height:auto !important;background:transparent !important;box-shadow:none !important;z-index:auto !important}

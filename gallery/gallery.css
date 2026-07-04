@@ -1,6 +1,8 @@
 /* Stockflow gallery — static, matches theme.css (dark charcoal + burnt orange) */
 :root{--bg:#111;--panel:#1F2933;--card:#2A2F36;--line:#3A3F46;--txt:#F3F4F6;--mut:#9CA3AF;--acc:#F97316;--acch:#FB923C}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:ui-sans-serif,system-ui,"Segoe UI",sans-serif}
+/* styles.css adds body padding-top for the home's fixed nav — gallery has no fixed nav, kill the blank gap */
+body{padding-top:0 !important}
 a{color:var(--acc);text-decoration:none}a:hover{color:var(--acch)}
 /* styles.css pins every <nav> fixed+white (site header) — our navs must stay in flow */
 nav.g-crumbs,nav.g-pager{position:static !important;top:auto !important;width:auto !important;height:auto !important;background:transparent !important;box-shadow:none !important;z-index:auto !important}
