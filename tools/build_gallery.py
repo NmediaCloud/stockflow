@@ -392,7 +392,7 @@ def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_grap
   <link rel="stylesheet" href="/css/theme.css?v=4">
   <link rel="stylesheet" href="{rel}gallery/gallery.css?v=4">
   <link rel="stylesheet" href="{rel}gallery/shop.css?v=2">
-  <script src="/gallery/shop.js?v=6" defer></script>
+  <script src="/gallery/shop.js?v=7" defer></script>
   <script type="application/ld+json">{ld}</script>
 </head>
 <body>

@@ -61,6 +61,24 @@ function resetMeta() {
 // ---- PREVIEW MODAL ----
 function openModal(video) {
     window.currentVideo = video; // 'window.' makes it accessible to wallet.js!
+
+    // Keep the page's category/subcategory selection in sync with whatever video
+    // is opened — however the modal was reached (a cold external ?v= deep link,
+    // a montage/share link, or normal in-page browsing). That way the grid BEHIND
+    // the modal is always on the right category page, so closing it (for any
+    // reason, purchase or not) leaves the visitor on that same category/subcategory
+    // page rather than the bare home catalog. No-op when already matching.
+    try {
+        if (video.category && typeof selectCategory === 'function' && typeof selectedCategory !== 'undefined') {
+            // Pass {} (not undefined) so selectCategory/selectSubcategory don't fall
+            // back to a stale window.event and mis-highlight an unrelated element.
+            if (selectedCategory !== video.category) selectCategory(video.category, {});
+            if (video.subcategory && typeof selectSubcategory === 'function' && selectedSubcategory !== video.subcategory) {
+                selectSubcategory(video.subcategory, {});
+            }
+        }
+    } catch (e) { /* non-fatal — the modal still opens even if category sync fails */ }
+
     updateMetaForVideo(video);   // per-item title/OG/canonical + address-bar ?v=
     const modal = document.getElementById('previewModal');
     const container = document.getElementById('modalMediaContainer');
@@ -126,18 +144,21 @@ function openModal(video) {
 }
 
 function closeModal() {
-    // Decide (before resetMeta clears ?v=) whether closing should land on the
-    // asset's gallery page instead of the SPA home. That applies when the modal
-    // was opened via ?v= on the SPA (the gallery "License" fallback, or a direct/
-    // external deep-link) rather than while actively browsing the SPA.
+    // Normally nothing special is needed here: openModal() already synced the
+    // page's category/subcategory selection to match the video, so the grid
+    // behind the modal is already the right page — on a gallery page it's the
+    // gallery asset page (untouched), on the SPA it's the matching category/
+    // subcategory view (?cat=&sub= already in the URL from that sync). Closing
+    // just reveals that page. Safety-net ONLY: if we're on the bare SPA home
+    // with no category context at all (video.category missing/unresolved),
+    // send the visitor to the asset's gallery page instead of a blank catalog.
     let goGallery = null;
     try {
-        const vid = window.currentVideo && window.currentVideo.id;
+        const v = window.currentVideo;
         const onGalleryPage = location.pathname.indexOf('/gallery/') === 0;
-        const ref = document.referrer || '';
-        const browsingSPA = ref.indexOf(location.origin) === 0 && ref.indexOf('/gallery/a/') < 0;
-        if (vid && !onGalleryPage && !browsingSPA) {
-            goGallery = '/gallery/a/' + vid + '.html';
+        const hasCategoryContext = typeof selectedCategory !== 'undefined' && !!selectedCategory;
+        if (v && v.id && !onGalleryPage && !hasCategoryContext) {
+            goGallery = '/gallery/a/' + v.id + '.html';
         }
     } catch (e) {}
 
