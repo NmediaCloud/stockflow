@@ -392,7 +392,7 @@ def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_grap
   <link rel="stylesheet" href="/css/theme.css?v=4">
   <link rel="stylesheet" href="{rel}gallery/gallery.css?v=4">
   <link rel="stylesheet" href="{rel}gallery/shop.css?v=2">
-  <script src="/gallery/shop.js?v=5" defer></script>
+  <script src="/gallery/shop.js?v=6" defer></script>
   <script type="application/ld+json">{ld}</script>
 </head>
 <body>
@@ -947,6 +947,8 @@ def write_rss(tree, newest_n=100):
     items = []
     for a in flat[:newest_n]:
         d = upload_date(a["id"])
+        # Larger, tall preview image for pins/social; videos use their still thumbnail.
+        img = a["thumb"] if a["video"] else (a["preview"] or a["thumb"])
         items.append(
             "  <item>\n"
             f"    <title>{xml_esc(a['title'])}</title>\n"
@@ -954,10 +956,12 @@ def write_rss(tree, newest_n=100):
             f"    <guid isPermaLink=\"true\">{xml_esc(a['page'])}</guid>\n"
             f"    <description>{xml_esc((a['desc'] or a['title'])[:500])}</description>\n"
             f"    <pubDate>{d}T00:00:00Z</pubDate>\n"
-            f"    <enclosure url=\"{xml_esc(a['thumb'])}\" type=\"image/webp\" length=\"0\"/>\n"
+            f"    <enclosure url=\"{xml_esc(img)}\" type=\"image/webp\" length=\"0\"/>\n"
+            f"    <media:content url=\"{xml_esc(img)}\" medium=\"image\" type=\"image/webp\"/>\n"
+            f"    <media:thumbnail url=\"{xml_esc(a['thumb'])}\"/>\n"
             "  </item>")
     feed = ('<?xml version="1.0" encoding="UTF-8"?>\n'
-            '<rss version="2.0">\n<channel>\n'
+            '<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">\n<channel>\n'
             "  <title>Stockflow.media — New Stock Assets</title>\n"
             f"  <link>{SITE}/</link>\n"
             "  <description>Newest royalty-free 8K images and 4K footage on Stockflow.media.</description>\n"

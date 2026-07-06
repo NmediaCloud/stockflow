@@ -126,15 +126,30 @@ function openModal(video) {
 }
 
 function closeModal() {
-    resetMeta();   // restore homepage title/OG/canonical + clear ?v= from the URL
+    // Decide (before resetMeta clears ?v=) whether closing should land on the
+    // asset's gallery page instead of the SPA home. That applies when the modal
+    // was opened via ?v= on the SPA (the gallery "License" fallback, or a direct/
+    // external deep-link) rather than while actively browsing the SPA.
+    let goGallery = null;
+    try {
+        const vid = window.currentVideo && window.currentVideo.id;
+        const onGalleryPage = location.pathname.indexOf('/gallery/') === 0;
+        const ref = document.referrer || '';
+        const browsingSPA = ref.indexOf(location.origin) === 0 && ref.indexOf('/gallery/a/') < 0;
+        if (vid && !onGalleryPage && !browsingSPA) {
+            goGallery = '/gallery/a/' + vid + '.html';
+        }
+    } catch (e) {}
+
+    resetMeta();   // restore title/OG/canonical + clear ?v= from the URL
     const modal = document.getElementById('previewModal');
     const container = document.getElementById('modalMediaContainer');
-    
+
     // Safety check: if a video is playing, stop it before clearing
     const videoPlayer = document.getElementById('modalVideo');
     if (videoPlayer) {
         videoPlayer.pause();
-        videoPlayer.removeAttribute('src'); 
+        videoPlayer.removeAttribute('src');
         videoPlayer.load();
     }
 
@@ -142,6 +157,8 @@ function closeModal() {
     modal.classList.remove('modal-visible');
     modal.classList.add('modal-hidden');
     modal.style.display = 'none'; // Force hide it completely
+
+    if (goGallery) { location.href = goGallery; }   // land on the proper gallery page
 }
 
 

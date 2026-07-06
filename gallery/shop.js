@@ -34,7 +34,7 @@
             const r = await fetch('/gallery/shop-ui.html');
             if (r.ok) document.body.insertAdjacentHTML('beforeend', await r.text());
             await loadScript('/js/config.js');
-            await loadScript('/js/modals.js?v=7');
+            await loadScript('/js/modals.js?v=8');
             await loadScript('/js/wallet.js?v=13');
             await loadScript('/js/auth.js?v=2', true);   // Firebase — restores session + wallet chips in the nav
 
