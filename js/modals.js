@@ -62,22 +62,37 @@ function resetMeta() {
 function openModal(video) {
     window.currentVideo = video; // 'window.' makes it accessible to wallet.js!
 
-    // Keep the page's category/subcategory selection in sync with whatever video
-    // is opened — however the modal was reached (a cold external ?v= deep link,
-    // a montage/share link, or normal in-page browsing). That way the grid BEHIND
-    // the modal is always on the right category page, so closing it (for any
-    // reason, purchase or not) leaves the visitor on that same category/subcategory
-    // page rather than the bare home catalog. No-op when already matching.
+    // Remember EXACTLY where the user was before opening the modal, so closing it
+    // returns them there — their search results, the catalog, or a category page —
+    // instead of jumping to this item's category. Only a cold external ?v= deep
+    // link (no in-app context) still gets synced to the item's category, so closing
+    // that lands somewhere sensible rather than a blank home.
     try {
-        if (video.category && typeof selectCategory === 'function' && typeof selectedCategory !== 'undefined') {
-            // Pass {} (not undefined) so selectCategory/selectSubcategory don't fall
-            // back to a stale window.event and mis-highlight an unrelated element.
+        const _si = document.getElementById('searchInput');
+        const _up = new URLSearchParams(location.search);
+        const inApp = !!(
+            (typeof selectedCategory !== 'undefined' && selectedCategory) ||
+            (_si && _si.value) ||
+            _up.get('cat') || _up.get('sub') || _up.get('collection')
+        );
+        window._preModal = {
+            cat:  (typeof selectedCategory !== 'undefined') ? selectedCategory : null,
+            sub:  (typeof selectedSubcategory !== 'undefined') ? selectedSubcategory : null,
+            coll: (typeof selectedSub !== 'undefined') ? selectedSub : null,
+            q:    _si ? _si.value : '',
+            y:    window.scrollY || 0,
+            url:  location.pathname + location.search,
+            inApp: inApp
+        };
+        // Cold deep link ONLY: sync the page to the item's category (old behaviour).
+        // Pass {} (not undefined) so select* don't fall back to a stale window.event.
+        if (!inApp && video.category && typeof selectCategory === 'function' && typeof selectedCategory !== 'undefined') {
             if (selectedCategory !== video.category) selectCategory(video.category, {});
             if (video.subcategory && typeof selectSubcategory === 'function' && selectedSubcategory !== video.subcategory) {
                 selectSubcategory(video.subcategory, {});
             }
         }
-    } catch (e) { /* non-fatal — the modal still opens even if category sync fails */ }
+    } catch (e) { /* non-fatal — the modal still opens even if state capture fails */ }
 
     updateMetaForVideo(video);   // per-item title/OG/canonical + address-bar ?v=
     const modal = document.getElementById('previewModal');
@@ -118,20 +133,25 @@ function openModal(video) {
 
     // ⭐ SMART LOGIC FOR HANDLING FILE URL (MP4 vs WebP/Image) ⭐
     if (video.preview) {
+        // storage.cloud.google.com is the LOGIN-GATED console host — it 302s to a
+        // Google sign-in page, so <video>/<img> can't load it for logged-out
+        // visitors (every customer). Rewrite to the PUBLIC host that serves the
+        // same object directly. Images already use it; videos were on the gated one.
+        const src = video.preview.replace('storage.cloud.google.com', 'storage.googleapis.com');
         // Clean the URL to ignore things like "?alt=media" at the end of the link
-        const cleanUrl = video.preview.split('?')[0].toLowerCase();
-        
+        const cleanUrl = src.split('?')[0].toLowerCase();
+
         if (cleanUrl.endsWith(".mp4") || cleanUrl.endsWith(".webm") || cleanUrl.endsWith(".mov")) {
             // Render Video
             container.innerHTML = `
                 <video id="modalVideo" controls controlsList="nodownload" oncontextmenu="return false;" class="w-full h-full object-contain" autoplay loop muted playsinline>
-                    <source src="${video.preview}">
+                    <source src="${src}">
                     Your browser does not support the video tag.
                 </video>`;
         } else {
             // Render WebP, JPG, GIF, or PNG
             container.innerHTML = `
-                <img src="${video.preview}" alt="${video.title}" class="w-full h-full object-contain" />`;
+                <img src="${src}" alt="${video.title}" class="w-full h-full object-contain" />`;
         }
 
         // Force the modal to display properly
@@ -152,13 +172,18 @@ function closeModal() {
     // just reveals that page. Safety-net ONLY: if we're on the bare SPA home
     // with no category context at all (video.category missing/unresolved),
     // send the visitor to the asset's gallery page instead of a blank catalog.
+    const pre = window._preModal;
     let goGallery = null;
     try {
         const v = window.currentVideo;
         const onGalleryPage = location.pathname.indexOf('/gallery/') === 0;
-        const hasCategoryContext = typeof selectedCategory !== 'undefined' && !!selectedCategory;
-        if (v && v.id && !onGalleryPage && !hasCategoryContext) {
-            goGallery = '/gallery/a/' + v.id + '.html';
+        // Only the cold deep-link path (no remembered in-app view) uses the gallery
+        // safety net. In-app opens are restored below instead.
+        if (!(pre && pre.inApp)) {
+            const hasCategoryContext = typeof selectedCategory !== 'undefined' && !!selectedCategory;
+            if (v && v.id && !onGalleryPage && !hasCategoryContext) {
+                goGallery = '/gallery/a/' + v.id + '.html';
+            }
         }
     } catch (e) {}
 
@@ -179,7 +204,27 @@ function closeModal() {
     modal.classList.add('modal-hidden');
     modal.style.display = 'none'; // Force hide it completely
 
-    if (goGallery) { location.href = goGallery; }   // land on the proper gallery page
+    // In-app open: restore the exact view the user came from (search / catalog /
+    // category) so closing never dumps them onto this item's category page.
+    if (pre && pre.inApp && !goGallery) {
+        try {
+            selectedCategory = pre.cat;
+            selectedSubcategory = pre.sub;
+            selectedSub = pre.coll;
+            const si = document.getElementById('searchInput');
+            if (si) si.value = pre.q;
+            if (pre.cat === null && !pre.q && typeof renderCatalog === 'function') {
+                renderCatalog();               // back to the catalog tiles
+            } else if (typeof filterVideos === 'function') {
+                filterVideos();                // back to search results / the category grid
+            }
+            try { history.replaceState({}, '', pre.url); } catch (e) {}
+            window.scrollTo(0, pre.y || 0);
+        } catch (e) { /* non-fatal */ }
+    }
+    window._preModal = null;
+
+    if (goGallery) { location.href = goGallery; }   // cold deep link → proper gallery page
 }
 
 
