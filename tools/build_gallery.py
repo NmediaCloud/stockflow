@@ -86,6 +86,13 @@ def is_video(url: str) -> bool:
     return (url or "").split("?")[0].lower().endswith(VIDEO_EXTS)
 
 
+def _pub(url: str) -> str:
+    """storage.cloud.google.com is the LOGIN-GATED console host (302 → sign-in), so
+    <video>/<img> and VideoObject.contentUrl can't be fetched by Google or logged-out
+    visitors. Rewrite to the PUBLIC host that serves the object directly."""
+    return (url or "").replace("storage.cloud.google.com", "storage.googleapis.com")
+
+
 def upload_date(file_id: str) -> str:
     m = re.match(r"(\d{4})(\d{2})(\d{2})", file_id or "")
     return f"{m.group(1)}-{m.group(2)}-{m.group(3)}" if m else "2026-01-01"
@@ -231,8 +238,8 @@ def load_assets(rows):
             "title": _seo["title"],
             "desc": _seo["desc"],
             "alt": _seo["alt"],
-            "thumb": thumb or preview,
-            "preview": preview or thumb,
+            "thumb": _pub(thumb or preview),
+            "preview": _pub(preview or thumb),
             "keywords": _seo["keywords"],
             "price": (r.get("Price") or "").strip(),
             "res": (r.get("Resolution") or "").strip(),
@@ -825,6 +832,41 @@ def write_sitemaps(page_urls, asset_urls, img_entries):
     return n
 
 
+def write_video_sitemap(tree):
+    """Video sitemap — each VIDEO asset page is its own watch page (one prominent
+    <video> player + VideoObject + Product/Offer). Diverts video search straight to
+    the sales page. content_loc = public mp4; player_loc = the asset page."""
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>',
+             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
+             '        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">']
+    n = 0
+    for cat, subs in tree.items():
+        for sub, assets in subs.items():
+            for a in assets:
+                if not a["video"]:
+                    continue
+                pub = upload_date(a["id"])
+                lines.append("  <url>")
+                lines.append(f"    <loc>{xml_esc(a['page'])}</loc>")
+                lines.append("    <video:video>")
+                lines.append(f"      <video:thumbnail_loc>{xml_esc(a['thumb'])}</video:thumbnail_loc>")
+                lines.append(f"      <video:title>{xml_esc(a['title'])}</video:title>")
+                lines.append(f"      <video:description>{xml_esc(a['desc'] or a['title'])}</video:description>")
+                lines.append(f"      <video:content_loc>{xml_esc(a['preview'])}</video:content_loc>")
+                lines.append(f"      <video:player_loc>{xml_esc(a['page'])}</video:player_loc>")
+                if pub:
+                    lines.append(f"      <video:publication_date>{pub}</video:publication_date>")
+                lines.append("      <video:family_friendly>yes</video:family_friendly>")
+                lines.append("      <video:live>no</video:live>")
+                lines.append("    </video:video>")
+                lines.append("  </url>")
+                n += 1
+    lines.append("</urlset>")
+    wfile(ROOT / "sitemap-videos.xml", "\n".join(lines))
+    print(f"sitemap-videos.xml: {n} video watch pages", flush=True)
+    return n
+
+
 def write_search_index(tree):
     """Compact search index for AI agents / the stockflow-mcp server.
     Short keys keep it ~4x smaller than assets.json:
@@ -977,7 +1019,8 @@ def write_robots():
           f"Sitemap: {SITE}/sitemap.xml\n"
           f"Sitemap: {SITE}/sitemap-gallery.xml\n"
           f"Sitemap: {SITE}/sitemap-assets.xml\n"
-          f"Sitemap: {SITE}/sitemap-images-gallery.xml\n")
+          f"Sitemap: {SITE}/sitemap-images-gallery.xml\n"
+          f"Sitemap: {SITE}/sitemap-videos.xml\n")
 
 
 def main():
@@ -996,6 +1039,7 @@ def main():
     page_urls, asset_urls, img_entries, total = build(tree)
     extract_shop_ui()
     n_imgs = write_sitemaps(page_urls, asset_urls, img_entries)
+    n_vids = write_video_sitemap(tree)
     write_merchant_feed(tree)
     write_rss(tree)
     write_search_index(tree)

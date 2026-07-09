@@ -261,17 +261,22 @@
             }
 
             #searchInput {
-                padding: 12px 20px !important;
+                padding: 12px 46px 12px 16px !important;   /* room for the corner icon */
                 font-size: 14px !important;
-                border-radius: 8px !important;
+                border-radius: 999px !important;
             }
 
-            header button.absolute {
-                position: static !important;
-                width: 100%;
-                border-radius: 8px !important;
-                padding: 10px !important;
+            /* Search stays a compact ICON in the corner — no second line */
+            header .relative button.absolute {
+                position: absolute !important;
+                width: auto !important;
+                right: 6px !important;
+                top: 50% !important;
+                transform: translateY(-50%);
+                padding: 8px !important;
+                border-radius: 999px !important;
             }
+            .srch-label { display: none !important; }   /* icon only on mobile */
         }
 
         /* Fix Modal Content for small screens */
@@ -282,16 +287,31 @@
                 padding: 15px !important;
             }
 
+            /* Category chips wrap to multiple lines (no horizontal sliding) + compact */
             #categoryButtons, #subcategoryButtons, #subButtons {
                 display: flex;
-                flex-wrap: nowrap;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                padding-bottom: 5px;
-                gap: 8px;
+                flex-wrap: wrap;
+                overflow-x: visible;
+                padding-bottom: 0;
+                gap: 6px;
             }
-            
-            #categoryButtons::-webkit-scrollbar { display: none; }
+            #categoryButtons button, #subcategoryButtons button, #subButtons button {
+                padding: 5px 12px !important;
+                font-size: 12px !important;
+                line-height: 1.2 !important;
+                border-radius: 8px !important;
+            }
+
+            /* Format filter rows: wrap to a second line + compact (no sliding, no overflow) */
+            .fmt-row { flex-wrap: wrap !important; }
+            .fmt-wrap { flex-wrap: wrap !important; }
+            .format-btn { padding: 5px 10px !important; font-size: 11px !important; }
+            #assetsFormatBar {
+                flex-wrap: wrap !important;
+                overflow-x: visible !important;
+                white-space: normal !important;
+            }
+            #assetsFormatBar > * { font-size: 11px !important; }
         }
     </style>
 <!-- Stripe.js -->
@@ -1480,7 +1500,7 @@ async function submitClaim(type) {
                 oninput="filterVideos()">
             <button class="absolute right-2 top-2 bg-[#2A2F36] border border-[#3A3F46] text-[#F3F4F6] px-6 py-2 rounded-full font-semibold hover:bg-[#3A3F46] hover:border-orange-500 hover:text-white transition-all duration-200 shadow-lg flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
-                Search
+                <span class="srch-label">Search</span>
             </button>
         </div>
     </div>
@@ -1520,9 +1540,9 @@ async function submitClaim(type) {
             </div>          
        
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 fmt-row">
                 <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Format</p>
-                <div class="flex gap-2">
+                <div class="flex gap-2 fmt-wrap">
                     <button onclick="filterByFormat('all', event)" class="format-btn active px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm cursor-pointer">
                         All
                     </button>
