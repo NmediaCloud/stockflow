@@ -468,9 +468,16 @@ def asset_body(a, cat, cat_url, sub, sub_url, related):
                      ("Format", a["fmt"].upper()), ("Type", "Video" if a["video"] else "Image"),
                      ("Collection", a["leaf"] or sub)) if v)
     price_line = f' — <b>{esc(price_fmt(a["price"]))}</b>' if a["price"] else ""
-    media = (f'<video controls preload="metadata" poster="{esc(a["thumb"])}" src="{esc(a["preview"])}"></video>'
+    # controlsList="nodownload" + blocked context menu: hide the browser's native
+    # "Download" from the player controls AND the right-click menu (same protection
+    # the SPA modal player has). A determined scraper can still fetch the preview
+    # URL directly — this closes the casual/one-click door, not the network one.
+    media = (f'<video controls controlsList="nodownload" disablepictureinpicture '
+             f'oncontextmenu="return false;" preload="metadata" '
+             f'poster="{esc(a["thumb"])}" src="{esc(a["preview"])}"></video>'
              if a["video"] else
-             f'<img src="{esc(a["preview"])}" alt="{esc(a["alt"] or a["title"])}" fetchpriority="high">')
+             f'<img src="{esc(a["preview"])}" alt="{esc(a["alt"] or a["title"])}" '
+             f'oncontextmenu="return false;" fetchpriority="high">')
     rel_cards = "".join(card(r) for r in related)
     rel_block = (f'<h2 class="g-sec">Related assets in {esc(sub)}</h2>'
                  f'<div class="g-grid">{rel_cards}</div>') if related else ""

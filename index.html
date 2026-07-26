@@ -3,13 +3,22 @@
 
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DK23WJV0QN"></script>
+    <!-- Google tag (gtag.js) — loaded ONLY for real browsers. Headless scrapers
+         (Puppeteer/Playwright/Selenium) expose navigator.webdriver=true; skipping
+         analytics for them keeps bot farms (e.g. the Urumqi scraper wave, ~52% of
+         "users" in July 2026) from polluting GA stats. gtag stays a global no-op
+         queue either way so any inline gtag() calls elsewhere never break. -->
     <script>
        window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
+       function gtag(){dataLayer.push(arguments);}
+       if (!navigator.webdriver) {
+          var _gs = document.createElement('script');
+          _gs.async = true;
+          _gs.src = 'https://www.googletagmanager.com/gtag/js?id=G-DK23WJV0QN';
+          document.head.appendChild(_gs);
           gtag('js', new Date());
           gtag('config', 'G-DK23WJV0QN');
+       }
     </script>
     <meta name="google-site-verification" content="Q_8zVX8Pk2qi7kP0nCwI_zJUVOhWC7ea4qRQ8ih-GAU" />
     <meta charset="UTF-8">
@@ -1618,7 +1627,7 @@ async function submitClaim(type) {
                         <p class="text-3xl font-bold text-gray-900">$<span id="modalPrice"></span></p>
                     </div>
                     <button onclick="handlePurchase()" class="bg-orange-500 text-white px-8 py-3 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-900">
-                        Download
+                        License &amp; Download
                     </button>
                     <button onclick="copyShareLink()" class="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
