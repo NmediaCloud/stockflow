@@ -602,11 +602,17 @@
 
 
     
-// Default config (overridden by sheet on load)
+// Offers that must never run, whatever the sheet says.
+const BLOCKED_OFFERS = ['review', 'youtube'];
+
+// Default config (overridden by sheet on load, then filtered above)
 let OFFERS = {
   newsletter: { label:'Newsletter Reward', amount:5,  active:true },
-  review:     { label:'Google Review',     amount:10, active:true },
-  youtube:    { label:'YouTube Feature',   amount:50, active:true }
+  // Paid review incentives breach Google's review policy and FTC/
+  // Competition Bureau rules on undisclosed paid endorsements.
+  // Disabled here; also switch it off in the offers sheet.
+  review:     { label:'Google Review',     amount:10, active:false },
+  youtube:    { label:'YouTube Feature',   amount:50, active:false }
 };
 
 // Load offers from Apps Script sheet
@@ -617,13 +623,18 @@ async function loadOffers() {
     const data = await res.json();
     if (data && Object.keys(data).length > 0) OFFERS = data;
     else throw new Error('Empty response');
+    // The sheet replaces OFFERS wholesale, so these are enforced here rather
+    // than relying on the sheet staying correct. Paying for reviews breaches
+    // Google's review policy; paid features breach FTC / Competition Bureau
+    // rules on undisclosed endorsements. Do not re-enable without disclosure.
+    BLOCKED_OFFERS.forEach(k => { if (OFFERS[k]) OFFERS[k].active = false; });
   } catch(e) {
     console.log('Using default offer config');
     // Reset to hardcoded defaults so banner always shows
     OFFERS = {
       newsletter: { label:'Newsletter Reward', amount:5,  active:true },
-      review:     { label:'Google Review',     amount:10, active:true },
-      youtube:    { label:'YouTube Feature',   amount:50, active:true }
+      review:     { label:'Google Review',     amount:10, active:false },
+      youtube:    { label:'YouTube Feature',   amount:50, active:false }
     };
   }
   renderBanner();
@@ -1332,20 +1343,9 @@ async function verifyNewsletterReply() {
     </span>
 
     <button class="offer-btn" onclick="openOffer('newsletter')">
-      <span class="reward">$5</span> for Active Newletter
+      <span class="reward">$5</span> for Active Newsletter
     </button>
 
-    <span class="offer-divider">·</span>
-
-    <button class="offer-btn" onclick="openOffer('review')">
-      <span class="reward">$10</span> for Google Review
-    </button>
-
-    <span class="offer-divider">·</span>
-
-    <button class="offer-btn" onclick="openOffer('youtube')">
-      <span class="reward">$50</span> for YouTube Featuring
-    </button>
   </div>
   <button id="bannerDismiss" onclick="dismissBanner()" title="Dismiss">×</button>
 </div>
