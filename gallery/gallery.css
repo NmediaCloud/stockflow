@@ -1,5 +1,9 @@
-/* Stockflow gallery — static, matches theme.css (dark charcoal + burnt orange) */
-:root{--bg:#111;--panel:#1F2933;--card:#2A2F36;--line:#3A3F46;--txt:#F3F4F6;--mut:#9CA3AF;--acc:#F97316;--acch:#FB923C}
+/* Stockflow gallery — static. Soft Executive Orange, with the
+   media stage left dark: the asset itself is the product, and it reads
+   stronger against black than against a warm white. Everything around
+   it — banner, breadcrumb, info panel, footer — is light.
+   --acch is a DARKER hover here; on the old dark theme it was lighter. */
+:root{--bg:#FAF8F5;--panel:#F3E7DC;--card:#FFFFFF;--line:#DDD6CF;--txt:#4E4A46;--mut:#6E6862;--acc:#BF4E10;--acch:#A0400C;--stage:#111111;--ink:#000000}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:ui-sans-serif,system-ui,"Segoe UI",sans-serif}
 /* styles.css adds body padding-top for the home's fixed nav — gallery has no fixed nav, kill the blank gap */
 body{padding-top:0 !important}
@@ -64,3 +68,38 @@ nav.g-crumbs,nav.g-pager{position:static !important;top:auto !important;width:au
 .g-meta td{border:1px solid var(--line);padding:7px 10px}.g-meta td:first-child{color:var(--mut);width:38%}
 .g-chips{display:flex;gap:7px;flex-wrap:wrap;margin:22px 0 4px}
 .g-chips span{background:var(--card);border:1px solid var(--line);color:var(--mut);font-size:12px;padding:4px 11px;border-radius:14px}
+
+/* ---- light theme: the values above that are hardcoded, not variable ---- */
+/* theme.css sets body background/color with !important and its own dark
+   variables, and it loads before this file — so these two need !important
+   to land at all. */
+body{background:var(--bg) !important;color:var(--txt) !important}
+.g-banner{background:#FFFFFF !important;border-bottom:1px solid var(--line)}
+.g-brand{color:var(--ink)}
+.g-main h1,.g-info h1,.g-sec{color:var(--ink)}
+/* theme.css styles bare `footer`/`footer a` with !important, and .g-foot IS a
+   <footer>, so these need !important too — same reason as body above. */
+.g-foot{background:var(--panel) !important;color:var(--mut) !important;border-top:1px solid var(--line) !important}
+.g-foot a{color:var(--acch) !important}.g-foot a:hover{color:var(--acc) !important}
+.g-badge{background:rgba(0,0,0,.72);color:#fff}      /* sits on the image — stays */
+
+/* ---- the middle stays dark ---- */
+/* The asset sits on a black stage with a hairline, so the media is framed
+   rather than floating on the page colour. Thumbnails keep a dark well too,
+   which is what shows through when a 4:3 crop letterboxes. */
+.g-media{background:var(--stage);border:1px solid var(--line);border-radius:14px;padding:10px}
+.g-media img,.g-media video{border:0;border-radius:8px;background:#0b0b0b}
+.g-card img,.g-tile img{background:#0b0b0b}
+
+/* ---- buttons: the same SF-orange overlay used across the site ---- */
+/* #loginButton is styled by theme.css at id level with that file's own dark
+   --orange-primary; gallery.css never redefines theme.css's variables, so it
+   arrives as solid #F97316 with 3.13:1 text. Matching the id reclaims it. */
+.g-buy,.g-tabs a.on,.g-pager a.on,.g-chip.accent,.g-lic,#loginButton{
+  background:rgba(255,112,1,.12) !important;border:1px solid var(--acc) !important;
+  color:var(--acch) !important;font-weight:700}
+.g-buy:hover,.g-tabs a:hover,.g-pager a.on:hover,.g-chip.accent:hover,.g-lic:hover,#loginButton:hover{
+  background:rgba(255,112,1,.24) !important;border-color:var(--acch) !important;color:#8F3A0B !important}
+.g-tabs a:hover{color:var(--acch) !important}
+.g-chip{color:var(--txt)}
+.g-navbtn{color:var(--txt) !important}
