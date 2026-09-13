@@ -397,7 +397,7 @@ def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_grap
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/css/styles.css?v=4">
   <link rel="stylesheet" href="/css/theme.css?v=4">
-  <link rel="stylesheet" href="{rel}gallery/gallery.css?v=5">
+  <link rel="stylesheet" href="{rel}gallery/gallery.css?v=6">
   <link rel="stylesheet" href="{rel}gallery/shop.css?v=3">
   <script src="/gallery/shop.js?v=7" defer></script>
   <script type="application/ld+json">{ld}</script>
@@ -512,7 +512,7 @@ GALLERY_CSS = """/* Stockflow gallery — static. Soft Executive Orange, with th
    stronger against black than against a warm white. Everything around
    it — banner, breadcrumb, info panel, footer — is light.
    --acch is a DARKER hover here; on the old dark theme it was lighter. */
-:root{--bg:#FAF8F5;--panel:#F3E7DC;--card:#FFFFFF;--line:#DDD6CF;--txt:#4E4A46;--mut:#6E6862;--acc:#BF4E10;--acch:#A0400C;--stage:#111111;--ink:#000000}
+:root{--bg:#FAF8F5;--panel:#F3E7DC;--card:#FFFFFF;--line:#DDD6CF;--txt:#4E4A46;--mut:#6E6862;--acc:#BF4E10;--acch:#A0400C;--stage:#2A2622;--ink:#000000}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:ui-sans-serif,system-ui,"Segoe UI",sans-serif}
 /* styles.css adds body padding-top for the home's fixed nav — gallery has no fixed nav, kill the blank gap */
 body{padding-top:0 !important}
@@ -596,7 +596,9 @@ body{background:var(--bg) !important;color:var(--txt) !important}
 /* The asset sits on a black stage with a hairline, so the media is framed
    rather than floating on the page colour. Thumbnails keep a dark well too,
    which is what shows through when a 4:3 crop letterboxes. */
-.g-media{background:var(--stage);border:1px solid var(--line);border-radius:14px;padding:10px}
+/* A thin warm-dark frame rather than a 10px black one — enough to seat the
+   asset, not enough to read as a black slab on a light page. */
+.g-media{background:var(--stage);border:1px solid var(--line);border-radius:10px;padding:1px}
 .g-media img,.g-media video{border:0;border-radius:8px;background:#0b0b0b}
 .g-card img,.g-tile img{background:#0b0b0b}
 
@@ -612,6 +614,28 @@ body{background:var(--bg) !important;color:var(--txt) !important}
 .g-tabs a:hover{color:var(--acch) !important}
 .g-chip{color:var(--txt)}
 .g-navbtn{color:var(--txt) !important}
+
+/* ---- signed-in account bar ----
+   theme.css styles these at id level using ITS OWN dark variables:
+     #walletDisplay > div > div:first-child { background: var(--bg-section) }  -> #1F2933
+     #userMenuButton                        { background: var(--bg-card) }     -> #2A2F36
+     #userMenu, #walletAmount, ...
+   which is why the Wallet pill and the account dropdown stayed dark while
+   "My Purchases" went light (its selector, button[onclick="showPurchaseHistory()"],
+   does not match the gallery's shopOpen('history') markup).
+
+   Re-pointing theme.css's variables on the banner fixes all of them at once.
+   --orange-primary is #A0400C rather than #BF4E10 because it is used as text
+   on a white pill (#walletAmount), where it needs 4.5:1. */
+.g-banner{
+  --bg-main:#FAF8F5;--bg-section:#FFFFFF;--bg-card:#FFFFFF;--bg-border:#DDD6CF;
+  --text-primary:#4E4A46;--text-secondary:#6E6862;
+  --orange-primary:#A0400C;--orange-burnt:#8F3A0B;--orange-hover:#BF4E10}
+
+/* The dropdown carries background:#1F2933 inline; theme.css's !important
+   already beats it, and the variable above now resolves light. The logout
+   link is #EF4444 inline, which is 3.76:1 on white. */
+#userMenu a[style*="#EF4444" i]{color:#C81E1E !important}
 """
 
 
