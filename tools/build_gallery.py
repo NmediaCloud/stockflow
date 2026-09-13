@@ -801,6 +801,43 @@ def write_assets_json(rows):
     print(f"data/assets.json: {len(out):,} assets · {len(payload.encode('utf-8'))/1e6:.1f} MB raw", flush=True)
 
 
+def sync_index_meta(total):
+    """Keep index.html's SEO copy in step with the real catalogue size.
+
+    The <title>, meta description and the og:/twitter: pairs each carry an
+    asset count. They are crawler-facing, so they have to be real text in the
+    HTML — setting document.title from JS is not a substitute. That means they
+    drift the moment the catalogue grows, which is how they ended up claiming
+    15,000+ against a catalogue of 18,084.
+
+    The figure is rounded DOWN to the nearest thousand and written with a "+".
+    An exact number would be wrong again after a single upload; "18,000+" stays
+    true all the way to 19,000, so a stale build understates rather than
+    overstates. The precise count is still shown on the page itself, where it
+    is read live from data/assets.json.
+    """
+    src = ROOT / "index.html"
+    if not src.exists():
+        print("WARN: index.html not found — meta counts not synced", flush=True)
+        return
+    text = src.read_text(encoding="utf-8")
+    split = text.find("</head>")
+    if split == -1:
+        print("WARN: no </head> in index.html — meta counts not synced", flush=True)
+        return
+    head, body = text[:split], text[split:]
+    claim = f"{total // 1000 * 1000:,}+"
+    new_head, n = re.subn(r"\d{1,3},\d{3}\+", claim, head)
+    if n == 0:
+        print("WARN: no count token found in index.html <head> — nothing synced", flush=True)
+        return
+    if new_head == head:
+        print(f"index.html meta counts already at {claim}", flush=True)
+        return
+    wfile(src, new_head + body)
+    print(f"index.html: {n} meta count(s) -> {claim} (catalogue {total:,})", flush=True)
+
+
 def extract_shop_ui():
     """Pull the modal stack (login/top-up/download/history/help/about/license…)
     out of browse.html into gallery/shop-ui.html, so the gallery's purchase
@@ -1083,6 +1120,7 @@ def main():
     print(f"Hierarchy: {cats} categories, {subs} subcategories", flush=True)
 
     page_urls, asset_urls, img_entries, total = build(tree)
+    sync_index_meta(total)
     extract_shop_ui()
     n_imgs = write_sitemaps(page_urls, asset_urls, img_entries)
     n_vids = write_video_sitemap(tree)
