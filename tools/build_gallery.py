@@ -383,6 +383,7 @@ def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_grap
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#EDD5C3">
   {head_extra}<title>{esc(title)}</title>
   <meta name="description" content="{esc(desc)}">
   <link rel="canonical" href="{esc(canonical)}">
