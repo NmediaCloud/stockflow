@@ -1,12 +1,12 @@
 // ============================================
-// gallery/shop.js — purchase layer for the static gallery pages (v2)
+// gallery/shop.js, purchase layer for the static gallery pages (v2)
 //
 // Gallery pages carry the SAME <nav> as the storefront (inlined at build
 // time), so this script loads the storefront's own JS stack EAGERLY:
 //   config.js -> modals.js -> wallet.js -> auth.js (Firebase)
 // That restores the signed-in session + wallet immediately on page load
 // (no race), and "License this image" opens the storefront's own
-// preview/purchase modal INSTANTLY — closing it keeps you on this page.
+// preview/purchase modal INSTANTLY, closing it keeps you on this page.
 // ============================================
 (function () {
     'use strict';
@@ -36,7 +36,7 @@
             await loadScript('/js/config.js');
             await loadScript('/js/modals.js?v=9');
             await loadScript('/js/wallet.js?v=13');
-            await loadScript('/js/auth.js?v=2', true);   // Firebase — restores session + wallet chips in the nav
+            await loadScript('/js/auth.js?v=2', true);   // Firebase, restores session + wallet chips in the nav
 
             // topup buttons (the SPA builds these with an inline script we strip out)
             const CFG = (typeof CONFIG !== 'undefined') ? CONFIG : window.CONFIG;
@@ -54,7 +54,7 @@
                 const f = document.getElementById('helpVideo');
                 if (f) { const u = f.src; f.src = ''; f.src = u; }
             };
-            // this page's asset — SPA-shaped, ready for openModal()/handlePurchase()
+            // this page's asset, SPA-shaped, ready for openModal()/handlePurchase()
             const d = document.getElementById('assetData');
             if (d) { try { window.currentVideo = JSON.parse(d.textContent); } catch (e) {} }
         })();

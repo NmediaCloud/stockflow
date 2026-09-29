@@ -30,7 +30,7 @@ async function apiFetch(url, tries = 3) {
 // ---- SESSION CACHE ----
 // Every gallery page is its own static HTML file, so navigating re-runs this
 // script and (previously) re-hit the Apps Script API for the wallet on EVERY
-// page — a query storm that Google throttles, which then read back as $0 and
+// page, a query storm that Google throttles, which then read back as $0 and
 // broke purchases. We now cache the session in localStorage: each page shows
 // the wallet INSTANTLY from cache with zero API calls, and only revalidates
 // occasionally / at purchase time. Pages stay static → no SEO impact.
@@ -160,7 +160,7 @@ async function loadUserData(email) {
             currentUser.wallet = user.wallet || 0;
             currentUser.isLoggedIn = true;
         } else {
-            // API reachable but returned no record — keep any balance we already
+            // API reachable but returned no record, keep any balance we already
             // knew for this email rather than flashing it to $0.
             currentUser.email = email;
             if (currentUser.email !== email || typeof currentUser.wallet !== 'number') currentUser.wallet = 0;
@@ -179,7 +179,7 @@ async function loadUserData(email) {
         currentUser.isLoggedIn = true;
         if (typeof currentUser.wallet !== 'number') currentUser.wallet = 0;
         if (!Array.isArray(currentUser.purchases)) currentUser.purchases = [];
-        showNotification('Wallet sync delayed — using last known balance', 'info');
+        showNotification('Wallet sync delayed, using last known balance', 'info');
     }
 }
 
@@ -188,7 +188,7 @@ async function loadUserPurchases(email) {
         const url = `${CONFIG.API_URL}?action=getPurchases&email=${encodeURIComponent(email)}`;
         const response = await apiFetch(url);
         const purchases = await response.json();
-        // API can return an error object / non-array on a bad response — never
+        // API can return an error object / non-array on a bad response, never
         // let currentUser.purchases become a non-array (breaks .find at purchase).
         currentUser.purchases = Array.isArray(purchases) ? purchases : [];
     } catch (error) {
@@ -404,7 +404,7 @@ async function purchaseVideo(videoId, videoTitle, price, purchaseBtn, originalBt
         console.error('Fulfillment Pipeline Error:', error);
         unlockButton();
         const why = (error && error.message) ? error.message : 'connection failed';
-        window.showNotification('Wallet error: ' + why + ' — please try again', 'error');
+        window.showNotification('Wallet error: ' + why + ', please try again', 'error');
     }
 }
 
