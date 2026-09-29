@@ -163,6 +163,21 @@ def _cap(s):
     return (s[:1].upper() + s[1:]) if s else ""
 
 
+_EMDASH = "—"
+_EMDASH_PDASH = re.compile(r"\.[ \t]+" + _EMDASH + r"[ \t]+([A-Za-z])")
+_EMDASH_ANY = re.compile(r"[ \t]*" + _EMDASH + r"[ \t]*")
+
+
+def _deemdash(s):
+    """Strip em-dashes (—) from AI-sourced Sheet text so generated pages never
+    read as AI-written. ". — X" -> ". X"; every other "—" -> ", " (matches the
+    one-time cleanup applied to the already-generated HTML)."""
+    if not s or _EMDASH not in s:
+        return s
+    s = _EMDASH_PDASH.sub(lambda m: ". " + m.group(1).upper(), s)
+    return _EMDASH_ANY.sub(", ", s)
+
+
 def build_seo(r, cat, sub, kind, res):
     """Return clean, keyword-rich {title, alt, desc, keywords} for one asset.
 
@@ -178,8 +193,8 @@ def build_seo(r, cat, sub, kind, res):
     catl = cat.lower()
 
     # AI vision content already sitting in the Sheet (paid for once, reuse forever)
-    ai_desc = _cap(r.get("Meta_Description") or r.get("Description"))
-    ai_tags = (r.get("Keywords") or r.get("Tags") or "").strip()
+    ai_desc = _deemdash(_cap(r.get("Meta_Description") or r.get("Description")))
+    ai_tags = _deemdash((r.get("Keywords") or r.get("Tags") or "").strip())
 
     # Title — clean rule-based ("Fruit Tarts — 8K Royalty-Free Food & Beverage Stock
     # Image"); the Sheet's SEO_Title is a dimension template, so ours is richer.
