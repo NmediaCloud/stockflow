@@ -1,0 +1,602 @@
+/* ============================================
+   STOCKFLOW.MEDIA — SOFT EXECUTIVE ORANGE
+   Homepage light layer
+
+   Scoped entirely to `body.nm-light`, which only index.html
+   carries. The 18,000+ generated gallery pages have a bare
+   <body>, so they keep the dark treatment in theme.css —
+   dark surrounds make the imagery read stronger, and that
+   is the product.
+
+   Load order matters: this file must come AFTER theme.css.
+   theme.css uses !important on ~155 declarations, so every
+   override here needs !important too; the body.nm-light
+   prefix supplies the higher specificity that wins the tie.
+
+   Palette matches nmediaservices.com — see THEME.md in the
+   Nmediaservices.com_Website repo.
+   ============================================ */
+
+body.nm-light {
+  /* Surfaces */
+  --bg-main:        #FAF8F5;   /* page canvas — soft warm white */
+  --bg-section:     #FFFFFF;   /* panels                        */
+  --bg-card:        #FFFFFF;   /* cards                         */
+  --bg-border:      #DDD6CF;   /* hairlines                     */
+
+  /* Text */
+  --text-primary:   #4E4A46;   /* warm charcoal, 8.28:1         */
+  --text-secondary: #6E6862;   /* warm grey, 5.19:1             */
+
+  /* Brand. On a dark ground a light orange glows; on warm
+     white it washes out, so these run deeper than the dark
+     theme's #F97316 and hovers go darker rather than lighter. */
+  --orange-primary: #BF4E10;   /* 4.59:1 on canvas, 4.87:1 rev. */
+  --orange-burnt:   #A0400C;   /* hover / on sand               */
+  --orange-hover:   #A0400C;
+
+  --amber-deep:     #A0400C;
+  --amber-dark:     #8F3A0B;
+  --amber-light:    #BF4E10;
+}
+
+/* ── The hardcoded values theme.css does not route through
+      variables. Each mirrors a rule in that file. ────────── */
+
+body.nm-light {
+  background: var(--bg-main) !important;
+  color: var(--text-primary) !important;
+}
+
+body.nm-light nav {
+  background: rgba(250, 248, 245, 0.94) !important;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--bg-border) !important;
+}
+
+/* Category / filter bar */
+body.nm-light .bg-white\.border-b,
+body.nm-light .bg-white.border-b {
+  background: #FFFFFF !important;
+  border-bottom: 1px solid var(--bg-border) !important;
+}
+
+/* Sub-category panels — soft sand rather than a dark panel */
+body.nm-light #subcategorySection > div,
+body.nm-light #subSection > div {
+  background: #F3E7DC !important;
+  border: 1px solid var(--bg-border) !important;
+}
+
+/* Footer */
+body.nm-light footer {
+  background: #F3E7DC !important;
+  color: var(--text-secondary) !important;
+  border-top: 1px solid var(--bg-border) !important;
+}
+
+/* Cards sit on white with a hairline instead of a dark fill */
+body.nm-light .video-card {
+  background: #FFFFFF !important;
+  border: 1px solid var(--bg-border) !important;
+  box-shadow: 0 8px 28px rgba(78, 74, 70, 0.06) !important;
+}
+body.nm-light .video-card:hover {
+  border-color: var(--orange-primary) !important;
+  box-shadow: 0 14px 40px rgba(78, 74, 70, 0.10) !important;
+}
+body.nm-light .video-card h3 { color: var(--text-primary) !important; }
+body.nm-light .video-card p  { color: var(--text-secondary) !important; }
+
+/* Filter pills */
+body.nm-light .format-btn,
+body.nm-light #subButtons button {
+  background: #FFFFFF !important;
+  border: 1px solid var(--bg-border) !important;
+  color: var(--text-primary) !important;
+}
+/* Active pills are outlined, not filled — see the note on the
+   second group below. */
+body.nm-light .format-btn.active,
+body.nm-light #subButtons button.active {
+  background: transparent !important;
+  border: 2px solid var(--orange-primary) !important;
+  color: var(--orange-primary) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 0 3px rgba(191, 78, 16, 0.10) !important;
+}
+
+/* The offer strip reads as a warm band, not a dark one */
+body.nm-light #offerBanner {
+  background: #F3E7DC !important;
+  border-bottom: 1px solid var(--bg-border) !important;
+  color: var(--text-primary) !important;
+}
+body.nm-light .offer-btn {
+  background: #FFFFFF !important;
+  border: 1px solid var(--bg-border) !important;
+  color: var(--text-primary) !important;
+  box-shadow: none !important;
+}
+body.nm-light .offer-btn:hover {
+  background: #FFFFFF !important;
+  border-color: var(--orange-primary) !important;
+  color: var(--orange-burnt) !important;
+  box-shadow: 0 4px 12px rgba(191, 78, 16, 0.18) !important;
+}
+/* .reward is styled with the other outlined buttons below */
+
+/* ============================================
+   Tailwind arbitrary-value classes.
+
+   index.html carries dark colours as Tailwind arbitrary
+   classes — bg-[#2A2F36] and friends — injected at runtime
+   by the CDN. Those bypass the variables entirely, which is
+   why redefining --bg-card alone did not flip the cards.
+   The five text-white uses are on orange or black grounds
+   and are deliberately left alone.
+   ============================================ */
+
+body.nm-light .bg-\[\#2A2F36\]      { background-color: #FFFFFF !important; }
+body.nm-light .border-\[\#3A3F46\]  { border-color: var(--bg-border) !important; }
+body.nm-light .hover\:bg-\[\#3A3F46\]:hover { background-color: #F3E7DC !important; }
+body.nm-light .text-\[\#F3F4F6\]    { color: var(--text-primary) !important; }
+
+/* Greys picked for a dark ground read as washed on warm white */
+body.nm-light .text-gray-100,
+body.nm-light .text-gray-200,
+body.nm-light .text-gray-300 { color: var(--text-primary) !important; }
+body.nm-light .text-gray-400,
+body.nm-light .text-gray-500 { color: var(--text-secondary) !important; }
+
+/* Offer strip label — was near-white on the sand band */
+body.nm-light .offer-label { color: var(--text-primary) !important; }
+
+/* Filter pills */
+body.nm-light .category-btn,
+body.nm-light .asset-format-btn,
+body.nm-light .subcategory-btn {
+  background: #FFFFFF !important;
+  border: 1px solid var(--bg-border) !important;
+  color: var(--text-primary) !important;
+}
+/* The active pill is outlined rather than filled. A solid orange
+   block competes with the imagery for attention and, repeated
+   across three filter rows, pushes the page past its orange
+   budget; an outline marks the selection just as clearly.
+   #BF4E10 on white is 4.59:1, so the label still clears AA.
+   The inherited glow was keyed to the old #F97316 — retoned. */
+body.nm-light .category-btn.active,
+body.nm-light .asset-format-btn.active,
+body.nm-light .subcategory-btn.active {
+  background: transparent !important;
+  border: 2px solid var(--orange-primary) !important;
+  color: var(--orange-primary) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 0 3px rgba(191, 78, 16, 0.10) !important;
+}
+body.nm-light #categoryButtons button:not(.active):hover,
+body.nm-light .asset-format-btn:not(.active):hover {
+  background: #F3E7DC !important;
+  border-color: var(--orange-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Footer links used a pale orange tuned for black */
+body.nm-light footer a,
+body.nm-light footer a:visited { color: var(--orange-burnt) !important; }
+body.nm-light footer a:hover    { color: var(--orange-primary) !important; }
+
+/* ============================================
+   Inline style attributes.
+
+   The nav cluster, the wallet UI and the modals carry their
+   colours in `style="..."`, which nothing but !important can
+   reach. Matching on the literal hex keeps these rules honest:
+   each one is visibly tied to the value it replaces, so if the
+   markup changes the rule stops matching rather than silently
+   painting the wrong thing.
+   ============================================ */
+
+body.nm-light [style*="#2A2F36" i],
+body.nm-light [style*="#1F2933" i] {
+  background-color: #FFFFFF !important;
+  border-color: var(--bg-border) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 6px 14px rgba(78, 74, 70, 0.10) !important;
+}
+body.nm-light [style*="#3A3F46" i] { border-color: var(--bg-border) !important; }
+
+/* Text literals — after the block rules above, so these win */
+body.nm-light [style*="color:#F3F4F6" i] { color: var(--text-primary) !important; }
+body.nm-light [style*="color:#9CA3AF" i] { color: var(--text-secondary) !important; }
+body.nm-light [style*="color:#F97316" i] { color: var(--orange-primary) !important; }
+body.nm-light [style*="background:#F97316" i] {
+  background-color: var(--orange-primary) !important;
+  color: #FFFFFF !important;
+}
+body.nm-light [style*="solid #F97316" i] { border-color: var(--orange-primary) !important; }
+
+/* Gallery, Sign In and the offer badge follow the same outlined
+   treatment as the filter pills — brand border and brand label on
+   white, rather than a solid block of orange. Fill is kept for the
+   hover state so the buttons still resolve to a solid action. */
+body.nm-light nav a[href="/gallery/"],
+body.nm-light #loginButton,
+body.nm-light .offer-btn .reward {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  border: 2px solid var(--orange-primary) !important;
+  color: var(--orange-primary) !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+}
+body.nm-light nav a[href="/gallery/"]:hover,
+body.nm-light #loginButton:hover,
+body.nm-light .offer-btn:hover .reward {
+  background: var(--orange-primary) !important;
+  background-color: var(--orange-primary) !important;
+  border-color: var(--orange-primary) !important;
+  color: #FFFFFF !important;
+}
+/* The "new" dot rings itself in near-black for a dark nav */
+body.nm-light .sf-newdot { box-shadow: 0 0 0 2px #FFFFFF !important; }
+
+/* Some inline styles write `color: #F97316` with a space, so the
+   no-space selectors above miss them. */
+body.nm-light [style*="color: #F3F4F6" i] { color: var(--text-primary) !important; }
+body.nm-light [style*="color: #9CA3AF" i] { color: var(--text-secondary) !important; }
+body.nm-light [style*="color: #F97316" i] { color: var(--orange-primary) !important; }
+body.nm-light [style*="background: #F97316" i] {
+  background-color: var(--orange-primary) !important;
+  color: #FFFFFF !important;
+}
+
+/* Footer links sit on sand, where the brand orange drops to 4.0:1.
+   The burnt tone clears AA on that ground. Needs the [style] in the
+   selector to outrank the generic inline rules above. */
+body.nm-light footer a[style*="F97316" i],
+body.nm-light footer a[style] { color: var(--orange-burnt) !important; }
+body.nm-light footer a[style]:hover { color: var(--orange-primary) !important; }
+
+/* Logout — #EF4444 reads at 3.76:1 on white */
+body.nm-light [style*="color:#EF4444" i],
+body.nm-light [style*="color: #EF4444" i] { color: #C81E1E !important; }
+
+/* ============================================
+   License terms modal.
+
+   Every colour in it is an inline literal chosen for a dark
+   panel: pale greys, pastel reds and a sky-blue accent. On the
+   now-white modal they all fall under 2:1. This is the document
+   a buyer reads before paying, so it gets fixed properly rather
+   than left to the generic rules above.
+
+   The sky-blue attribution panel is retoned to sand — the brief
+   for this palette rules out a blue accent.
+   ============================================ */
+
+/* Body copy and list text */
+body.nm-light #licenseModal [style*="#D1D5DB" i] { color: var(--text-primary) !important; }
+body.nm-light #licenseModal [style*="#6B7280" i] { color: var(--text-secondary) !important; }
+
+/* Permitted / warning headings sit on tinted panels, where the
+   brand orange lands at 4.4:1 — the burnt tone clears AA. */
+body.nm-light #licenseModal [style*="#F97316" i],
+body.nm-light #licenseModal [style*="#F59E0B" i] { color: var(--orange-burnt) !important; }
+
+/* Prohibited uses — pastel red is unreadable on the red tint */
+body.nm-light #licenseModal [style*="#FCA5A5" i] { color: #B42318 !important; }
+
+/* Attribution panel: sand, not sky */
+body.nm-light #licenseModal [style*="#7DD3FC" i] { color: var(--text-primary) !important; }
+body.nm-light #licenseModal [style*="rgba(14,165,233,0.1)" i] {
+  background: #F3E7DC !important;
+  border-left-color: var(--orange-primary) !important;
+}
+body.nm-light #licenseModal [style*="#0F172A" i] {
+  background: #FFFFFF !important;
+  color: var(--text-primary) !important;
+  border-color: var(--bg-border) !important;
+}
+
+/* The two plain info panels need to stay distinct from the
+   white modal, so they go sand rather than white. */
+body.nm-light #licenseModal [style*="background:#2A2F36" i] { background: #F3E7DC !important; }
+
+/* Primary action takes the same overlay as every other button.
+   This id-scoped rule (1,2,1) is what the generic overlay rule
+   (0,2,1) further down would otherwise lose to. */
+body.nm-light #licenseModal button[style*="background:#F97316" i],
+body.nm-light #licenseModal button[style*="background: #F97316" i] {
+  background: rgba(255, 112, 1, 0.12) !important;
+  background-color: rgba(255, 112, 1, 0.12) !important;
+  border: 1px solid #BF4E10 !important;
+  color: #A0400C !important;
+  font-weight: 600 !important;
+}
+body.nm-light #licenseModal button[style*="background:#F97316" i]:hover,
+body.nm-light #licenseModal button[style*="background: #F97316" i]:hover {
+  background: rgba(255, 112, 1, 0.24) !important;
+  background-color: rgba(255, 112, 1, 0.24) !important;
+  border-color: #A0400C !important;
+  color: #8F3A0B !important;
+}
+
+/* ============================================
+   Tailwind palette classes on generated markup.
+
+   The asset cards are built in JS and use Tailwind's own
+   orange-500 (#F97316) and gray-900. That orange was picked
+   against a black card; on white the price reads 2.8:1 and the
+   white-on-orange License badge the same. Both repeat on every
+   card, so this is 160+ elements on a full grid.
+   ============================================ */
+
+body.nm-light .bg-orange-500,
+body.nm-light .bg-orange-600 {
+  background-color: var(--orange-primary) !important;
+  color: #FFFFFF !important;
+}
+body.nm-light .text-orange-300,
+body.nm-light .text-orange-400,
+body.nm-light .text-orange-500,
+body.nm-light .text-orange-600 { color: var(--orange-primary) !important; }
+body.nm-light .border-orange-500,
+body.nm-light .border-orange-400 { border-color: var(--orange-primary) !important; }
+
+/* On the sand panels the brand orange drops to 4.0:1 */
+body.nm-light #subcategorySection :is(.text-orange-400, .text-orange-500, .text-orange-600),
+body.nm-light #subSection :is(.text-orange-400, .text-orange-500, .text-orange-600),
+body.nm-light footer :is(.text-orange-400, .text-orange-500, .text-orange-600) {
+  color: var(--orange-burnt) !important;
+}
+
+/* Dark panel fills from the old theme */
+body.nm-light .bg-gray-900,
+body.nm-light .bg-gray-800 { background-color: #F3E7DC !important; }
+body.nm-light .border-gray-800,
+body.nm-light .border-gray-700 { border-color: var(--bg-border) !important; }
+
+/* ============================================
+   The hero is excluded from this layer.
+
+   It keeps the original dark treatment on purpose: one dark
+   band at the top gives the light page something to sit
+   against, and the banner photograph reads far better on black
+   than on a wash. Everything below re-applies the dark theme's
+   own values inside #heroHeader, so the header renders exactly
+   as it did before this file existed.
+   ============================================ */
+
+/* theme.css styles the hero through the same variables this file
+   redefines (`header h2 { color: var(--text-primary) }`,
+   `#searchInput { background: var(--bg-card) }`, and so on), and
+   variables inherit. So the revert is done at the variable level:
+   restore theme.css's original :root values on the hero itself,
+   and every one of its own rules resolves dark again while the
+   rest of the page stays light. Values copied from theme.css:16. */
+
+body.nm-light #heroHeader {
+  --bg-main:        #111111;
+  --bg-section:     #1F2933;
+  --bg-card:        #2A2F36;
+  --bg-border:      #3A3F46;
+  --text-primary:   #F3F4F6;
+  --text-secondary: #9CA3AF;
+  --orange-primary: #F97316;
+  --orange-burnt:   #C2410C;
+  --orange-hover:   #FB923C;
+  --amber-deep:     #D97706;
+  --amber-dark:     #B45309;
+  --amber-light:    #F59E0B;
+}
+
+body.nm-light #heroHeader .bg-\[\#2A2F36\]      { background-color: #2A2F36 !important; }
+body.nm-light #heroHeader .border-\[\#3A3F46\]  { border-color: #3A3F46 !important; }
+body.nm-light #heroHeader .hover\:bg-\[\#3A3F46\]:hover { background-color: #3A3F46 !important; }
+body.nm-light #heroHeader .text-\[\#F3F4F6\]    { color: #F3F4F6 !important; }
+body.nm-light #heroHeader .text-gray-100 { color: #F3F4F6 !important; }
+body.nm-light #heroHeader .text-gray-200 { color: #E5E7EB !important; }
+body.nm-light #heroHeader .text-gray-300 { color: #D1D5DB !important; }
+body.nm-light #heroHeader .text-gray-400 { color: #9CA3AF !important; }
+body.nm-light #heroHeader .text-gray-500 { color: #6B7280 !important; }
+body.nm-light #heroHeader .bg-orange-500 { background-color: #F97316 !important; }
+body.nm-light #heroHeader .bg-orange-600 { background-color: #EA580C !important; }
+body.nm-light #heroHeader :is(.text-orange-300,.text-orange-400,.text-orange-500,.text-orange-600) { color: #F97316 !important; }
+body.nm-light #heroHeader .bg-gray-900 { background-color: #111827 !important; }
+body.nm-light #heroHeader .bg-gray-800 { background-color: #1F2937 !important; }
+body.nm-light #heroHeader [style*="#2A2F36" i] { background-color: #2A2F36 !important; border-color: #3A3F46 !important; color: #F3F4F6 !important; box-shadow: none !important; }
+body.nm-light #heroHeader [style*="#3A3F46" i] { border-color: #3A3F46 !important; }
+body.nm-light #heroHeader [style*="color:#F3F4F6" i],
+body.nm-light #heroHeader [style*="color: #F3F4F6" i] { color: #F3F4F6 !important; }
+body.nm-light #heroHeader [style*="color:#9CA3AF" i],
+body.nm-light #heroHeader [style*="color: #9CA3AF" i] { color: #9CA3AF !important; }
+body.nm-light #heroHeader [style*="color:#F97316" i],
+body.nm-light #heroHeader [style*="color: #F97316" i] { color: #F97316 !important; }
+body.nm-light #heroHeader [style*="background:#F97316" i],
+body.nm-light #heroHeader [style*="background: #F97316" i] { background-color: #F97316 !important; }
+
+/* The one light object in the dark hero.
+
+   theme.css sets `#searchInput { background: var(--bg-card) }`,
+   which resolves to #2A2F36 under the hero's restored dark
+   variables. Overridden explicitly rather than by changing
+   --bg-card, so the rest of the hero stays dark. A white field
+   in a dark band is the brightest thing on screen, which is
+   where the eye should land first. */
+body.nm-light #heroHeader #searchInput {
+  background: #F3E7DC !important;      /* the warm neutral, not white */
+  border: 1px solid #E2D5C6 !important;
+  color: #4E4A46 !important;
+}
+/* On sand the old #6E6862 placeholder lands at 4.55:1 — passing,
+   but with nothing to spare. A shade deeper gives it margin. */
+body.nm-light #heroHeader #searchInput::placeholder { color: #655F59 !important; }
+body.nm-light #heroHeader #searchInput:focus {
+  background: #F3E7DC !important;
+  border-color: #BF4E10 !important;
+  outline: 2px solid rgba(191, 78, 16, 0.30) !important;
+}
+
+/* Search button — same outlined brand treatment as the filter
+   pills. It sits inside the now-white search field, so the
+   orange border is what separates it from the field rather than
+   a dark fill. Must come after the #heroHeader revert block,
+   which restores .bg-[#2A2F36] for everything else in the hero. */
+body.nm-light #heroHeader button.bg-\[\#2A2F36\] {
+  background-color: #FFFFFF !important;
+  border: 2px solid #BF4E10 !important;
+  color: #BF4E10 !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+}
+body.nm-light #heroHeader button.bg-\[\#2A2F36\] .srch-label,
+body.nm-light #heroHeader button.bg-\[\#2A2F36\] svg { color: #BF4E10 !important; }
+
+body.nm-light #heroHeader button.bg-\[\#2A2F36\]:hover {
+  background-color: #BF4E10 !important;
+  border-color: #BF4E10 !important;
+  color: #FFFFFF !important;
+}
+body.nm-light #heroHeader button.bg-\[\#2A2F36\]:hover .srch-label,
+body.nm-light #heroHeader button.bg-\[\#2A2F36\]:hover svg { color: #FFFFFF !important; }
+
+/* ============================================
+   Button overlay — the SF mark's orange.
+
+   Sampled from assets/logo_SF.webp: #FF7001, the dominant
+   colour of the logo. Bright and saturated — right for a 38px
+   mark, but only 2.77:1 on white, so it cannot carry a label.
+   Used as asked instead: a translucent overlay on the button,
+   with the label in the deeper brand tone.
+
+   Label is #A0400C, not #BF4E10: over the 12% wash the page
+   white becomes #FFEEE1, where #BF4E10 measures 4.30:1 and
+   misses AA. #A0400C clears it at 5.78:1 on the tint and
+   5.49:1 on the sand search field.
+
+   The ID-qualified selectors are needed because theme.css sets
+   `#categoryButtons button.active { background: transparent
+   !important }`; an id outranks a class, so the plain
+   `.category-btn.active` form loses and the pill stays empty.
+   ============================================ */
+
+body.nm-light .category-btn.active,
+body.nm-light .asset-format-btn.active,
+body.nm-light .subcategory-btn.active,
+body.nm-light .format-btn.active,
+body.nm-light #categoryButtons button.active,
+body.nm-light #subcategoryButtons button.active,
+body.nm-light #subButtons button.active,
+body.nm-light nav a[href="/gallery/"],
+body.nm-light #loginButton,
+body.nm-light .offer-btn .reward,
+body.nm-light #heroHeader button.bg-\[\#2A2F36\] {
+  background: rgba(255, 112, 1, 0.12) !important;
+  background-color: rgba(255, 112, 1, 0.12) !important;
+  border: 1px solid #BF4E10 !important;
+  color: #A0400C !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+
+body.nm-light .category-btn.active:hover,
+body.nm-light .asset-format-btn.active:hover,
+body.nm-light .subcategory-btn.active:hover,
+body.nm-light .format-btn.active:hover,
+body.nm-light #categoryButtons button.active:hover,
+body.nm-light #subcategoryButtons button.active:hover,
+body.nm-light #subButtons button.active:hover,
+body.nm-light nav a[href="/gallery/"]:hover,
+body.nm-light #loginButton:hover,
+body.nm-light .offer-btn:hover .reward,
+body.nm-light #heroHeader button.bg-\[\#2A2F36\]:hover {
+  background: rgba(255, 112, 1, 0.24) !important;
+  background-color: rgba(255, 112, 1, 0.24) !important;
+  border-color: #A0400C !important;
+  color: #8F3A0B !important;
+}
+
+body.nm-light #heroHeader button.bg-\[\#2A2F36\] .srch-label,
+body.nm-light #heroHeader button.bg-\[\#2A2F36\] svg { color: #A0400C !important; }
+body.nm-light #heroHeader button.bg-\[\#2A2F36\]:hover .srch-label,
+body.nm-light #heroHeader button.bg-\[\#2A2F36\]:hover svg { color: #8F3A0B !important; }
+
+/* Load More, Purchase, and the modal actions.
+
+   Same overlay treatment. Scoped to button/a deliberately: the
+   `License` badge on every card is also .bg-orange-500, but it
+   is a label rather than an action and stays solid. #notification
+   is a div, so the toast keeps its solid fill too — it has to be
+   noticeable. The Google button is never matched here.
+
+   The element-qualified selectors also outrank the generic
+   `[style*="background:#F97316"]` rule further up this file. */
+
+body.nm-light button.bg-orange-500,
+body.nm-light a.bg-orange-500,
+body.nm-light button.bg-orange-600,
+body.nm-light a.bg-orange-600,
+body.nm-light button[style*="background:#F97316" i],
+body.nm-light button[style*="background: #F97316" i],
+body.nm-light a[style*="background:#F97316" i],
+body.nm-light a[style*="background: #F97316" i],
+body.nm-light button.action-yt,
+body.nm-light #loadMoreSection button,
+body.nm-light #previewModal button[onclick="handlePurchase()"],
+body.nm-light #downloadModal a,
+body.nm-light #historyModal button {
+  background: rgba(255, 112, 1, 0.12) !important;
+  background-color: rgba(255, 112, 1, 0.12) !important;
+  border: 1px solid #BF4E10 !important;
+  color: #A0400C !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+body.nm-light button.bg-orange-500:hover,
+body.nm-light a.bg-orange-500:hover,
+body.nm-light button.bg-orange-600:hover,
+body.nm-light a.bg-orange-600:hover,
+body.nm-light button[style*="background:#F97316" i]:hover,
+body.nm-light button[style*="background: #F97316" i]:hover,
+body.nm-light a[style*="background:#F97316" i]:hover,
+body.nm-light a[style*="background: #F97316" i]:hover,
+body.nm-light button.action-yt:hover,
+body.nm-light #loadMoreSection button:hover,
+body.nm-light #previewModal button[onclick="handlePurchase()"]:hover,
+body.nm-light #downloadModal a:hover,
+body.nm-light #historyModal button:hover {
+  background: rgba(255, 112, 1, 0.24) !important;
+  background-color: rgba(255, 112, 1, 0.24) !important;
+  border-color: #A0400C !important;
+  color: #8F3A0B !important;
+}
+
+/* theme.css declares these with id-level selectors
+   (#loadMoreSection button, #previewModal button[onclick=...],
+   #downloadModal a) at (1,0,1), which outranks a plain
+   `body.nm-light button.bg-orange-500` at (0,2,1). Matching the
+   id in the selector above is what lets the overlay win. */
+
+/* Nav info icon.
+
+   Carried #9CA3AF inline — a grey tuned for the old dark nav,
+   which on white reads as a heavy neutral blob next to the
+   brand-coloured Gallery button. It draws with currentColor, so
+   a colour rule is all it needs. The inline onmouseover/onmouseout
+   handlers write #F97316/#9CA3AF straight onto the element, and
+   !important is what keeps those from taking it back off-palette;
+   the scale transform in those handlers still works.
+
+   4.87:1 on the white nav — well over the 3:1 a UI icon needs. */
+body.nm-light nav a[onclick*="showHelpModal"] { color: #BF4E10 !important; }
+body.nm-light nav a[onclick*="showHelpModal"]:hover { color: #A0400C !important; }
+body.nm-light nav a[onclick*="showHelpModal"] svg {
+  stroke-width: 2 !important;   /* 2.5 read as chunky beside the other nav marks */
+  width: 24px !important;
+  height: 24px !important;
+}

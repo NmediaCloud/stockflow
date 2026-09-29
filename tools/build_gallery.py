@@ -398,6 +398,7 @@ def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_grap
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#EDD5C3">
   {head_extra}<title>{esc(title)}</title>
   <meta name="description" content="{esc(desc)}">
   <link rel="canonical" href="{esc(canonical)}">
@@ -412,8 +413,8 @@ def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_grap
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/css/styles.css?v=4">
   <link rel="stylesheet" href="/css/theme.css?v=4">
-  <link rel="stylesheet" href="{rel}gallery/gallery.css?v=4">
-  <link rel="stylesheet" href="{rel}gallery/shop.css?v=2">
+  <link rel="stylesheet" href="{rel}gallery/gallery.css?v=6">
+  <link rel="stylesheet" href="{rel}gallery/shop.css?v=3">
   <script src="/gallery/shop.js?v=7" defer></script>
   <script type="application/ld+json">{ld}</script>
 </head>
@@ -483,9 +484,16 @@ def asset_body(a, cat, cat_url, sub, sub_url, related):
                      ("Format", a["fmt"].upper()), ("Type", "Video" if a["video"] else "Image"),
                      ("Collection", a["leaf"] or sub)) if v)
     price_line = f', <b>{esc(price_fmt(a["price"]))}</b>' if a["price"] else ""
-    media = (f'<video controls preload="metadata" poster="{esc(a["thumb"])}" src="{esc(a["preview"])}"></video>'
+    # controlsList="nodownload" + blocked context menu: hide the browser's native
+    # "Download" from the player controls AND the right-click menu (same protection
+    # the SPA modal player has). A determined scraper can still fetch the preview
+    # URL directly — this closes the casual/one-click door, not the network one.
+    media = (f'<video controls controlsList="nodownload" disablepictureinpicture '
+             f'oncontextmenu="return false;" preload="metadata" '
+             f'poster="{esc(a["thumb"])}" src="{esc(a["preview"])}"></video>'
              if a["video"] else
-             f'<img src="{esc(a["preview"])}" alt="{esc(a["alt"] or a["title"])}" fetchpriority="high">')
+             f'<img src="{esc(a["preview"])}" alt="{esc(a["alt"] or a["title"])}" '
+             f'oncontextmenu="return false;" fetchpriority="high">')
     rel_cards = "".join(card(r) for r in related)
     rel_block = (f'<h2 class="g-sec">Related assets in {esc(sub)}</h2>'
                  f'<div class="g-grid">{rel_cards}</div>') if related else ""
@@ -515,8 +523,12 @@ def asset_body(a, cat, cat_url, sub, sub_url, related):
 <script type="application/json" id="assetData">{asset_json}</script>"""
 
 
-GALLERY_CSS = """/* Stockflow gallery — static, matches theme.css (dark charcoal + burnt orange) */
-:root{--bg:#111;--panel:#1F2933;--card:#2A2F36;--line:#3A3F46;--txt:#F3F4F6;--mut:#9CA3AF;--acc:#F97316;--acch:#FB923C}
+GALLERY_CSS = """/* Stockflow gallery — static. Soft Executive Orange, with the
+   media stage left dark: the asset itself is the product, and it reads
+   stronger against black than against a warm white. Everything around
+   it — banner, breadcrumb, info panel, footer — is light.
+   --acch is a DARKER hover here; on the old dark theme it was lighter. */
+:root{--bg:#FAF8F5;--panel:#F3E7DC;--card:#FFFFFF;--line:#DDD6CF;--txt:#4E4A46;--mut:#6E6862;--acc:#BF4E10;--acch:#A0400C;--stage:#2A2622;--ink:#000000}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:ui-sans-serif,system-ui,"Segoe UI",sans-serif}
 /* styles.css adds body padding-top for the home's fixed nav — gallery has no fixed nav, kill the blank gap */
 body{padding-top:0 !important}
@@ -581,6 +593,65 @@ nav.g-crumbs,nav.g-pager{position:static !important;top:auto !important;width:au
 .g-meta td{border:1px solid var(--line);padding:7px 10px}.g-meta td:first-child{color:var(--mut);width:38%}
 .g-chips{display:flex;gap:7px;flex-wrap:wrap;margin:22px 0 4px}
 .g-chips span{background:var(--card);border:1px solid var(--line);color:var(--mut);font-size:12px;padding:4px 11px;border-radius:14px}
+
+/* ---- light theme: the values above that are hardcoded, not variable ---- */
+/* theme.css sets body background/color with !important and its own dark
+   variables, and it loads before this file — so these two need !important
+   to land at all. */
+body{background:var(--bg) !important;color:var(--txt) !important}
+.g-banner{background:#FFFFFF !important;border-bottom:1px solid var(--line)}
+.g-brand{color:var(--ink)}
+.g-main h1,.g-info h1,.g-sec{color:var(--ink)}
+/* theme.css styles bare `footer`/`footer a` with !important, and .g-foot IS a
+   <footer>, so these need !important too — same reason as body above. */
+.g-foot{background:var(--panel) !important;color:var(--mut) !important;border-top:1px solid var(--line) !important}
+.g-foot a{color:var(--acch) !important}.g-foot a:hover{color:var(--acc) !important}
+.g-badge{background:rgba(0,0,0,.72);color:#fff}      /* sits on the image — stays */
+
+/* ---- the middle stays dark ---- */
+/* The asset sits on a black stage with a hairline, so the media is framed
+   rather than floating on the page colour. Thumbnails keep a dark well too,
+   which is what shows through when a 4:3 crop letterboxes. */
+/* A thin warm-dark frame rather than a 10px black one — enough to seat the
+   asset, not enough to read as a black slab on a light page. */
+.g-media{background:var(--stage);border:1px solid var(--line);border-radius:10px;padding:1px}
+.g-media img,.g-media video{border:0;border-radius:8px;background:#0b0b0b}
+.g-card img,.g-tile img{background:#0b0b0b}
+
+/* ---- buttons: the same SF-orange overlay used across the site ---- */
+/* #loginButton is styled by theme.css at id level with that file's own dark
+   --orange-primary; gallery.css never redefines theme.css's variables, so it
+   arrives as solid #F97316 with 3.13:1 text. Matching the id reclaims it. */
+.g-buy,.g-tabs a.on,.g-pager a.on,.g-chip.accent,.g-lic,#loginButton{
+  background:rgba(255,112,1,.12) !important;border:1px solid var(--acc) !important;
+  color:var(--acch) !important;font-weight:700}
+.g-buy:hover,.g-tabs a:hover,.g-pager a.on:hover,.g-chip.accent:hover,.g-lic:hover,#loginButton:hover{
+  background:rgba(255,112,1,.24) !important;border-color:var(--acch) !important;color:#8F3A0B !important}
+.g-tabs a:hover{color:var(--acch) !important}
+.g-chip{color:var(--txt)}
+.g-navbtn{color:var(--txt) !important}
+
+/* ---- signed-in account bar ----
+   theme.css styles these at id level using ITS OWN dark variables:
+     #walletDisplay > div > div:first-child { background: var(--bg-section) }  -> #1F2933
+     #userMenuButton                        { background: var(--bg-card) }     -> #2A2F36
+     #userMenu, #walletAmount, ...
+   which is why the Wallet pill and the account dropdown stayed dark while
+   "My Purchases" went light (its selector, button[onclick="showPurchaseHistory()"],
+   does not match the gallery's shopOpen('history') markup).
+
+   Re-pointing theme.css's variables on the banner fixes all of them at once.
+   --orange-primary is #A0400C rather than #BF4E10 because it is used as text
+   on a white pill (#walletAmount), where it needs 4.5:1. */
+.g-banner{
+  --bg-main:#FAF8F5;--bg-section:#FFFFFF;--bg-card:#FFFFFF;--bg-border:#DDD6CF;
+  --text-primary:#4E4A46;--text-secondary:#6E6862;
+  --orange-primary:#A0400C;--orange-burnt:#8F3A0B;--orange-hover:#BF4E10}
+
+/* The dropdown carries background:#1F2933 inline; theme.css's !important
+   already beats it, and the variable above now resolves light. The logout
+   link is #EF4444 inline, which is 3.76:1 on white. */
+#userMenu a[style*="#EF4444" i]{color:#C81E1E !important}
 """
 
 
@@ -747,17 +818,17 @@ def write_assets_json(rows):
             price = 1
         out.append({
             "id": fid,
-            "title": title,
+            "title": _deemdash(title),
             "category": (r.get("Category") or "").strip(),
             "subcategory": (r.get("Catagory_Sub") or "").strip(),
             "sub": (r.get("Sub") or "").strip(),
-            "description": (r.get("Description") or "").strip(),
+            "description": _deemdash((r.get("Description") or "").strip()),
             "thumbnail": thumb,
             "preview": preview,
             "price": price,
             "format": (r.get("Format") or "16:9").strip(),
             "resolution": (r.get("Resolution") or "").strip(),
-            "tags": (r.get("Tags") or "").strip(),
+            "tags": _deemdash((r.get("Tags") or "").strip()),
             "highResUrl": (r.get("HighRes_DriveURL") or "").strip(),
             "featured": (r.get("Featured") or "").strip().lower() in ("true", "1"),
             "fileFormat": m.group(1) if m else "",
@@ -768,6 +839,43 @@ def write_assets_json(rows):
     payload = json.dumps(out, ensure_ascii=False, separators=(",", ":"))
     wfile(ddir / "assets.json", payload)
     print(f"data/assets.json: {len(out):,} assets · {len(payload.encode('utf-8'))/1e6:.1f} MB raw", flush=True)
+
+
+def sync_index_meta(total):
+    """Keep index.html's SEO copy in step with the real catalogue size.
+
+    The <title>, meta description and the og:/twitter: pairs each carry an
+    asset count. They are crawler-facing, so they have to be real text in the
+    HTML — setting document.title from JS is not a substitute. That means they
+    drift the moment the catalogue grows, which is how they ended up claiming
+    15,000+ against a catalogue of 18,084.
+
+    The figure is rounded DOWN to the nearest thousand and written with a "+".
+    An exact number would be wrong again after a single upload; "18,000+" stays
+    true all the way to 19,000, so a stale build understates rather than
+    overstates. The precise count is still shown on the page itself, where it
+    is read live from data/assets.json.
+    """
+    src = ROOT / "index.html"
+    if not src.exists():
+        print("WARN: index.html not found — meta counts not synced", flush=True)
+        return
+    text = src.read_text(encoding="utf-8")
+    split = text.find("</head>")
+    if split == -1:
+        print("WARN: no </head> in index.html — meta counts not synced", flush=True)
+        return
+    head, body = text[:split], text[split:]
+    claim = f"{total // 1000 * 1000:,}+"
+    new_head, n = re.subn(r"\d{1,3},\d{3}\+", claim, head)
+    if n == 0:
+        print("WARN: no count token found in index.html <head> — nothing synced", flush=True)
+        return
+    if new_head == head:
+        print(f"index.html meta counts already at {claim}", flush=True)
+        return
+    wfile(src, new_head + body)
+    print(f"index.html: {n} meta count(s) -> {claim} (catalogue {total:,})", flush=True)
 
 
 def extract_shop_ui():
@@ -1052,6 +1160,7 @@ def main():
     print(f"Hierarchy: {cats} categories, {subs} subcategories", flush=True)
 
     page_urls, asset_urls, img_entries, total = build(tree)
+    sync_index_meta(total)
     extract_shop_ui()
     n_imgs = write_sitemaps(page_urls, asset_urls, img_entries)
     n_vids = write_video_sitemap(tree)

@@ -21,3 +21,165 @@
 .g-account .chip.solid:hover { background:#FB923C; }
 .g-account .email { color:#9CA3AF; max-width:150px; overflow:hidden; text-overflow:ellipsis; }
 #userMenu a:hover { background:rgba(239,68,68,0.08); }
+
+/* ============================================================
+   Soft Executive Orange — gallery purchase layer.
+
+   The modal markup in shop-ui.html is extracted verbatim from
+   index.html, so it carries the same inline colour literals.
+   index.html gets these corrections from css/theme-light.css,
+   but that file is scoped to `body.nm-light` and gallery pages
+   have a bare <body> and never load it — so the same rules are
+   restated here, scoped to the modal stack instead.
+
+   Keep in sync with the matching blocks in css/theme-light.css.
+   ============================================================ */
+
+.modal {
+  --acc:   #BF4E10;
+  --acch:  #A0400C;
+  --ink:   #4E4A46;
+  --mut:   #6E6862;
+  --line:  #DDD6CF;
+  --sand:  #F3E7DC;
+}
+
+/* Dark panel fills from the old theme */
+.modal [style*="#1F2933" i],
+.modal [style*="#2A2F36" i] {
+  background-color: #FFFFFF !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+.modal [style*="#3A3F46" i] { border-color: var(--line) !important; }
+#licenseModal [style*="background:#2A2F36" i] { background: var(--sand) !important; }
+
+/* Text literals picked for a dark ground */
+.modal [style*="color:#F3F4F6" i], .modal [style*="color: #F3F4F6" i],
+.modal [style*="#D1D5DB" i] { color: var(--ink) !important; }
+.modal [style*="color:#9CA3AF" i], .modal [style*="color: #9CA3AF" i],
+.modal [style*="#6B7280" i] { color: var(--mut) !important; }
+.modal [style*="color:#F97316" i], .modal [style*="color: #F97316" i],
+.modal [style*="#F59E0B" i] { color: var(--acch) !important; }
+.modal [style*="#FCA5A5" i] { color: #B42318 !important; }
+.modal [style*="color:#EF4444" i], .modal [style*="color: #EF4444" i] { color: #C81E1E !important; }
+
+/* Attribution panel: sand, not sky — this palette carries no blue */
+#licenseModal [style*="#7DD3FC" i] { color: var(--ink) !important; }
+#licenseModal [style*="rgba(14,165,233,0.1)" i] {
+  background: var(--sand) !important; border-left-color: var(--acc) !important;
+}
+#licenseModal [style*="#0F172A" i] {
+  background: #FFFFFF !important; color: var(--ink) !important; border-color: var(--line) !important;
+}
+
+/* Buttons — the same SF-orange overlay used everywhere else.
+   White on #F97316 is 2.8:1; #A0400C on the 12% wash is 5.78:1. */
+.modal button[style*="background:#F97316" i],
+.modal button[style*="background: #F97316" i],
+.modal a[style*="background:#F97316" i],
+.modal a[style*="background: #F97316" i],
+.modal button.bg-orange-500, .modal a.bg-orange-500,
+.topup-button {
+  background: rgba(255,112,1,.12) !important;
+  background-color: rgba(255,112,1,.12) !important;
+  border: 1px solid var(--acc) !important;
+  color: var(--acch) !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+.modal button[style*="background:#F97316" i]:hover,
+.modal button[style*="background: #F97316" i]:hover,
+.modal a[style*="background:#F97316" i]:hover,
+.modal a[style*="background: #F97316" i]:hover,
+.modal button.bg-orange-500:hover, .modal a.bg-orange-500:hover,
+.topup-button:hover {
+  background: rgba(255,112,1,.24) !important;
+  background-color: rgba(255,112,1,.24) !important;
+  border-color: var(--acch) !important;
+  color: #8F3A0B !important;
+  transform: none !important;
+}
+.topup-button:hover span { color: #8F3A0B !important; }
+
+/* Input borders were keyed to the pale orange */
+.modal input[style*="#F97316" i] { border-color: var(--acc) !important; }
+
+/* theme.css sets `.modal-content { background: var(--bg-card) !important }`
+   with its own dark variables and loads before this file, so shop.css's
+   plain `.modal-content{background:#fff}` above never wins. */
+.modal-content { background: #FFFFFF !important; color: var(--ink) !important; }
+.modal-content h2, .modal-content h3 { color: #000000 !important; }
+.modal-content p { color: var(--ink) !important; }
+
+/* theme.css also styles these at id level (#downloadModal a,
+   #historyModal button, #previewModal button[onclick=...]), which outranks
+   the `.modal a[style*=...]` forms above — so they are matched by id here. */
+#downloadModal a,
+#historyModal button,
+#previewModal button[onclick="handlePurchase()"] {
+  background: rgba(255,112,1,.12) !important;
+  background-color: rgba(255,112,1,.12) !important;
+  border: 1px solid var(--acc) !important;
+  color: var(--acch) !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+#downloadModal a:hover,
+#historyModal button:hover,
+#previewModal button[onclick="handlePurchase()"]:hover {
+  background: rgba(255,112,1,.24) !important;
+  background-color: rgba(255,112,1,.24) !important;
+  border-color: var(--acch) !important;
+  color: #8F3A0B !important;
+}
+
+/* Pale greys tuned for dark panels, wherever they sit */
+.modal [style*="#9CA3AF" i], .modal [style*="#D1D5DB" i],
+.modal [style*="#E5E7EB" i], .modal [style*="#6B7280" i] { color: var(--mut) !important; }
+
+/* The about modal's tinted callouts are sky/mint — this palette has no blue */
+.modal [style*="rgba(14,165,233" i],
+.modal [style*="rgba(16,185,129" i],
+.modal [style*="rgba(59,130,246" i] {
+  background: var(--sand) !important;
+  border-color: var(--line) !important;
+}
+.modal [style*="rgba(14,165,233" i] *,
+.modal [style*="rgba(16,185,129" i] *,
+.modal [style*="rgba(59,130,246" i] * { color: var(--ink) !important; }
+
+/* Close glyph — #9CA3AF on white is 2.54:1 */
+.close-modal { color: var(--mut) !important; }
+.close-modal:hover { color: #000000 !important; }
+
+/* Top-up amounts: the pale orange on the button's own wash is 2.48:1 */
+.topup-button [style*="#F97316" i],
+.topup-button span,
+.topup-button b { color: var(--acch) !important; }
+
+/* Redefine theme.css's OWN variables inside the modal stack.
+
+   theme.css styles modal internals through them — e.g.
+   `.topup-button span:first-child { color: var(--orange-primary) !important }`
+   at (0,2,1), which outranks anything reasonable written here. Rather than
+   chase each such selector, the variables are re-pointed at the light palette
+   so every theme.css rule inside a modal resolves on-brand by itself.
+
+   --orange-primary is #A0400C rather than #BF4E10 because it lands in three
+   roles: as text on the 12% wash (5.78:1), as text on white (6.6:1), and as a
+   button fill under white text (7.5:1). #BF4E10 would miss AA in the first. */
+.modal {
+  --bg-main:        #FAF8F5;
+  --bg-section:     #FFFFFF;
+  --bg-card:        #FFFFFF;
+  --bg-border:      #DDD6CF;
+  --text-primary:   #4E4A46;
+  --text-secondary: #6E6862;
+  --orange-primary: #A0400C;
+  --orange-burnt:   #8F3A0B;
+  --orange-hover:   #BF4E10;
+  --amber-deep:     #A0400C;
+  --amber-dark:     #8F3A0B;
+  --amber-light:    #BF4E10;
+}

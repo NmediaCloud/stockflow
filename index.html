@@ -3,22 +3,31 @@
 
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DK23WJV0QN"></script>
+    <!-- Google tag (gtag.js), loaded ONLY for real browsers. Headless scrapers
+         (Puppeteer/Playwright/Selenium) expose navigator.webdriver=true; skipping
+         analytics for them keeps bot farms (e.g. the Urumqi scraper wave, ~52% of
+         "users" in July 2026) from polluting GA stats. gtag stays a global no-op
+         queue either way so any inline gtag() calls elsewhere never break. -->
     <script>
        window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
+       function gtag(){dataLayer.push(arguments);}
+       if (!navigator.webdriver) {
+          var _gs = document.createElement('script');
+          _gs.async = true;
+          _gs.src = 'https://www.googletagmanager.com/gtag/js?id=G-DK23WJV0QN';
+          document.head.appendChild(_gs);
           gtag('js', new Date());
           gtag('config', 'G-DK23WJV0QN');
+       }
     </script>
     <meta name="google-site-verification" content="Q_8zVX8Pk2qi7kP0nCwI_zJUVOhWC7ea4qRQ8ih-GAU" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Primary Meta Tags -->
-    <title>Premium Stock Images & Footage, 8K Photos, 4K Videos, 15,000+ Assets | Stockflow.media</title>
+    <title>Premium Stock Images & Footage, 8K Photos, 4K Videos, 18,000+ Assets | Stockflow.media</title>
     <meta name="p:domain_verify" content="4ae5c31b87d5ab381ed2865477ea7704"/>
-    <meta name="title" content="Premium Stock Images & Footage, 8K Photos, 4K Videos, 15,000+ Assets | Stockflow.media">
-    <meta name="description" content="Browse 15,000+ royalty-free stock assets: 8K images and 4K footage across backgrounds, food & beverage, microscopy, events, retail and more. All aspect ratios, instant download from $1.">
+    <meta name="title" content="Premium Stock Images & Footage, 8K Photos, 4K Videos, 18,000+ Assets | Stockflow.media">
+    <meta name="description" content="Browse 18,000+ royalty-free stock assets: 8K images and 4K footage across backgrounds, food & beverage, microscopy, events, retail and more. All aspect ratios, instant download from $1.">
     <meta name="keywords" content="stock images, stock photos, 8K images, stock footage, stock videos, 4K stock footage, royalty free images, backgrounds, food videos, beverage videos, microscopy images, retail photos, vertical videos, square videos, social media content, instagram reels footage, commercial footage, royalty free videos, marketing videos">
     <meta name="author" content="Nmediaservices">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -29,8 +38,8 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://stockflow.media/">
-    <meta property="og:title" content="Premium Stock Images & Footage, 8K Photos, 4K Videos, 15,000+ Assets | Stockflow.media">
-    <meta property="og:description" content="15,000+ royalty-free stock assets: 8K images and 4K footage across backgrounds, food & beverage, microscopy, events, retail and more. Instant download from $1.">
+    <meta property="og:title" content="Premium Stock Images & Footage, 8K Photos, 4K Videos, 18,000+ Assets | Stockflow.media">
+    <meta property="og:description" content="18,000+ royalty-free stock assets: 8K images and 4K footage across backgrounds, food & beverage, microscopy, events, retail and more. Instant download from $1.">
     <meta property="og:image" content="https://stockflow.media/assets/og-image.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -41,7 +50,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://stockflow.media/">
     <meta name="twitter:title" content="Premium Stock Images & Footage, 8K Photos, 4K Videos | Stockflow.media">
-    <meta name="twitter:description" content="15,000+ royalty-free stock assets: 8K images and 4K footage. Instant download from $1.">
+    <meta name="twitter:description" content="18,000+ royalty-free stock assets: 8K images and 4K footage. Instant download from $1.">
     <meta name="twitter:image" content="https://stockflow.media/assets/twitter-card.jpg">
     <meta name="twitter:creator" content="@nmediaservices">
     
@@ -55,7 +64,7 @@
     <link rel="canonical" href="https://stockflow.media/">
     
     <!-- Additional Meta Tags -->
-    <meta name="theme-color" content="#1F2933">
+    <meta name="theme-color" content="#EDD5C3">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -163,6 +172,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/styles.css?v=4">
     <link rel="stylesheet" href="css/theme.css?v=4">
+  <link rel="stylesheet" href="css/theme-light.css?v=1">
     <style>
         /* ===== DESKTOP WIDTH CONSTRAINT ===== */
         @media (min-width: 1280px) {
@@ -318,7 +328,7 @@
     <script src="https://js.stripe.com/v3/"></script>
     
 </head>
-<body class="bg-gray-50 font-sans text-gray-900">
+<body class="nm-light bg-gray-50 font-sans text-gray-900">
 
 
 
@@ -593,11 +603,17 @@
 
 
     
-// Default config (overridden by sheet on load)
+// Offers that must never run, whatever the sheet says.
+const BLOCKED_OFFERS = ['review', 'youtube'];
+
+// Default config (overridden by sheet on load, then filtered above)
 let OFFERS = {
   newsletter: { label:'Newsletter Reward', amount:5,  active:true },
-  review:     { label:'Google Review',     amount:10, active:true },
-  youtube:    { label:'YouTube Feature',   amount:50, active:true }
+  // Paid review incentives breach Google's review policy and FTC/
+  // Competition Bureau rules on undisclosed paid endorsements.
+  // Disabled here; also switch it off in the offers sheet.
+  review:     { label:'Google Review',     amount:10, active:false },
+  youtube:    { label:'YouTube Feature',   amount:50, active:false }
 };
 
 // Load offers from Apps Script sheet
@@ -608,13 +624,18 @@ async function loadOffers() {
     const data = await res.json();
     if (data && Object.keys(data).length > 0) OFFERS = data;
     else throw new Error('Empty response');
+    // The sheet replaces OFFERS wholesale, so these are enforced here rather
+    // than relying on the sheet staying correct. Paying for reviews breaches
+    // Google's review policy; paid features breach FTC / Competition Bureau
+    // rules on undisclosed endorsements. Do not re-enable without disclosure.
+    BLOCKED_OFFERS.forEach(k => { if (OFFERS[k]) OFFERS[k].active = false; });
   } catch(e) {
     console.log('Using default offer config');
     // Reset to hardcoded defaults so banner always shows
     OFFERS = {
       newsletter: { label:'Newsletter Reward', amount:5,  active:true },
-      review:     { label:'Google Review',     amount:10, active:true },
-      youtube:    { label:'YouTube Feature',   amount:50, active:true }
+      review:     { label:'Google Review',     amount:10, active:false },
+      youtube:    { label:'YouTube Feature',   amount:50, active:false }
     };
   }
   renderBanner();
@@ -729,7 +750,7 @@ async function verifyNewsletterReply() {
                 <h1 class="text-xl font-bold tracking-tight text-gray-900">
                     Nmediaservices<span class="text-orange-500">Stockflow.media</span>
                 </h1>
-                <a href="#" onclick="showHelpModal(); return false;"
+                <a href="/about/" title="About Stockflow" aria-label="About Stockflow"
                    style="text-decoration: none; font-size: 24px; margin-right: 15px; color: #9CA3AF; transition: all 0.3s; display: inline-flex; align-items: center; cursor: pointer;"
                    onmouseover="this.style.color='#F97316'; this.style.transform='scale(1.1)';" 
                    onmouseout="this.style.color='#9CA3AF'; this.style.transform='scale(1)';">
@@ -1323,20 +1344,9 @@ async function verifyNewsletterReply() {
     </span>
 
     <button class="offer-btn" onclick="openOffer('newsletter')">
-      <span class="reward">$5</span> for Active Newletter
+      <span class="reward">$5</span> for Active Newsletter
     </button>
 
-    <span class="offer-divider">·</span>
-
-    <button class="offer-btn" onclick="openOffer('review')">
-      <span class="reward">$10</span> for Google Review
-    </button>
-
-    <span class="offer-divider">·</span>
-
-    <button class="offer-btn" onclick="openOffer('youtube')">
-      <span class="reward">$50</span> for YouTube Featuring
-    </button>
   </div>
   <button id="bannerDismiss" onclick="dismissBanner()" title="Dismiss">×</button>
 </div>
@@ -1618,7 +1628,7 @@ async function submitClaim(type) {
                         <p class="text-3xl font-bold text-gray-900">$<span id="modalPrice"></span></p>
                     </div>
                     <button onclick="handlePurchase()" class="bg-orange-500 text-white px-8 py-3 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-900">
-                        Download
+                        License &amp; Download
                     </button>
                     <button onclick="copyShareLink()" class="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1717,7 +1727,20 @@ async function submitClaim(type) {
     <div id="downloadModal" class="modal">
         <div class="modal-content" style="text-align:center;">
             <span class="close-modal" onclick="closeDownloadModal()">&times;</span>
-            <div style="font-size:60px;margin-bottom:20px;">✔️</div>
+            <!-- Success mark. Was the U+2714 emoji, which Windows renders
+                 through Segoe UI Emoji as a purple glyph, off-palette and
+                 inconsistent across platforms. An inline SVG renders the same
+                 everywhere and takes the brand colours. Decorative: the <h2>
+                 below already announces the outcome. -->
+            <div style="margin:0 auto 20px;width:76px;height:76px;">
+                <svg viewBox="0 0 48 48" width="76" height="76" fill="none"
+                     xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                    <circle cx="24" cy="24" r="22" fill="rgba(255,112,1,0.12)"
+                            stroke="#BF4E10" stroke-width="2"/>
+                    <path d="M15 24.5 L21 30.5 L33 18.5" stroke="#A0400C" stroke-width="3"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
             <h2>Purchase Successful!</h2>
             <p id="downloadVideoTitle" style="color:#666;margin-bottom:20px;"></p>
             <a id="downloadLink" href="#" target="_blank"
@@ -1773,8 +1796,8 @@ async function submitClaim(type) {
         </p>
           <!-- Help and yourtube links ) -->
         <a href="http://help.stockflow.media/" target="_blank" 
-           style="display: block; padding: 14px; background: #F97316; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; transition: background 0.2s;">
-           📖 View Full Help Documentation
+           style="display: flex; align-items: center; justify-content: center; padding: 14px; background: #F97316; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; transition: background 0.2s;">
+           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="display:inline-block;vertical-align:-0.15em;margin-right:8px;flex-shrink:0;"><path d="M4 5.5A2.5 2.5 0 016.5 3H19v15H6.5A2.5 2.5 0 004 20.5z"/><path d="M4 20.5A2.5 2.5 0 016.5 18H19v3H6.5A2.5 2.5 0 014 20.5z"/></svg>View Full Help Documentation
         </a>
     </div>
 </div>
@@ -1842,7 +1865,7 @@ async function submitClaim(type) {
         <p style="color:#9CA3AF; font-size:14px; margin-bottom:25px;">Effective Date: February 2026</p>
         
         <div style="background:rgba(249,115,22,0.1); border-left:4px solid #F97316; padding:15px; margin-bottom:20px; border-radius:4px;">
-            <h3 style="color:#F97316; margin-top:0;">✔️ Permitted Uses</h3>
+            <h3 style="color:#F97316; margin-top:0;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="display:inline-block;vertical-align:-0.15em;margin-right:8px;flex-shrink:0;"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg>Permitted Uses</h3>
             <ul style="margin:10px 0; padding-left:25px; color:#D1D5DB; line-height:1.8;">
                 <li><strong>Social Media Content:</strong> Use in posts, stories, reels, and videos on any platform</li>
                 <li><strong>Commercial Projects:</strong> Advertisements, marketing materials, promotional videos</li>
@@ -1853,13 +1876,13 @@ async function submitClaim(type) {
                 <li><strong>Broadcast:</strong> Television, streaming platforms, cinema</li>
             </ul>
             <p style="margin:10px 0 0 0; color:#F97316; font-size:13px; opacity:0.9;">
-                💡 <strong>Value-Add Requirement:</strong> You must incorporate the footage into a larger creative work. 
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="display:inline-block;vertical-align:-0.15em;margin-right:8px;flex-shrink:0;"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 00-3.5 10.9c.4.3.6.8.6 1.3V16h5.8v-.8c0-.5.2-1 .6-1.3A6 6 0 0012 3z"/></svg><strong>Value-Add Requirement:</strong> You must incorporate the footage into a larger creative work. 
                 The footage should be a component of your final product, not the entire product itself.
             </p>
         </div>
         
         <div style="background:rgba(239,68,68,0.1); border-left:4px solid #EF4444; padding:15px; margin-bottom:20px; border-radius:4px;">
-            <h3 style="color:#FCA5A5; margin-top:0;">❌ Prohibited Uses</h3>
+            <h3 style="color:#FCA5A5; margin-top:0;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="display:inline-block;vertical-align:-0.15em;margin-right:8px;flex-shrink:0;"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>Prohibited Uses</h3>
             <ul style="margin:10px 0; padding-left:25px; color:#FCA5A5; line-height:1.8;">
                 <li><strong>Resale/Redistribution:</strong> You may NOT resell, redistribute, or sublicense the footage</li>
                 <li><strong>Stock Libraries:</strong> You may NOT upload footage to other stock footage sites</li>
