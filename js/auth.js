@@ -290,7 +290,7 @@ onAuthStateChanged(auth, async (user) => {
       localStorage.setItem('sf_unverified_' + user.email, 'true');
     }
     
-    // Load user data — but SKIP the Apps Script calls if we already have a
+    // Load user data, but SKIP the Apps Script calls if we already have a
     // fresh cached session for this email (avoids a query storm when browsing
     // many static gallery pages). Cache is refreshed on purchase / manual sync.
     if (typeof window.sessionFresh === 'function' && window.sessionFresh(user.email)

@@ -79,7 +79,7 @@ async function init() {
             catalogData = await c.json();
             renderCatalog();
         }
-    } catch (e) { /* no catalog yet — grid stays empty until data loads */ }
+    } catch (e) { /* no catalog yet, grid stays empty until data loads */ }
 
     try {
         await loadVideosFromSheet();
@@ -200,7 +200,7 @@ function renderCatalog() {
     const rc = document.getElementById('resultCount');
     if (rc) rc.textContent = `${total.toLocaleString()} Assets`;
     const st = document.getElementById('status-text');
-    if (st) st.innerHTML = `<span class="inline-block w-2 h-2 bg-orange-500 rounded-full mr-2"></span>Catalog — pick a category to explore ${total.toLocaleString()} assets`;
+    if (st) st.innerHTML = `<span class="inline-block w-2 h-2 bg-orange-500 rounded-full mr-2"></span>Catalog, pick a category to explore ${total.toLocaleString()} assets`;
     return true;
 }
 function selectCategoryByName(name) {
@@ -528,7 +528,7 @@ function filterVideos() {
     const searchTerm = document.getElementById('searchInput')?.value?.toLowerCase() || '';
 
     filteredVideos = allVideos.filter(video => {
-        // No category picked: show featured only — EXCEPT when searching,
+        // No category picked: show featured only, EXCEPT when searching,
         // a search from the Catalog view must cover the whole library.
         if (selectedCategory === null && !searchTerm) {
             const hasFeatured = allVideos.some(v => v.featured);

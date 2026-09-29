@@ -63,7 +63,7 @@ function openModal(video) {
     window.currentVideo = video; // 'window.' makes it accessible to wallet.js!
 
     // Remember EXACTLY where the user was before opening the modal, so closing it
-    // returns them there — their search results, the catalog, or a category page —
+    // returns them there, their search results, the catalog, or a category page, 
     // instead of jumping to this item's category. Only a cold external ?v= deep
     // link (no in-app context) still gets synced to the item's category, so closing
     // that lands somewhere sensible rather than a blank home.
@@ -92,7 +92,7 @@ function openModal(video) {
                 selectSubcategory(video.subcategory, {});
             }
         }
-    } catch (e) { /* non-fatal — the modal still opens even if state capture fails */ }
+    } catch (e) { /* non-fatal, the modal still opens even if state capture fails */ }
 
     updateMetaForVideo(video);   // per-item title/OG/canonical + address-bar ?v=
     const modal = document.getElementById('previewModal');
@@ -133,7 +133,7 @@ function openModal(video) {
 
     // ⭐ SMART LOGIC FOR HANDLING FILE URL (MP4 vs WebP/Image) ⭐
     if (video.preview) {
-        // storage.cloud.google.com is the LOGIN-GATED console host — it 302s to a
+        // storage.cloud.google.com is the LOGIN-GATED console host, it 302s to a
         // Google sign-in page, so <video>/<img> can't load it for logged-out
         // visitors (every customer). Rewrite to the PUBLIC host that serves the
         // same object directly. Images already use it; videos were on the gated one.
@@ -166,7 +166,7 @@ function openModal(video) {
 function closeModal() {
     // Normally nothing special is needed here: openModal() already synced the
     // page's category/subcategory selection to match the video, so the grid
-    // behind the modal is already the right page — on a gallery page it's the
+    // behind the modal is already the right page, on a gallery page it's the
     // gallery asset page (untouched), on the SPA it's the matching category/
     // subcategory view (?cat=&sub= already in the URL from that sync). Closing
     // just reveals that page. Safety-net ONLY: if we're on the bare SPA home

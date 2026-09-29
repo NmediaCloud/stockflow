@@ -50,7 +50,7 @@ SITE = "https://stockflow.media"
 SHEET_CSV_URL = ("https://docs.google.com/spreadsheets/d/"
                  "12eyXAI9-hT0TFSx2HhVDUWHXo4X9QVT-vSPmGQBx6c8/export?format=csv&gid=65282458")
 LICENSE_URL = "https://help.stockflow.media/license/"
-COPYRIGHT = "© NMedia Services & Stockflow.media — All rights reserved."
+COPYRIGHT = "© NMedia Services & Stockflow.media. All rights reserved."
 CREDIT = "Stockflow.media"
 PER_PAGE = 200          # assets per subcategory page (keeps HTML + JSON-LD lean)
 RELATED_N = 8           # related assets shown on each asset page
@@ -163,6 +163,21 @@ def _cap(s):
     return (s[:1].upper() + s[1:]) if s else ""
 
 
+_EMDASH = "—"
+_EMDASH_PDASH = re.compile(r"\.[ \t]+" + _EMDASH + r"[ \t]+([A-Za-z])")
+_EMDASH_ANY = re.compile(r"[ \t]*" + _EMDASH + r"[ \t]*")
+
+
+def _deemdash(s):
+    """Strip em-dashes (—) from AI-sourced Sheet text so generated pages never
+    read as AI-written. ". — X" -> ". X"; every other "—" -> ", " (matches the
+    one-time cleanup applied to the already-generated HTML)."""
+    if not s or _EMDASH not in s:
+        return s
+    s = _EMDASH_PDASH.sub(lambda m: ". " + m.group(1).upper(), s)
+    return _EMDASH_ANY.sub(", ", s)
+
+
 def build_seo(r, cat, sub, kind, res):
     """Return clean, keyword-rich {title, alt, desc, keywords} for one asset.
 
@@ -178,28 +193,28 @@ def build_seo(r, cat, sub, kind, res):
     catl = cat.lower()
 
     # AI vision content already sitting in the Sheet (paid for once, reuse forever)
-    ai_desc = _cap(r.get("Meta_Description") or r.get("Description"))
-    ai_tags = (r.get("Keywords") or r.get("Tags") or "").strip()
+    ai_desc = _deemdash(_cap(r.get("Meta_Description") or r.get("Description")))
+    ai_tags = _deemdash((r.get("Keywords") or r.get("Tags") or "").strip())
 
     # Title — clean rule-based ("Fruit Tarts — 8K Royalty-Free Food & Beverage Stock
     # Image"); the Sheet's SEO_Title is a dimension template, so ours is richer.
-    tbits = [subject, "—"] + ([rl] if rl else []) + ["Royalty-Free", cat, "Stock", kind]
+    tbits = [subject + ","] + ([rl] if rl else []) + ["Royalty-Free", cat, "Stock", kind]
     title = " ".join(b for b in tbits if b)
 
     # Alt — the AI visual description IS the ideal alt; add light SEO context.
     ctx = " ".join(([rl] if rl else []) + ["royalty-free", catl, "stock", medium])
     if ai_desc:
-        alt = f"{ai_desc} — {ctx}"
+        alt = f"{ai_desc}, {ctx}"
     else:
         alt = f"{subject}, {ctx}" + (f", {orient} orientation" if orient else "")
 
     # Meta description — AI description + a conversion line; rule-based fallback.
     rlp = (rl + " ") if rl else ""
     if ai_desc:
-        desc = (f"{ai_desc}. {rlp}Royalty-free {cat} stock {medium} — "
+        desc = (f"{ai_desc}. {rlp}Royalty-free {cat} stock {medium}, "
                 f"pay once, use forever, instant download from Stockflow.media.")
     else:
-        desc = (f"{subject} — {rlp}royalty-free {cat} stock {medium}. "
+        desc = (f"{subject}, {rlp}royalty-free {cat} stock {medium}. "
                 f"Pay once, use forever with an instant full-resolution download from Stockflow.media.")
 
     # Keywords — AI vision tags first, then structured taxonomy terms, deduped.
@@ -422,7 +437,7 @@ def page_shell(*, title, desc, canonical, og_image, breadcrumb, body, extra_grap
     <a href="https://smithery.ai/servers/nmedia-cloud/stockflow-mcp">AI / MCP</a> ·
     <a href="{SITE}/">Search &amp; Buy</a>
   </p>
-  <p>All previews &amp; thumbnails {esc(COPYRIGHT)} — instant download, royalty-free.</p>
+  <p>All previews &amp; thumbnails {esc(COPYRIGHT)} Instant download, royalty-free.</p>
 </footer>
 </body>
 </html>
@@ -443,7 +458,7 @@ def card(a):
 
 def tile(name, url, cover, count, kind):
     return f"""<a class="g-tile" href="{esc(url)}">
-  <img src="{esc(cover)}" alt="{esc(name)} — {kind} preview" loading="lazy" decoding="async">
+  <img src="{esc(cover)}" alt="{esc(name)}, {kind} preview" loading="lazy" decoding="async">
   <span class="g-cap"><span class="g-t">{esc(name)}</span><span class="g-m">{count} assets</span></span>
 </a>"""
 
@@ -468,7 +483,7 @@ def asset_body(a, cat, cat_url, sub, sub_url, related):
         for k, v in (("Asset ID", a["id"]), ("Resolution", a["res"]),
                      ("Format", a["fmt"].upper()), ("Type", "Video" if a["video"] else "Image"),
                      ("Collection", a["leaf"] or sub)) if v)
-    price_line = f' — <b>{esc(price_fmt(a["price"]))}</b>' if a["price"] else ""
+    price_line = f', <b>{esc(price_fmt(a["price"]))}</b>' if a["price"] else ""
     # controlsList="nodownload" + blocked context menu: hide the browser's native
     # "Download" from the player controls AND the right-click menu (same protection
     # the SPA modal player has). A determined scraper can still fetch the preview
@@ -671,12 +686,12 @@ def build(tree):
             sub_url = f"{SITE}/gallery/{cslug}/{slug(sub)}/"
             scover = next((a["thumb"] for a in assets if a["featured"]), assets[0]["thumb"])
             sub_tiles.append(tile(sub, sub_url, scover, len(assets), "collection"))
-        body = (f"<h1>{esc(cat)} — Stock Images &amp; Footage</h1>"
+        body = (f"<h1>{esc(cat)}, Stock Images &amp; Footage</h1>"
                 f'<p class="lead">Browse {len(cat_assets):,} royalty-free {esc(cat)} assets across '
-                f'{len(subs)} collections. Every asset is licensed once, used forever — instant download at Stockflow.media.</p>'
+                f'{len(subs)} collections. Every asset is licensed once, used forever, instant download at Stockflow.media.</p>'
                 f'<div class="g-grid">{"".join(sub_tiles)}</div>')
         pg = page_shell(
-            title=f"{cat} Stock Images & Footage — Royalty-Free | Stockflow.media",
+            title=f"{cat} Stock Images & Footage, Royalty-Free | Stockflow.media",
             desc=f"{len(cat_assets):,} premium {cat} stock images and videos in up to 8K. "
                  f"{len(subs)} collections, royalty-free, instant download from $1.",
             canonical=cat_url, og_image=cover,
@@ -704,16 +719,16 @@ def build(tree):
                 url = base if p == 1 else f"{base}page-{p}.html"
                 prev_u = None if p == 1 else (base if p == 2 else f"{base}page-{p-1}.html")
                 next_u = f"{base}page-{p+1}.html" if p < pages else None
-                suffix = f" — Page {p}" if p > 1 else ""
+                suffix = f", Page {p}" if p > 1 else ""
                 pgr = pager(base, p, pages)   # goes in the header subbar (top-right)
-                body = (f"<h1>{esc(sub)} — {esc(cat)} Stock Assets{suffix}</h1>"
+                body = (f"<h1>{esc(sub)}, {esc(cat)} Stock Assets{suffix}</h1>"
                         f'<p class="lead">{len(assets):,} royalty-free {esc(sub)} images &amp; clips (up to 8K). '
                         f'Open any preview for details, or hit License to buy it instantly.</p>'
                         f'<div class="g-tabs">{tabs}</div>'
                         f'<div class="g-grid">{"".join(card(a) for a in chunk)}</div>'
                         f'{pgr}')
                 pg = page_shell(
-                    title=f"{sub} — {cat} Stock Images & Videos{suffix} | Stockflow.media",
+                    title=f"{sub}, {cat} Stock Images & Videos{suffix} | Stockflow.media",
                     desc=f"{len(assets):,} {sub} stock assets in the {cat} category. Up to 8K resolution, "
                          f"royalty-free license, instant download from $1.",
                     canonical=url, og_image=chunk[0]["preview"],
@@ -739,7 +754,7 @@ def build(tree):
                 if pn:
                     graph.append(pn)
                 pg = page_shell(
-                    title=f"{a['title']} — Royalty-Free {kind} | Stockflow.media",
+                    title=f"{a['title']}, Royalty-Free {kind} | Stockflow.media",
                     desc=(a["desc"] or a["title"])[:150] + f" Royalty-free {sub} stock, instant download.",
                     canonical=a["page"], og_image=a["preview"],
                     breadcrumb=[home_crumb, gal_crumb, (cat, cat_url), (sub, base), (a["title"], a["page"])],
@@ -750,14 +765,14 @@ def build(tree):
 
     # ---- gallery landing page
     body = ("<h1>Stock Image &amp; Footage Gallery</h1>"
-            f'<p class="lead">Explore {total_assets:,} premium royalty-free assets — 8K images, 4K footage, backgrounds, '
+            f'<p class="lead">Explore {total_assets:,} premium royalty-free assets, 8K images, 4K footage, backgrounds, '
             f'food &amp; beverage, microscopy, retail and more. Pick a category; every preview links straight to its '
             f'licensing page.</p>'
             f'<div class="g-grid">{"".join(cat_tiles)}</div>')
     first_cover = next(iter(tree.values()))
     first_cover = next(iter(first_cover.values()))[0]["thumb"]
     pg = page_shell(
-        title=f"Stock Gallery — {total_assets:,} Royalty-Free 8K Images & 4K Videos | Stockflow.media",
+        title=f"Stock Gallery, {total_assets:,} Royalty-Free 8K Images & 4K Videos | Stockflow.media",
         desc=f"Browse {total_assets:,} premium stock images and footage by category. Royalty-free, "
              "up to 8K, instant download from $1 at Stockflow.media.",
         canonical=f"{SITE}/gallery/",
@@ -803,17 +818,17 @@ def write_assets_json(rows):
             price = 1
         out.append({
             "id": fid,
-            "title": title,
+            "title": _deemdash(title),
             "category": (r.get("Category") or "").strip(),
             "subcategory": (r.get("Catagory_Sub") or "").strip(),
             "sub": (r.get("Sub") or "").strip(),
-            "description": (r.get("Description") or "").strip(),
+            "description": _deemdash((r.get("Description") or "").strip()),
             "thumbnail": thumb,
             "preview": preview,
             "price": price,
             "format": (r.get("Format") or "16:9").strip(),
             "resolution": (r.get("Resolution") or "").strip(),
-            "tags": (r.get("Tags") or "").strip(),
+            "tags": _deemdash((r.get("Tags") or "").strip()),
             "highResUrl": (r.get("HighRes_DriveURL") or "").strip(),
             "featured": (r.get("Featured") or "").strip().lower() in ("true", "1"),
             "fileFormat": m.group(1) if m else "",
@@ -882,7 +897,7 @@ def extract_shop_ui():
     chunk = html_text[start:end]
     chunk = re.sub(r"<script\b.*?</script>", "", chunk, flags=re.S)
     wfile(ROOT / "gallery" / "shop-ui.html",
-          "<!-- AUTO-GENERATED from browse.html by tools/build_gallery.py — do not edit -->\n" + chunk)
+          "<!-- AUTO-GENERATED from browse.html by tools/build_gallery.py, do not edit -->\n" + chunk)
     print(f"gallery/shop-ui.html: {len(chunk)/1024:.0f} KB extracted from index.html", flush=True)
 
 
@@ -1019,7 +1034,7 @@ def write_llms_txt(total_assets):
     use the catalog (previews are watermarked; full-res requires a license)."""
     wfile(ROOT / "llms.txt", f"""# Stockflow.media
 
-> Royalty-free stock media library: {total_assets:,} premium assets — 8K images and 4K video
+> Royalty-free stock media library: {total_assets:,} premium assets, 8K images and 4K video
 > across backgrounds, food & beverage, microscopy, events and retail. Pay once, use forever.
 > Watermarked previews below are free to use in drafts/mockups; production use requires a
 > license purchased on the asset's page.
@@ -1081,7 +1096,7 @@ def write_merchant_feed(tree):
                     "  </item>")
     feed = ('<?xml version="1.0" encoding="UTF-8"?>\n'
             '<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">\n<channel>\n'
-            "  <title>Stockflow.media — Royalty-Free Stock Images &amp; Footage</title>\n"
+            "  <title>Stockflow.media, Royalty-Free Stock Images &amp; Footage</title>\n"
             f"  <link>{SITE}/</link>\n"
             "  <description>Premium 8K stock images and 4K footage, royalty-free, instant download.</description>\n"
             + "\n".join(items) + "\n</channel>\n</rss>")
@@ -1112,7 +1127,7 @@ def write_rss(tree, newest_n=100):
             "  </item>")
     feed = ('<?xml version="1.0" encoding="UTF-8"?>\n'
             '<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">\n<channel>\n'
-            "  <title>Stockflow.media — New Stock Assets</title>\n"
+            "  <title>Stockflow.media, New Stock Assets</title>\n"
             f"  <link>{SITE}/</link>\n"
             "  <description>Newest royalty-free 8K images and 4K footage on Stockflow.media.</description>\n"
             + "\n".join(items) + "\n</channel>\n</rss>")
